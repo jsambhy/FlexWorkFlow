@@ -1,0 +1,147 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' showCloseIcon="true" [visible]="hidden"
+            [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true"></ejs-dialog>
+
+<!--Card group for the page on the menu access notification-->
+<div class="card-group" *ngIf="showFormFormat">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Notifications</h4>
+      <div class="row">
+        <span class="notes-flex col-10">System will send following emails when user presses this action. You can create email notifications and set multiple recipients for each email.</span>
+      </div>
+      <div>&nbsp;</div>
+      <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <ejs-dropdownlist id="WFdropdown" #WFdropdown
+                            [dataSource]="WFSource" floatLabelType="Auto" [fields]="WFfields"
+                            (change)="WFNameChange($event)" placeholder='Choose Workflow'>
+          </ejs-dropdownlist>
+
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <ejs-dropdownlist id="Stepsdropdown" #Stepsdropdown
+                            [dataSource]="StepsSource" floatLabelType="Auto" [fields]="Stepsfields"
+                            (change)="StepsChange($event)" placeholder='Choose Steps for the selected WF'>
+          </ejs-dropdownlist>
+
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+
+          <ejs-dropdownlist id="Actionsdropdown" #Actionsdropdown
+                            [dataSource]="ActionsSource" floatLabelType="Auto" [fields]="Actionsfields"
+                            (change)="ActionChange($event)" placeholder='Choose Actions for the selected step'>
+
+          </ejs-dropdownlist>
+
+        </div>
+      </div>
+      <br />
+      <div *ngIf="ShowGrid">
+        <ejs-grid #Notificationgrid id='Notificationgrid' [enableHover]='true' [filterSettings]='filterSettings' [dataSource]='notificationdata'
+                  [toolbar]='toolbar' [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true"
+                  (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true' gridLines="Both" (recordDoubleClick)="recordDoubleClick($event)">
+          <e-columns>
+            <e-column field='Name' headerText='Name'></e-column>
+            <e-column field='Description' headerText='Description'></e-column>
+            <e-column field='Step' headerText='Step'></e-column>
+            <e-column field='Action' headerText='Action'></e-column>
+            <e-column field='Template' headerText='Template'></e-column>
+            <e-column field='Subject' headerText='Subject'></e-column>
+            <e-column field='Body' headerText='Body'></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--to show in dialoge format-->
+<div *ngIf="showDialogFormat">
+  <!--Notification Grid Definition-->
+  <ejs-grid #Notificationgrid id='Notificationgrid' [enableHover]='true' [filterSettings]='filterSettings'
+            [dataSource]='notificationdata' [toolbar]='toolbar' [allowSelection]='true'
+            allowSorting='true' allowFiltering='true' allowTextWrap="true" (toolbarClick)='toolbarClick($event)'
+            [allowExcelExport]='true' [allowPdfExport]='true' [gridLines]="lines" (recordDoubleClick)="recordDoubleClick($event)">
+    <e-columns>
+      <e-column field='Name' headerText='Name'></e-column>
+      <e-column field='Description' headerText='Description'></e-column>
+      <e-column field='Step' headerText='Step'></e-column>
+      <e-column field='Action' headerText='Action'></e-column>
+      <e-column field='Template' headerText='Template'></e-column>
+      <e-column field='Subject' headerText='Subject'></e-column>
+      <e-column field='Body' headerText='Body'></e-column>
+    </e-columns>
+  </ejs-grid>
+
+</div>
+
+<!-->Pop up for creating and editing notifications-->
+<div *ngIf="ShowPopupFlag">
+  <ejs-dialog showCloseIcon='true' [header]="NotificationHeader" class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="ShowPopupFlag" enableResize="true">
+    <ng-template #content>
+      <form [formGroup]="NotificationForm">
+        <div>
+          <ejs-textbox placeholder="For Step" floatLabelType="Auto" title="label" #labelStep id="labelStep" [value]="stepvalue" [enabled]="false"></ejs-textbox>
+        </div>
+        <div>&nbsp;</div>
+        <div>
+          <ejs-textbox placeholder="For Action" floatLabelType="Auto" title="Action" #labelAction id="labelAction" [value]="SelectedActionName" [enabled]="false"></ejs-textbox>
+        </div>
+        <div>&nbsp;</div>
+        <div [ngClass]="{'e-success': f.Name.valid}">
+          <ejs-textbox placeholder="Name*" floatLabelType="Auto" title="Notification Name" required formControlName="Name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></ejs-textbox>
+        </div>
+        <div *ngIf="f.Name.touched && f.Name.errors" class="e-error">
+          <div *ngIf="f.Name.errors.required">Name is required</div>
+          <div *ngIf="f.Name.errors.maxlength">Name cannot be max than 255 characters</div>
+        </div>
+        <div>&nbsp;</div>
+        <div [ngClass]="{'e-success': f.Description.valid}">
+          <ejs-textbox placeholder="Description" floatLabelType="Auto" title="Provide description" required formControlName="Description" [ngClass]="{ 'is-invalid': submitted && f.Description.errors }"></ejs-textbox>
+        </div>
+        <div *ngIf="f.Description.touched && f.Description.errors" class="e-error">
+          <div *ngIf="f.Description.errors.maxlength">Decription cannot be max than 4000 characters</div>
+        </div>
+        <div>&nbsp;</div>
+        <div [ngClass]="{'e-success': f.TemplateDD.valid}">
+          <ejs-dropdownlist id="tempdropdown" #tempdropdown formControlName="TemplateDD"
+                            [dataSource]="SourceTemplate" floatLabelType="Auto" [fields]="Templatefields"
+                            (change)="TemplateChange($event)" placeholder='Choose Template*'
+                            ></ejs-dropdownlist>
+        </div>
+        <div *ngIf="(f.TemplateDD.touched || submitted) && f.TemplateDD.errors" class="e-error">
+          <div *ngIf="f.TemplateDD.errors.required">Please select template</div>
+        </div>
+        <div>&nbsp;</div>
+        <div *ngIf="showTemplateData">
+          <div>
+            <ejs-textbox placeholder="Template subject" floatLabelType="Auto" title="Subject" [value]="EmailSubject" [enabled]="false"></ejs-textbox>
+          </div>
+          <div>&nbsp;</div>
+          <div>
+            <ejs-textbox placeholder="Template Body" floatLabelType="Auto" title="Body" [value]="EmailBody" [enabled]="false"></ejs-textbox>
+          </div>
+        </div>
+        <div>&nbsp;</div>
+        <div>
+          <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>&nbsp;
+          <button *ngIf="ShowRecBtn" ejs-button class="e-control e-btn e-primary" [disabled]="disable" (click)="showRecipientPopUp()">Manage Recipients</button>
+          <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+        </div>
+      </form>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+<!--Recipients module-->
+<div *ngIf="ShowRecipientPopUpFlag">
+  <app-recipients [notificationIdforRecipient]="notificationIdforRecipient" (PostRecipientEvent)="PostRecipientEvent();" [configuringWFId]="configuringWFId" [configuringWFLabel]="configuringWFLabel" [selectedStepId]="selectedStepId"></app-recipients>
+</div>
+
+
+

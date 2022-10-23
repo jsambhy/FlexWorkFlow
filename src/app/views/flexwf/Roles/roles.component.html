@@ -1,0 +1,84 @@
+
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]='hidden' showCloseIcon="true" [content]='confirmcontent' class="dialogueClass_35" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Role Management</h4>
+
+
+      <!--Toast-->
+      <!--Manage Roles Screen-->
+      <ejs-grid #Rolesgrid id='Rolesgrid' [dataSource]='lstRoles' [toolbar]='toolbar' [allowSelection]='true' allowResizing='true'
+                allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+                (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true' [gridLines]="lines" (recordDoubleClick)="recordDoubleClick($event)">
+        <e-columns>
+          <e-column field='RoleName' headerText='Name'></e-column>
+          <!--<e-column field='IsExternal' headerText='External' editType='booleanedit' displayAsCheckBox='true'></e-column>-->
+        </e-columns>
+      </ejs-grid>
+
+
+    </div>
+  </div>
+</div>
+
+<!--Create Role Screen-->
+<div *ngIf="ShowCreatePopup">
+  <ejs-dialog showCloseIcon='true' class="dialogueClass_35" isModal="true" allowDragging='true' [(visible)]="ShowCreatePopup" enableResize="true">
+
+    <ng-template #content style="padding-top:0px;">
+
+      <ejs-tab id="tab_default">
+        <e-tabitems>
+          <e-tabitem [header]='headerText[0]'>
+            <ng-template #content>
+              <div class="mx-auto div-margin">
+
+                <form [formGroup]="RolecreateForm">
+                  <div [ngClass]="{'e-success': f.Name.valid}">
+                    <ejs-textbox placeholder="Name*" autofocus floatLabelType="Auto" title="Provide name of Role" required formControlName="Name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></ejs-textbox>
+                  </div>
+                  <div *ngIf="f.Name.touched && f.Name.errors" class="e-error">
+                    <div *ngIf="f.Name.errors.required">Name is required</div>
+                    <div *ngIf="f.Name.errors.maxlength">Name cannot be max than 255 characters</div>
+                  </div>
+                  <div>&nbsp;</div>
+                  <!--<ejs-checkbox #chkIsExternal id="chkIsExternal" label="External" [checked]="false" formControlName="IsExternalChk"></ejs-checkbox>&nbsp;
+                  <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="It will only be able to see transaction that are created by them irrespective of the tags that they have." />-->
+                </form>
+                <div>&nbsp;</div>
+                <div>
+                  <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>
+                  <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+                </div>
+
+              </div>
+            </ng-template>
+          </e-tabitem>
+          <e-tabitem [header]='headerText[1]'>
+            <ng-template #content>
+              <div class="mx-auto div-margin">
+                <!--Supporting Document Component for showing Supporting Document Grid-->
+                <app-supporting-doc [EntityType]="EntityType" [EntityId]="EntityId" [TargetPath]="TargetPath"></app-supporting-doc>
+              </div>
+
+            </ng-template>
+          </e-tabitem>
+        </e-tabitems>
+      </ejs-tab>
+
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+

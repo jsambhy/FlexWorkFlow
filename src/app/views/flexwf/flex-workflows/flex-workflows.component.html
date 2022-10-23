@@ -1,0 +1,154 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' showCloseIcon="true" [visible]="hidden" [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true"></ejs-dialog>
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Workflows</h4>
+      <!--Workflow Grid Definition-->
+      <ejs-grid #WFgrid id='grid' [dataSource]='workflowdata' [toolbar]='toolbar' [allowSelection]='true'
+                allowSorting='true' allowFiltering='true' allowTextWrap="true"
+                (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                allowResizing='true' [gridLines]="lines" [contextMenuItems]="contextMenuItems"
+                [filterSettings]='filterSettings'
+                rowHeight='38' [childGrid]='childGrid' (recordDoubleClick)="recordDoubleClick($event)">
+        <e-columns>
+          <e-column field='UILabel' headerText='Name'></e-column>
+          <!--<e-column field='Description' headerText='Description'></e-column>-->
+          <e-column field='Status' headerText='Status'></e-column>
+          <!--<e-column field='CreatedBy' headerText='Created By'></e-column>
+          <e-column field='CreatedDateTime' headerText='Created On'></e-column>
+          <e-column field='UpdatedBy' headerText='Updated By'></e-column>-->
+          <e-column field='UpdatedDateTime' headerText='Updated On'></e-column>
+          <!--<e-column field='IsManualBranchSelection' headerText='Allow Branch Selection Manually' editType='booleanedit' displayAsCheckBox='true'></e-column>-->
+          <!--<e-column field='IsPortfolioEnabled' headerText='Tagging' editType='booleanedit' displayAsCheckBox='true'></e-column>-->
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </div>
+</div>
+<!--Create Workflow pop up dialogue designig-->
+<div *ngIf="showCreateWFPopup">
+  <ejs-dialog showCloseIcon='true' [header]="WFCreateHeader" class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="showCreateWFPopup" enableResize="true">
+    <ng-template #content>
+
+      <ejs-tab id="UserTabs" #UserTabs (selected)='onTabSelect($event)'>
+        <e-tabitems>
+
+          <!--First Tab for creating Workflow-->
+          <e-tabitem [header]='headerText[0]'>
+            <ng-template #content>
+
+              <div class="div-bottomMargin"></div>
+              <form [formGroup]="WFcreateForm">
+                <div [ngClass]="{'e-success': f.WFName.valid}">
+                  <ejs-textbox placeholder="Name*" floatLabelType="Auto" title="Workflow Name" required formControlName="WFName" [ngClass]="{ 'is-invalid': submitted && f.WFName.errors }"></ejs-textbox>
+                </div>
+                <div *ngIf="f.WFName.touched && f.WFName.errors" class="e-error">
+                  <div *ngIf="f.WFName.errors.required">Name is required</div>
+                  <div *ngIf="f.WFName.errors.maxlength">Name cannot be max than 20 characters</div>
+                </div>
+                <div>&nbsp;</div>
+                <div [ngClass]="{'e-success': f.Description.valid}">
+                  <ejs-textbox placeholder="Description" floatLabelType="Auto" formControlName="Description" title="Workflow Description" [ngClass]="{ 'is-invalid': submitted && f.Description.errors }" [multiline]='true'></ejs-textbox>
+                </div>
+                <div *ngIf="f.Description.touched && f.Description.errors" class="e-error">
+                  <div *ngIf="f.Description.errors.maxlength">Description cannot be max than 255 characters</div>
+                </div>
+                <div>&nbsp;</div>
+                <ejs-checkbox #chk1 id="chk1" label="Allow Branch Selection Manually" [checked]="false" formControlName="BranchSelection"></ejs-checkbox>&nbsp;
+                <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="In the event of multiple branches,if the system is not able to determine next step as per the provided branch condition logic, do you want the end user to manually choose the next step amongst the available options. Otherwise, if unchecked, system will show a error to the end user to contact project admin in order to correct the branching condition logic" />
+                <div>&nbsp;</div>
+                <!--<ejs-checkbox #chk2 label="Auto Allocations(Tagging)" [checked]="false" formControlName="Allocations"></ejs-checkbox> &nbsp;
+                <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="if portfolios are enabled, then transactions will automatically get assigned to users who belong to same portfolio as transactions. If unchecked, all transactions will be visible to all users who are participanting in that workflow" />-->
+              </form>
+              <div>&nbsp;</div>
+
+              <!--give help upload and download here-->
+              <div *ngIf="IsEdit">
+                <div class="btn btn-link">
+                  <a style="text-align:left" (click)="FileUpload();">upload or change help file</a>
+                </div>
+                <table>
+                  <tr>
+                    <td>{{HelpFileName}}</td>
+                    <td *ngIf="HelpFileName != null"><img src="./assets/flex-images/DownloadAttachment_2.png" alt="Tooltip" (click)="DownloadHelpFile()" /></td>
+                  </tr>
+                </table>
+
+              </div>
+
+              <div>&nbsp;</div>
+              <div>
+                <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveWF()">Save</button>
+                <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateWF()">Save</button>
+                &nbsp;&nbsp;
+                <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="ShowParticipantPopUp()">Restrict Visibility</button>
+
+              </div>
+
+            </ng-template>
+          </e-tabitem>
+
+          <e-tabitem [header]='headerText[1]'>
+            <ng-template #content>
+              <p class="notes-flex">Note:- If you select Tag Category then while creating transactions, user will be able to attach tags from within these categories. These transactions will automatically get assigned to users who belong to same Tags as transactions.</p>
+              <ejs-grid #TagGrid id='TagGrid' [dataSource]='TagData' rowHeight='38' [allowSelection]='true'
+                        height='300' gridLines="Both" [selectionSettings]='selectionOptionsForTag'>
+                <e-columns>
+                  <e-column type='checkbox' width='50'></e-column>
+                  <e-column field='TagName' headerText='Category' [filter]='filterSettings' width='230'></e-column>
+                </e-columns>
+              </ejs-grid>
+            </ng-template>
+          </e-tabitem>
+        </e-tabitems>
+      </ejs-tab>
+
+
+
+    </ng-template>
+</ejs-dialog>
+</div>
+
+<div>&nbsp;</div>
+<div style="margin-top:20%">
+  <!--Diagram Pop-Up added by RS on 9th july 2020-->
+  <ejs-dialog showCloseIcon='true' style="padding-top:25px" header={{this.WFLabeltoDesign}} class="dialogueClass_70 designer-height" isModal="true" allowDragging='true' [(visible)]="ShowDiagramPopUp" enableResize="true">
+
+    <ng-template #content>
+
+      <div class="row col-lg-12"> <p class="notes-flex">If you will edit the workflow, its status will become offline. To Edit </p>&nbsp;<a class="btn-link" style="cursor:pointer" (click)="NavigateToDesigner()">Click Here</a></div>
+
+      <!--Diagram Area here width and height parameter are necessary to provide without this diagram will not get rendered-->
+      <ejs-diagram #diagram id="diagram" [getConnectorDefaults]='connDefaults' [getNodeDefaults]='getNodeDefaults'
+                   [nodes]="nodes" [connectors]="connectors" [tool]='tool' width="100%" height="500px"></ejs-diagram>
+
+    </ng-template>
+  </ejs-dialog>
+
+</div>
+
+<div *ngIf="showUploader">
+  <ejs-dialog #confirmDialog header='Attach File'
+              isModal="true" [(visible)]="showUploader" class="dialogueClass_50" showCloseIcon='true' enableResize="true">
+    <ng-template #content>
+      <app-uploader [TargetPath]="TargetPath" [AllowedFileTypes]="AllowedFileTypes"
+                    (PostUploadEvent)="PostUploadEvent();"></app-uploader>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+<div *ngIf="showParticipantPopUp">
+  <ejs-dialog #confirmDialog header='Manage Restricted Participants'
+              isModal="true" [(visible)]="showParticipantPopUp" class="dialogueClass_50" showCloseIcon='true' enableResize="true">
+    <ng-template #content>
+      <app-workflow-participants [WorkflowId]="selectedWFIdForEdit"></app-workflow-participants>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+

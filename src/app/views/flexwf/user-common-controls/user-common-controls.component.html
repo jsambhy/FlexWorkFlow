@@ -1,0 +1,259 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<ejs-tab id="UserTabs" #UserTabs (selected)='onTabSelect($event)'>
+  <e-tabitems>
+    <e-tabitem [header]='headerText[0]'>
+      <ng-template #content>
+        <div class="mx-auto div-margin">
+          <form [formGroup]="UserForm">
+
+            <!--./assets/flex-images/outline_room_black_24dp.png-->
+            <!--<img [src]="image" title="Image" />-->
+            <!--<app-common-user-controls></app-common-user-controls>-->
+            <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <!--<div class="row col-12">-->
+
+
+
+
+              <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" [ngClass]="{'e-success': g.FirstName.valid}">
+                <!--<div class="col-4" [ngClass]="{'e-success': g.FirstName.valid}">-->
+                <ejs-textbox placeholder="First Name*" floatLabelType="Always" formControlName="FirstName" required
+                             [ngClass]="{ 'is-invalid': submitted &&  g.FirstName.errors }"></ejs-textbox>
+                <div *ngIf="(g.FirstName.touched || submitted) && g.FirstName.errors" class="e-error">
+                  <div *ngIf="g.FirstName.errors.required">First Name is required</div>
+                  <div *ngIf="g.FirstName.errors.maxlength">First Name cannot be max than 255 characters</div>
+                </div>
+
+              </div>
+
+
+              <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+
+                <ejs-textbox placeholder="Last Name" floatLabelType="Always" formControlName="LastName"></ejs-textbox>
+              </div>
+
+              <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+
+                <ejs-textbox placeholder="Emp Code" floatLabelType="Always" formControlName="EmpCode"></ejs-textbox>
+              </div>
+
+
+
+            </div>
+
+
+            <div *ngIf="IsUserNameRequired" class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" [ngClass]="{'e-success': g.UserName.valid}">
+
+                <ejs-textbox placeholder="UserName*" floatLabelType="Always" formControlName="UserName" required
+                             [ngClass]="{ 'is-invalid': submitted &&  g.UserName.errors }"></ejs-textbox>
+                <div *ngIf="(g.UserName.touched || submitted) && g.UserName.errors" class="e-error">
+                  <div *ngIf="g.UserName.errors.required">User Name is required</div>
+                  <div *ngIf="g.UserName.errors.maxlength">User Name cannot be max than 255 characters</div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" [ngClass]="{'e-success': g.LoginEmail.valid}">
+                <!--<div class="col-4" [ngClass]="{'e-success': g.LoginEmail.valid}">-->
+                <ejs-textbox placeholder="Login Email*" floatLabelType="Always" formControlName="LoginEmail" required
+                             [ngClass]="{ 'is-invalid': submitted &&  g.LoginEmail.errors }"></ejs-textbox>
+                <div *ngIf="(g.LoginEmail.touched || submitted) && g.LoginEmail.errors" class="e-error">
+                  <div *ngIf="g.LoginEmail.errors.required">Login Email is required</div>
+                  <div *ngIf="g.LoginEmail.errors.email">Provide a valid Login Email address</div>
+                </div>
+
+              </div>
+            </div>
+
+              <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-lg-6" [ngClass]="{'e-success': g.CountryCode.valid}">
+                  <ejs-dropdownlist [dataSource]="CountryList" [fields]="countryDropdownFields" floatLabelType="Always" required
+                                    placeholder='Country*' [allowFiltering]="true" formControlName="CountryCode" (change)="CountryChange($event);"
+                                    [ngClass]="{ 'is-invalid': submitted &&  g.CountryCode.errors }"></ejs-dropdownlist>
+                  <div *ngIf="(g.CountryCode.touched || submitted) && g.CountryCode.errors" class="e-error">
+                    <div *ngIf="g.CountryCode.errors.required">Country is required</div>
+                   
+                  </div>
+
+                </div>
+
+
+                <!--<div class="col-lg-2">
+        <div class="form-group">
+          <ejs-textbox #prefix id="prefix" placeholder="Prefix" floatLabelType="auto" formControlName="Prefix" disabled="true"></ejs-textbox>
+        </div>
+      </div>-->
+
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <ejs-textbox placeholder="PhoneNumber" floatLabelType="Always" formControlName="PhoneNumber"></ejs-textbox>
+
+                  </div>
+
+                </div>
+              </div>
+
+
+              <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                  <ejs-textbox placeholder="Address Line 1" floatLabelType="Always" formControlName="AddressLine1"></ejs-textbox>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                  <ejs-textbox placeholder="Address Line 2" floatLabelType="Always" formControlName="AddressLine2"></ejs-textbox>
+                </div>
+
+              </div>
+
+              <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <ejs-textbox placeholder="City" floatLabelType="Always" formControlName="City"></ejs-textbox>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <ejs-textbox placeholder="State" floatLabelType="Always" formControlName="State"></ejs-textbox>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <ejs-textbox placeholder="Postal Code" floatLabelType="Always" formControlName="PostalCode"></ejs-textbox>
+                </div>
+              </div>
+
+              <div>&nbsp;&nbsp;</div>
+              <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <ejs-checkbox #isMFAreq id="isMFAreq" label="Enable MFA" formControlName="IsMFARequired"></ejs-checkbox>
+                  &nbsp;<img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="This will enable MultiFator Authentication for this user for extra security. User would need to install Google Authentication in their phone to generate MFA code" />
+                </div>
+
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <ejs-checkbox #blockNotification id="blockNotification" label="Disable Notifications" formControlName="BlockNotifications"></ejs-checkbox>
+                  &nbsp;<img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="This will stop any emails to be sent to the user(apart from initail password and password reset)" />
+                </div>
+
+
+                <div *ngIf="IsImageShow" class="e-avatar e-avatar-circle">
+                  <img id="myimage" [src]='thumbnail' />
+                </div>
+
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 btn btn-link userLink">
+
+                  <a (click)="ImageUpload();">{{ImageMsg}}</a>
+                </div>
+
+              </div>
+
+              <div>&nbsp;</div>
+
+          </form>
+
+          <div *ngIf="ShowRoleGrid">
+
+            <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <p>Assign Roles</p>
+              <ejs-grid #RoleGrid id='RoleGrid' [dataSource]='RoleData' rowHeight='38'
+                        height='300' gridLines="Both" (rowSelected)='roleRowSelected($event)' (rowDeselected)='roleRowDeSelected($event)'
+                        [selectionSettings]='selectionOptions' (dataBound)='dataBound($event)'>
+                <e-columns>
+                  <e-column type='checkbox' width='50'></e-column>
+                  <e-column field='RoleName' headerText='Roles' [filter]='filterSettings' width='230'></e-column>
+                  <e-column field='Tags' headerText='Tags' [filter]='filterSettings' width='230'>
+                    <ng-template #template let-data>
+                      <div class="btn btn-link">
+                        <a (click)="GetTagsByRole(data);">Assign Tags</a>
+                      </div>
+                    </ng-template>
+                  </e-column>
+                </e-columns>
+              </ejs-grid>`
+            </div>
+          </div>
+
+
+
+          <div>&nbsp;</div>
+          <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveUserOpenAttributes();">Save</button>
+            &nbsp;&nbsp;
+            <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveAndClose();">Save and Close</button>
+            <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateUser();">Update</button>
+            <!--<div>&nbsp;</div>
+  <button ejs-button class="e-control e-btn e-primary" (click)="fnAttach();">Attach</button>-->
+          </div>
+        </div>
+      </ng-template>
+    </e-tabitem>
+
+    <!--dynamic attribute Tab-->
+    <e-tabitem [header]='headerText[1]' [disabled]="DisableAttributetab">
+      <ng-template #content>
+
+        <div class="row">
+          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <ejs-dropdownlist id='ProjectsNameList' #ProjectsNameList [dataSource]='ProjectDataSource' [fields]='ProjectNamefields' placeholder='Select Project Name' (change)="ProjectChange($event);"></ejs-dropdownlist>
+          </div>
+          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <ejs-dropdownlist id='roleType' #roleType [dataSource]='RoleTypeData' [fields]='RoleTypefields' placeholder='Select Role Type' (change)="RoleTypeChange($event);"></ejs-dropdownlist>
+          </div>
+        </div>
+
+        <div *ngIf="ShowAttributes" class="mx-auto div-margin">
+          <app-common-form-renderer [EntityType]="DynamicControlEntityType" [EntityId]="DynamicControlEntityId"
+                                    [FormMode]="AttributeFormMode" [Source]="Src" [ProjectId]="SelectedProjectId"
+                                    [TransactionId]="RefDataTransactionId" [UserId]="TransactionId"></app-common-form-renderer>
+
+        </div>
+
+      </ng-template>
+    </e-tabitem>
+
+    <!--Supporting Document Tab-->
+    <e-tabitem [header]='headerText[2]'>
+      <ng-template #content>
+        <div class="mx-auto div-margin">
+          <!--Supporting Document Component for showing Supporting Document Grid-->
+          <app-supporting-doc [EntityType]="EntityType" [EntityId]="EntityId" [TargetPath]="TargetPath"></app-supporting-doc>
+        </div>
+
+      </ng-template>
+    </e-tabitem>
+  </e-tabitems>
+</ejs-tab>
+
+
+<div *ngIf="showTagPopup">
+  <ejs-dialog #TagDialog class="dialogueClass_35" header="Select Tags for selected Role" showCloseIcon='true'
+              isModal="true" allowDragging='true' [(visible)]="showTagPopup" enableResize="true">
+    <ng-template #content>
+      <ejs-grid #TagGrid id='TagGrid' [dataSource]='TagData' rowHeight='38' [allowSelection]='true'
+                height='300' gridLines="Both" [selectionSettings]='selectionOptionsForTag' (dataBound)='TagdataBound($event)'>
+        <e-columns>
+          <e-column type='checkbox' width='50'></e-column>
+          <e-column field='TagCategory' headerText='Tag Category' [filter]='filterSettings' width='230'></e-column>
+          <e-column field='TagName' headerText='Tag Name' [filter]='filterSettings' width='230'></e-column>
+        </e-columns>
+      </ejs-grid>
+      <div>&nbsp;</div>
+      <div>
+        <button  ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="SaveTagsForRole();">Save</button>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+<div *ngIf="showUploader">
+  <ejs-dialog #confirmDialog header='Attach File'
+              isModal="true" [(visible)]="showUploader" class="dialogueClass_50" showCloseIcon='true'>
+    <ng-template #content>
+      <app-uploader [TargetPath]="imagePath" [AllowedFileTypes]="AllowedFileTypes"
+                    (PostUploadEvent)="PostUploadEvent();"></app-uploader>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+

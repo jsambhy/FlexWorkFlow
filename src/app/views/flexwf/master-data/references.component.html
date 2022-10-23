@@ -1,0 +1,145 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Master Data</h4>
+
+      <div>
+        <br />
+        <ejs-grid #MasterDataGrid [dataSource]='MasterDataForGrid' [toolbar]='toolbar' (toolbarClick)='toolbarClick($event)'
+                  [allowSelection]='true' allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+                  allowPaging="true" [gridLines]='lines' height='200' width="100%" allowResizing='true' (recordDoubleClick)='recordDoubleClick($event)'>
+          <e-columns>
+            <e-column field='Name' headerText='Name' width="150"></e-column>
+            <e-column field='Type' headerText='Type' width="150"></e-column>
+            <e-column field='Description' headerText='Description' width="150"></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+      <br />
+
+    </div>
+  </div>
+</div>
+
+
+<!--Add new Reference Pop Up-->
+
+<div *ngIf="ShowPopupForCreate">
+  <ejs-dialog *ngIf="ShowPopupForCreate" #CreateDialogue [header]="header"
+              showCloseIcon='true' [target]='target' enableResize="true"
+              class="dialogueClass_35" [animationSettings]='animationSettings'
+              isModal="true" [(visible)]="ShowPopupForCreate">
+    <ng-template #content>
+      <ejs-tab id="UserTabs" #UserTabs (selected)='onTabSelect($event)'>
+        <e-tabitems>
+
+          <!--First Tab for creating Workflow-->
+          <e-tabitem [header]='headerText[0]'>
+            <ng-template #content>
+              <div>&nbsp;</div>
+              <span>Type*</span>
+              <ejs-dropdownlist #masterDataType id='masterDataType' [dataSource]='RefTypeDataSource' [allowFiltering]="true" mode='Box'
+                                [fields]='RefTypeFields' floatLabelType="Always" (change)="optionChanged()"
+                                [value]="RefTypeValue"></ejs-dropdownlist>
+
+              <form [formGroup]="MasterDataForm">
+                <span>Name*</span>
+                <div *ngIf="showFields; else UserDatatype" class="row">
+                  <div class="col-lg-12" [ngClass]="{'e-success': f.Name.valid}">
+                    <ejs-textbox #NameObj id="NameObj" floatLabelType="Always"
+                                 formControlName="Name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></ejs-textbox>
+                    <div *ngIf="submitted && f.Name.errors" class="e-error">
+                      <div *ngIf="f.Name.errors.required">Name is required</div>
+                      <div *ngIf="f.Name.errors.maxlength">Name cannot be more than 255 characters</div>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #UserDatatype>
+
+                  <ejs-dropdownlist #roleListForUser id='roleListForUser' [dataSource]='roleForUserDataSource' [allowFiltering]="true" mode='Box'
+                                    [fields]='fieldsForUser' floatLabelType="Always"
+                                    formControlName="Name" [value]="roleListForUserValue"></ejs-dropdownlist>
+                  <div *ngIf="submitted && f.Name.errors" class="e-error">
+                    <div *ngIf="f.Name.errors.required">Name is required</div>
+                    <div *ngIf="f.Name.errors.maxlength">Name cannot be more than 255 characters</div>
+                  </div>
+                </ng-template>
+                <span>Description</span>
+                <div [ngClass]="{'e-success': f.Description.valid}">
+                  <ejs-textbox #DescriptionObj id="DescriptionObj" floatLabelType="Always" rows=4
+                               formControlName="Description" [ngClass]="{ 'is-invalid': submitted && f.Description.errors }"></ejs-textbox>
+                </div>
+                <div *ngIf="showFields ">
+                  <span>Roles that can manipulate data</span>
+                  <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="Select roles that can add/edit/delete data/values for this 'Master Data'" />
+                  <ejs-multiselect #roleList id='roleList' [dataSource]='roleDataSource' [allowFiltering]="true" mode='Box'
+                                   [fields]='fields' floatLabelType="Always" width="100%"
+                                   formControlName="MappedRole" [value]="RoleValueList">
+
+                  </ejs-multiselect>
+                  <span>Roles that can view data</span>
+                  <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="Select roles that can view data/values for this 'Master Data'" />
+                  <ejs-multiselect #roleList id='roleList' [dataSource]='roleDataSource' [allowFiltering]="true" mode='Box'
+                                   [fields]='fields' floatLabelType="Always" width="100%"
+                                   formControlName="MappedViewRole" [value]="ViewRoleValueList">
+                  </ejs-multiselect>
+                </div>
+                <!--<ejs-checkbox *ngIf="showFields" #tagging label="Auto Allocations(Tagging)" [checked]="false" formControlName="Allocations"></ejs-checkbox> &nbsp;
+    <img *ngIf="showFields" src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="if portfolios are enabled, then transactions will automatically get assigned to users who belong to same portfolio as transactions. If unchecked, all transactions will be visible to all users who are participanting in that MasterData" />
+      -->
+                <!--give help upload and download here-->
+                <div *ngIf="IsEdit" style="margin-top:10px;">
+
+                  <a (click)="FileUpload();" [routerLink]="[]">Upload or change help file</a>
+
+                  <table>
+                    <tr>
+                      <td>{{HelpFileName}}</td>
+                      <td *ngIf="HelpFileName != null"><img src="./assets/flex-images/DownloadAttachment_2.png" alt="Tooltip" (click)="DownloadHelpFile()" /></td>
+                    </tr>
+                  </table>
+                </div>
+
+                <div>&nbsp;</div>
+                <button ejs-button *ngIf="ShowAddBtn" class="e-control e-btn e-primary" (click)="Save()">Save</button>
+                <button ejs-button *ngIf="ShowUpdateBtn" class="e-control e-btn e-primary" (click)="Update()">Save</button>
+              </form>
+              </ng-template>
+          </e-tabitem>
+
+          <e-tabitem [header]='headerText[1]'>
+            <ng-template #content>
+              <p class="notes-flex">Note:- Select all those Tag Categories that apply to this MasterData. When creating line items for this MasterData, it will let you attach tags from within each selected category with that MasterData line. Attached tags will control the visibility of MasterData lines in the Drop Downs. Users will see only those Master Data lines in Drop Down where User tags matches with MasterData line tags. </p>
+              <ejs-grid #TagGrid id='TagGrid' [dataSource]='TagData' rowHeight='38' [allowSelection]='true'
+                        height='300' gridLines="Both" [selectionSettings]='selectionOptionsForTag'>
+                <e-columns>
+                  <e-column type='checkbox' width='50'></e-column>
+                  <e-column field='TagName' headerText='Category' [filter]='filterSettings' width='230'></e-column>
+                </e-columns>
+              </ejs-grid>
+            </ng-template>
+          </e-tabitem>
+        </e-tabitems>
+      </ejs-tab>
+    </ng-template>
+
+  </ejs-dialog>
+
+  </div>
+
+  <!--Confirmation Dialogue box-->
+  <ejs-dialog #confirmDialog *ngIf="showConfirmDialog" [buttons]='confirmDlgButtons' showCloseIcon="true" [content]='confirmcontent'
+              header="Please Confirm" width="400px" isModal="true" enableResize="true"></ejs-dialog>
+
+  <div *ngIf="showUploader">
+    <ejs-dialog #confirmDialog header='Attach File' enableResize="true"
+                isModal="true" [(visible)]="showUploader" class="dialogueClass_50" showCloseIcon='true'>
+      <ng-template #content>
+        <app-uploader [TargetPath]="TargetPath" [AllowedFileTypes]="AllowedFileTypes"
+                      (PostUploadEvent)="PostUploadEvent();"></app-uploader>
+      </ng-template>
+    </ejs-dialog>
+  </div>

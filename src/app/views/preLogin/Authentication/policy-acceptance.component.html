@@ -1,0 +1,28 @@
+<ejs-toast #toasttype id='toasttype' [position]="position"
+           content='test' [showCloseButton]="true"></ejs-toast>
+<br />
+
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <div class="card mx-4">
+            <div class="card-body p-4">
+              <span>Policy Acceptance</span><br />
+              <p *ngFor=" let policy of PolicyDetails">
+                <b> {{policy.ProjectName}} =></b> <br />  {{policy.PolicyText}} <br />
+              </p>
+              <!--<button ejs-button (click)="UpdatePolicy()">Accept</button>&nbsp;&nbsp;
+              <button ejs-button (click)="OnCancel()">Reject</button>&nbsp;&nbsp;-->
+              <button ejs-button class="e-control e-btn e-primary" (click)="UpdatePolicy()">Accept</button>&nbsp;&nbsp;
+              <button ejs-button class="e-control e-btn e-primary" (click)="OnCancel()">Reject</button>&nbsp;&nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+

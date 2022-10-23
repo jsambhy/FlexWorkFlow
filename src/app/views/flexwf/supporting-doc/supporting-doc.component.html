@@ -1,0 +1,30 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<ejs-grid #SupportingDocGrid id='SupportingDocGrid' [dataSource]='dataSource' [toolbar]='toolbar'
+          [allowSelection]='true' allowResizing='true'
+          allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+          (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true' gridLines="Both">
+  <e-columns>
+    <e-column field='FileName' headerText='File Name'></e-column>
+    <e-column field='OriginalFileName' headerText='OriginalFileName'></e-column>
+    <e-column field='Description' headerText='Description'></e-column>
+  </e-columns>
+</ejs-grid>
+
+
+<div *ngIf="showDialogBox">
+  <ejs-dialog #confirmDialog header='Attach File'
+              isModal="true" [(visible)]="showDialogBox" class="dialogueClass_50" height="50%" showCloseIcon='true' enableResize="true">
+    <ng-template #content>
+      <div>
+        <ejs-textbox #suppDocComments id="suppDocComments" floatLabelType="Always" formControlName="Description"
+                     [multiline]="true" placeholder="Comments"></ejs-textbox>
+      </div>
+      <div>
+        <app-uploader [TargetPath]="TargetPath" [AllowedFileTypes]="AllowedFileTypes" [Source]="Source"
+                      (PostUploadEvent)="PostUploadEvent();"></app-uploader>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>
+

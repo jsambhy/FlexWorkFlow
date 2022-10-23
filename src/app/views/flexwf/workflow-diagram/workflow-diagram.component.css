@@ -1,0 +1,98 @@
+.margin-right_30 {
+  margin-right: 30px
+}
+
+.Link {
+  cursor: pointer;
+}
+
+
+.overview {
+  width: 20%;
+  height: 200px;
+  padding: 0px;
+  right: 5px;
+  bottom: 5px;
+  background: #f7f7f7;
+  position: absolute
+}
+
+.stepdialogue {
+  border-collapse: separate;
+  border-spacing: 10px;
+  width: 85%;
+  margin: 0px -5px 0px;
+}
+
+
+
+
+.circleBase {
+  border-radius: 50%;
+  
+}
+
+.type1 {
+  /*width: 23px;
+  text-align: center;
+  height: 23px;*/
+  background: white;
+  /*border: 1px solid black;
+  border-radius: 50%;*/
+}
+
+.type3 {
+  /*border-radius: 50%;
+  width: 23px;
+  text-align: center;
+  height: 23px;*/
+  background: yellow;
+  /*border: 1px solid black;*/
+}
+
+
+.yellow {
+  color: yellow;
+}
+
+.none {
+  color: none;
+}
+
+.e-control-wrapper.e-slider-container.e-horizontal .e-slider {
+  width: 86%;
+}
+  .wrap {
+  box-sizing: border-box;
+  height: 260px;
+  margin: 0 auto;
+  padding: 30px 10px;
+  width: 260px;
+}
+
+.control-fluid {
+  padding: 0px !important;
+}
+/* <!-- custom code start --> */
+.control-section {
+  height: 100%;
+  min-height: 350px;
+}
+/* <!-- custom code end --> */
+
+
+/*.content {
+  width: 250px;
+  margin: 0 auto;
+}*/
+
+#group,
+#icon {
+  margin: 0 auto;
+  padding-top: 15px;
+}
+
+img:hover {
+  background-color: Highlight;
+}
+

@@ -1,0 +1,170 @@
+<!--<ejs-toast #toasttype id='toasttype' [position]="position" (created)="onCreate()" (close)="onclose($event)"
+           (beforeOpen)="onBeforeOpen()" content='test' [showCloseButton]="true" style="padding-top:50px"></ejs-toast>
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons'
+            [animationSettings]='animationSettings'
+            showCloseIcon="true"  [content]='confirmcontent'
+            width='400px' (close)="confirmdialogClose()" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+<ejs-dialog class="dialogueClass" #StepParticipantsDialogue [animationSettings]='animationSettings'
+            showCloseIcon="true" isModal="true" allowDragging='true' [header]="manageparticipantHeader">
+  
+  <ng-template #content>
+    <p class="notes-flex">Add/Remove Participants (roles) to a step in the workflow. Also manage (assign/remove) workflow actions to each of these participants.</p>
+    <div style="margin-top:10px">
+      <ejs-grid #stepparticipantsgrid id='stepparticipantsgrid' [dataSource]='stepparticipantmodeldata'
+                [toolbar]='toolbar' [editSettings]='editSettings'
+                rowHeight='38' [allowSelection]='true'
+                allowSorting='true' [enableHover]='false'
+                [filterSettings]='filterSettings'
+                allowFiltering='true' allowTextWrap="true"
+                (toolbarClick)='toolbarClick($event)'
+                [allowExcelExport]='true' [allowPdfExport]='true' [allowGrouping]="true" [groupSettings]="groupOptions"
+                [gridLines]="lines" [contextMenuItems]="contextMenuItems"
+                [selectionSettings]="selectionOptions" (getDataRows)="getDataRows($event)" (detailDataBound)='bound($event)'>
+        <e-columns>
+          <e-column field='StepName' headerText='Step' [filter]='filterSettings'></e-column>
+          <e-column field='ParticipantName' headerText='Participant(Role)' [filter]='filterSettings'></e-column>
+          <e-column headerText='Allowed Actions' [filter]='filterSettings'>
+           
+          </e-column>
+
+        </e-columns>      
+
+      </ejs-grid>
+      </div>
+  </ng-template>
+ 
+</ejs-dialog>-->
+
+
+
+
+
+
+
+<!--Manage Actionon participants pop up-->
+<!--<div *ngIf="ShowParticipantActionspopup">
+  <ejs-dialog #clonesteps showCloseIcon='true' [header]="headerParticipantAction"
+              class="dialogueClass" [animationSettings]='animationSettings'
+              isModal="true" allowDragging='true' [(visible)]="ShowParticipantActionspopup">
+   
+    <ng-template #content>
+      <div class="div-bottomMargin"></div>
+      <div>
+        <p class="notes-flex">Following list shows all available actions for this step. Select ones that you want to be made available to the particiant on this step in the workflow</p>
+        <div style="margin-top:10px">
+          <ejs-grid #assignedactiongrid id='assignedactiongrid' [dataSource]='participantactions'>
+            <e-columns>
+              <e-column type='checkbox' field='Select' width='50'></e-column>
+              <e-column field='Label' headerText='Actions' [filter]='filterSettings'></e-column>
+              <e-column headerText='Icon' [filter]='filterSettings'>
+                <ng-template #template let-participantactions>
+                  <div class="image">
+                    <img src="./assets/flex-images/{{participantactions.Icon}}.png" alt="{{participantactions.Icon}}" />
+                  </div>
+                </ng-template>
+              </e-column>
+            </e-columns>
+          </ejs-grid>
+        </div>
+
+      </div>
+      <div>&nbsp;</div>
+      <button ejs-button buttonType="e-primary" class = "e-control e-btn e-primary" (click)="FnUpdateActionsForParticipant()">Save</button>
+     
+    </ng-template>
+  </ejs-dialog>
+</div>-->
+<!--Clonning Pop up ends-->
+
+
+
+<!--Manage Actions for Participant-->
+<!--<div *ngIf="ShowMatrixpopup">
+  <ejs-dialog #participantactionsdlg showCloseIcon='true'
+              class="dialogueClass" [animationSettings]='animationSettings'
+              isModal="true" allowDragging='true' [(visible)]="ShowMatrixpopup">
+    <ng-template #header>
+      Assign Actions to Participants(Roles)
+    </ng-template>
+    <ng-template #content>
+      <div>&nbsp;</div>
+
+      <form [formGroup]="AssignActionForm">
+        <div [ngClass]="{'e-success': f1.stepdrpcontrol.valid}">
+          <ejs-dropdownlist *ngIf="showStepDropdown" [dataSource]="steps" [fields]="fields" formControlName="stepdrpcontrol"
+                            title="Choose steps from the dropdown" [ngClass]="{ 'is-invalid': submitted && f1.stepdrpcontrol.errors }"
+                            (change)="stepchange($event)" placeholder='Choose step'></ejs-dropdownlist>
+        </div>
+        <div *ngIf="f1.stepdrpcontrol.touched && f1.stepdrpcontrol.errors" class="e-error">
+          <div *ngIf="f1.stepdrpcontrol.errors.required">Step is required</div>
+        </div>
+      </form>
+      <div>&nbsp;</div>
+
+      <ejs-grid *ngIf="showgrid" #grid id='grid' [dataSource]='matrixData'
+                gridLines='Both' [editSettings]="editSettings" [frozenColumns]='1' height="200">
+        <e-columns>
+          <e-column field="ActionName" headerText="Actions" width='150'></e-column>
+          <div *ngFor="let item of Columns">
+            <e-column [field]="item.RoleName" [headerText]="item.RoleName" width='150'>
+              <ng-template #template let-matrixData>
+                <ejs-checkbox [(checked)]="matrixData[item.RoleName]" (change)='ItemcheckedEvent(item.RoleName,$event)'></ejs-checkbox>
+              </ng-template>
+            </e-column>
+          </div>
+        </e-columns>
+      </ejs-grid>
+
+
+      <div>&nbsp;</div>
+        <div class="row">
+
+          <button ejs-button class = "e-control e-btn e-primary" (click)="fnSaveMappingdata()">Save</button>&nbsp;
+          <div *ngIf="dvLinksOnGrid">
+            <button ejs-button class = "e-control e-btn e-primary" (click)="fnShowActions()">Add More Actions</button> &nbsp;
+            <button ejs-button class = "e-control e-btn e-primary" (click)="fnAddMoreParticipants()">Add More Participants</button>
+          </div>
+
+
+
+        </div>
+     
+
+    </ng-template>
+  </ejs-dialog>
+</div>-->
+
+<!--endsds-->
+<!--<div *ngIf="showmanageactions">
+  <app-step-actions [manageactiononParticipant]="manageactiononParticipant" [level]="level" [popupflag]="showmanageactions" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel"></app-step-actions>
+</div>
+
+
+<div *ngIf="showAddMoreParticipant">
+  <ejs-dialog #AddParticipantDialog header='Add Participant'
+              showCloseIcon='true'
+              class="dialogueClass_50" [animationSettings]='animationSettings'
+              isModal="true" allowDragging='true' [(visible)]="showAddMoreParticipant">
+    <ng-template #content>
+      <form [formGroup]="AddParticipantForm">
+        <div [ngClass]="{'e-success': f.participantdrp.valid}">
+          <ejs-dropdownlist [dataSource]="participants" [fields]="participantfields"
+                            (change)="change($event)" formControlName="participantdrp" [ngClass]="{ 'is-invalid': submitted && f.participantdrp.errors }" placeholder='Choose participant'></ejs-dropdownlist>
+
+        </div>
+        <div *ngIf="f.participantdrp.touched && f.participantdrp.errors" class="e-error">
+          <div *ngIf="f.participantdrp.errors.required">please select Participant</div>
+        </div>
+        <div>&nbsp;</div>
+        <button ejs-button buttonType="e-primary" class = "e-control e-btn e-primary" (click)="fnSaveParticipants()">Save</button>
+      </form>
+
+    </ng-template>
+
+  </ejs-dialog>
+</div>-->
+

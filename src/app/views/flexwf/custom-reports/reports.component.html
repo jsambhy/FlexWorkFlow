@@ -1,0 +1,598 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]="hidden" showCloseIcon="true" [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true" enableResize="true"></ejs-dialog>
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Reports</h4>
+      <ejs-grid #ReportGrid id='ReportGrid' [toolbar]='toolbar' [dataSource]="ReportData"
+                (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                gridLines='Both' (recordDoubleClick)="recordDoubleClick($event)">
+        <e-columns>
+          <e-column field='Name' headerText='Name' width="25%"></e-column>
+          <e-column field='Description' headerText='Description'></e-column>
+          <e-column field='Roles' headerText='Roles'></e-column>
+          <e-column field='Users' headerText='Users'></e-column>
+          <e-column field='Tags' headerText='Tags'></e-column>
+          <e-column field='CreatedBy' headerText='CreatedBy'></e-column>
+          <e-column field='updatedBy' headerText='UpdatedBy'></e-column>
+          <e-column field='CreatedDateTime' headerText='CreatedDateTime'></e-column>
+          <e-column field='UpdatedDateTime' headerText='UpdatedDateTime'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="ShowCreatePopup">
+  <ejs-dialog showCloseIcon='true' header="Reports" class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="ShowCreatePopup" enableResize="true">
+    <ng-template #content style="padding-top:0px;">
+
+      <ejs-tab #tab id="tab" (selected)='onTabSelect($event)'>
+        <e-tabitems>
+          <!--Report tab(Only Report Name and select list will be taken)-->
+          <e-tabitem [header]="{ 'text': 'Report'}">
+
+            <ng-template #content>
+              <form [formGroup]="ReportForm">
+
+                <div [ngClass]="{'e-success': f.ReportName.valid}">
+                  <ejs-textbox #ReportName id="ReportName" placeholder="Name*" floatLabelType="Auto" formControlName="ReportName"></ejs-textbox>
+                </div>
+                <div *ngIf="(f.ReportName.touched || submitted) && f.ReportName.errors" class="e-error">
+                  <div *ngIf="f.ReportName.errors.required">Name is required</div>
+                  <div *ngIf="f.ReportName.errors.maxlength">Name cannot be max than 255 characters</div>
+                </div>
+
+                <div>
+                  <ejs-textbox #DownLoadFileName id="DownLoadFileName" placeholder="DownLoad File Name" floatLabelType="Auto" formControlName="DownLoadFileName"></ejs-textbox>
+                </div>
+
+                <div>
+                  <ejs-textbox floatLabelType="Auto" formControlName="Description" placeholder="Description"></ejs-textbox>
+                </div>
+
+                <div [ngClass]="{'e-success': f.TableNames.valid}">
+                  <ejs-dropdownlist #TableNameobj id="TableNameobj" [dataSource]="tablenames"
+                                    [fields]="chooseTablefields" (change)="tablenamesChange($event)" floatLabelType="Auto"
+                                    formControlName="TableNames"
+                                    placeholder="Choose Source table*">
+
+                  </ejs-dropdownlist>
+
+                  <div *ngIf="(f.TableNames.touched || submitted) && f.TableNames.errors" class="e-error">
+                    <div *ngIf="f.TableNames.errors.required">Entity is required</div>
+                  </div>
+
+
+                </div>
+              </form>
+              <div>&nbsp;</div>
+              <!--<h6>Choose Columns</h6>
+              <div class="dual-list-wrapper">
+                <div class="dual-list-groupa">
+                  <ejs-listbox #Selectlistbox1 [dataSource]="Columns" [fields]="chooseColumnfields" height="200px"
+                               [toolbarSettings]="Listtoolbar" scope="#Selectlistbox2" [allowDragAndDrop]="true"></ejs-listbox>
+                </div>
+                <div class="dual-list-groupb">
+                  <ejs-listbox #Selectlistbox2 id="Selectlistbox2" [fields]="chooseColumnfields" height="200px" [allowDragAndDrop]="true"
+                               [dataSource]='SelectList2DataSrc'></ejs-listbox>
+                </div>
+              </div>
+              <div>&nbsp;</div>-->
+              <div>&nbsp;</div>
+              <div>
+                <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>
+                <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" [disabled]="Disable" (click)="Update()">Save</button>
+
+              </div>
+
+            </ng-template>
+          </e-tabitem>
+
+          <!----------------------------------Start Columns----------------------------------------------------------->
+          <e-tabitem [header]="{ 'text': 'Columns' }">
+            <ng-template #content>
+              <ejs-grid #ColumnsGrid id='ColumnsGrid' [toolbar]='Columntoolbar' [dataSource]="SelectedColumnsData"
+                        (toolbarClick)='ColumntoolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                        gridLines='Both' [allowRowDragAndDrop]='true'>
+                <e-columns>
+                  <e-column field='Label' headerText='Label' width="20%"></e-column>
+                  <e-column  field='Type' headerText='Type'  width="30%"></e-column>
+                  <e-column field='FieldName' headerText='Source'></e-column>
+
+                </e-columns>
+              </ejs-grid>
+            </ng-template>
+          </e-tabitem>
+
+          <!----------------------------------End Columns----------------------------------------------------------->
+          <!----------------------------------start Parameters----------------------------------------------------------->
+          <e-tabitem [header]="{ 'text': 'Parameters' }">
+            <ng-template #content>
+              <ejs-grid #ParameterGrid id='ParameterGrid' [dataSource]='ParameterGridDataSrc' [toolbar]='Parametertoolbar'
+                        height='273px' (toolbarClick)='ParametertoolbarClick($event)'>
+                <e-columns>
+                  <e-column field='Label' headerText='Label'></e-column>
+                </e-columns>
+              </ejs-grid>
+
+            </ng-template>
+          </e-tabitem>
+
+          <!----------------------------------end Parameters----------------------------------------------------------->
+          <!------------------------------------------------Where Condition-------------------------------------------------------------------------->
+          <e-tabitem [header]="{ 'text': 'Filters' }">
+            <ng-template #content>
+              <div *ngIf="ShowClauses">
+                <h6>Where Clause</h6>
+
+                <app-where-clause [TableEntityType]="TableEntityType" [TableEntityId]="TableEntityId"
+                                  (PostWhereClauseEvent)="PostWhereClauseEvent($event);"
+                                  Source="WhereClause" [ExpressionVal]="ExpressionVal" IsParamRequired="true"></app-where-clause>
+              </div>
+              <div>&nbsp;</div>
+            </ng-template>
+          </e-tabitem>
+          <!-----------------------------------------End of where clause----------------------------------------------------------------->
+          <!-----------------------------------------Having clause----------------------------------------------------------------------->
+          <e-tabitem [header]="{ 'text': 'Grouping' }">
+            <ng-template #content>
+
+              <ejs-grid #HavingGrid id='HavingGrid' [dataSource]='HavingGridDataSrc' [toolbar]='Havingtoolbar'
+                        height='273px' (toolbarClick)='HavingtoolbarClick($event)'>
+                <e-columns>
+                  <e-column field='FieldName' headerText='Column Name'></e-column>
+                  <e-column field='AggFunc' headerText='AggFunc'></e-column>
+                  <e-column field='Label' headerText='Label'></e-column>
+                </e-columns>
+              </ejs-grid>
+
+
+
+              <div>&nbsp;</div>
+              <div *ngIf="ShowHavingClauses">
+                <ejs-dialog showCloseIcon='true' header="Grouping Filter" class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="ShowHavingClauses" enableResize="true">
+                  <ng-template #content style="padding-top:0px;">
+                    <h6>Having Clause</h6>
+                    <app-where-clause [TableEntityType]="TableEntityType" [TableEntityId]="TableEntityId"
+                                      (PostHavingClauseEvent)="PostHavingClauseEvent($event);" Source="HavingClause" [HavingDataJSON]="DataJSON" [ExpressionVal]="ExpressionVal"></app-where-clause>
+
+                  </ng-template>
+                </ejs-dialog>
+
+              </div>
+
+            </ng-template>
+          </e-tabitem>
+          <!-----------------------------------------End of Having clause----------------------------------------------------------------->
+          <!-----------------------------------------Sort Order clause----------------------------------------------------------------------->
+          <e-tabitem [header]="{ 'text': 'Sorting' }">
+            <ng-template #content>
+
+              <div *ngIf="ShowClauses">
+                <!--<h6>Order By</h6>-->
+
+                <ejs-grid #OrderByGrid id='OrderByGrid' [toolbar]='Columntoolbar' [dataSource]="OrderBySrc"
+                          (toolbarClick)='OrderBybarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                          gridLines='Both' [allowRowDragAndDrop]='true'>
+                  <e-columns>
+                    <e-column field='Label' headerText='Field'></e-column>
+                    <e-column field='OrderBy' headerText='Order By'></e-column>
+                  </e-columns>
+                </ejs-grid>
+               
+              </div>
+
+            </ng-template>
+          </e-tabitem>
+          <!-----------------------------------------End of Sort Order clause----------------------------------------------------------------------->
+          <!-----------------------------------------Access tab----------------------------------------------------------------------->
+          <e-tabitem [header]="{ 'text': 'Access' }">
+            <ng-template #content>
+              <div>&nbsp;</div><div>&nbsp;</div>
+              <ejs-tab #AccessTab id="AccessTab" headerPlacement='Left'>
+                <e-tabitems>
+
+                  <!--Report tab(Only Report Name and select list will be taken)-->
+                  <e-tabitem [header]="{ 'text': 'Roles' }">
+
+                    <ng-template #content>
+                      <div class="dual-list-wrapper">
+                        <!---------------------------------------------Role dual list--------------------------------------------------------->
+                        <div class="dual-list-groupa">
+                          <ejs-listbox #Accesslistbox1 [dataSource]="AccessListDataSrc" [fields]="Accessfields" height="200px"
+                                       [toolbarSettings]="Listtoolbar" scope="#Accesslistbox2" [allowDragAndDrop]="true"></ejs-listbox>
+                        </div>
+                        <div class="dual-list-groupb">
+                          <ejs-listbox #Accesslistbox2 id="Accesslistbox2" [fields]="Accessfields" height="200px" [allowDragAndDrop]="true"
+                                       [dataSource]='AccessList2DataSrc'></ejs-listbox>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </e-tabitem>
+                  <!---------------------------------------------User dual list--------------------------------------------------------->
+                  <e-tabitem [header]="{ 'text': 'Users' }">
+
+                    <ng-template #content>
+
+                      <div class="dual-list-wrapper">
+
+                        <div class="dual-list-groupa" style="padding-top:15px">
+
+                          <ejs-listbox #Userlistbox1 [dataSource]="UserListDataSrc" [fields]="Userfields" height="200px"
+                                       [toolbarSettings]="Listtoolbar" scope="#Userlistbox2" [allowDragAndDrop]="true">
+                          </ejs-listbox>
+                        </div>
+                        <div class="dual-list-groupb" style="padding-top:15px">
+                          <ejs-listbox #Userlistbox2 id="Userlistbox2" [fields]="Userfields" height="200px" [allowDragAndDrop]="true"
+                                       [dataSource]='UserList2DataSrc'></ejs-listbox>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </e-tabitem>
+                  <!---------------------------------------------Tags dual list--------------------------------------------------------->
+                  <e-tabitem [header]="{ 'text': 'Tags' }">
+
+                    <ng-template #content>
+
+                      <div class="dual-list-wrapper">
+
+                        <div class="dual-list-groupa" style="padding-top:15px">
+
+                          <ejs-listbox #Taglistbox1 [dataSource]="TagListDataSrc" [fields]="Tagfields" height="200px"
+                                       [toolbarSettings]="Listtoolbar" scope="#Taglistbox2" [allowDragAndDrop]="true">
+                          </ejs-listbox>
+                        </div>
+                        <div class="dual-list-groupb" style="padding-top:15px">
+                          <ejs-listbox #Taglistbox2 id="Taglistbox2" [fields]="Tagfields" height="200px" [allowDragAndDrop]="true"
+                                       [dataSource]='TagList2DataSrc'></ejs-listbox>
+                        </div>
+
+                      </div>
+                    </ng-template>
+                  </e-tabitem>
+                </e-tabitems>
+              </ejs-tab>
+
+
+            </ng-template>
+          </e-tabitem>
+          <!-----------------------------------------End of Access tab----------------------------------------------------------------------->
+
+
+        </e-tabitems>
+      </ejs-tab>
+
+
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+
+<!--------------------------------------Start Having form pop up-------------------------------------->
+<div *ngIf="ShowHavingCreatePopup">
+  <ejs-dialog showCloseIcon='true' header="Grouping" class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="ShowHavingCreatePopup" enableResize="true">
+    <ng-template #content style="padding-top:0px;">
+
+      <form [formGroup]="HavingClauseForm">
+        <ejs-dropdownlist #columnList id="columnList" [dataSource]="Columns" [fields]="chooseColumnfields"
+                          (change)="FuncDFChange($event)" floatLabelType="Auto" placeholder='Function on Datafield'
+                          formControlName="ColumnName" [enabled]="Enabled"></ejs-dropdownlist>
+
+        <ejs-dropdownlist [dataSource]="AgreegateFunc" floatLabelType="Auto" placeholder="Choose Agreegate Function*"
+                          formControlName="AggFuncName"></ejs-dropdownlist>
+
+        <ejs-textbox placeholder="Label" floatLabelType="Always" formControlName="Label"></ejs-textbox>
+      </form>
+      <div>
+        <button *ngIf="ShowGroupingCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveFuncFields()">Save</button>
+        <button *ngIf="ShowGroupingUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateFuncFields()">Save</button>
+
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>
+<!--------------------------------------End Having form pop up-------------------------------------->
+<!--------------------------------------Start Pivot Screen pop up-------------------------------------->
+<div *ngIf="openPivotScreenPopUp">
+  <ejs-dialog showCloseIcon='true' isModal="true"
+              allowDragging='true' [(visible)]="openPivotScreenPopUp" class="dialogueClass_50" enableResize="true">
+
+    <ng-template #content>
+      <app-pivot [Source]="PivotSource" [ReportId]="SelectedReportId"></app-pivot>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+<!--------------------------------------End Pivot Screen pop up-------------------------------------->
+<!--------------------------------------Start Map Report Pivot Views Screen pop up-------------------------------------->
+<div *ngIf="openReportPivotViewPopUp">
+  <ejs-dialog showCloseIcon='true' isModal="true"
+              allowDragging='true' [(visible)]="openReportPivotViewPopUp" class="dialogueClass_50" enableResize="true">
+
+    <ng-template #content>
+      <!--<app-report-pivot-views [ReportId]="SelectedReportId"></app-report-pivot-views>-->
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+<!--------------------------------------End Map Report Pivot Views Screen pop up-------------------------------------->
+<!--------------------------------------Start Create select list pop up-------------------------------------->
+
+
+<div *ngIf="ShowSelectCreatePopup">
+  <ejs-dialog showCloseIcon='true' header="Column" class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="ShowSelectCreatePopup" enableResize="true">
+    <ng-template #content style="padding-top:0px;">
+
+      <form [formGroup]="SelectClauseForm">
+
+        <div class="row col-xs-9 col-sm-9 col-md-9 col-lg-9">
+          Is Next Column is a function?
+
+          <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+            <ejs-radiobutton #radiobutton title="Select Column" name="FunctionColumn" label="No" value="No" [(checked)]="NoFFChecked" (change)="changeHandler()"></ejs-radiobutton>
+          </div>
+          <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+            <ejs-radiobutton title="Select Column" name="FunctionColumn" label="Yes" value="Yes" [(checked)]="YesFFChecked" (change)="changeHandler()"></ejs-radiobutton>
+          </div>
+
+        </div>
+
+        <ejs-dropdownlist *ngIf="ShowColumnFunctions" [dataSource]="FunctionList" [fields]="FuncColumnfields"
+                          floatLabelType="Auto" placeholder='Choose Function' (change)="SelectFuncChange($event)"
+                          formControlName="FuncColumnName"></ejs-dropdownlist>
+
+        <div *ngFor="let item of DropdownArr">
+          <ejs-dropdownlist *ngIf="ShowParameterdd" [dataSource]="item.DataSource" formControlName="param_{{item.Index}}"
+                            floatLabelType="Auto" placeholder='Choose Parameters' [fields]="paramfields"
+                            (change)="ParameterDFChange(item.Index,$event)"></ejs-dropdownlist>
+        </div>
+
+
+
+        <ejs-dropdownlist *ngIf="ShowColumnDF" #columnList id="columnList" [dataSource]="Columns" [fields]="chooseColumnfields"
+                          floatLabelType="Auto" placeholder='Choose Column' (change)="SelectDFChange($event)"
+                          formControlName="SelectListColumnName"></ejs-dropdownlist>
+
+        <ejs-textbox placeholder="Label" floatLabelType="Always" formControlName="SelectListColumnLabel"></ejs-textbox>
+
+
+
+        <ejs-textbox typeof="number" placeholder="Width" floatLabelType="Auto" formControlName="Width"></ejs-textbox>
+
+      </form>
+      <div>
+        <button *ngIf="ShowSelectClauseCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveSelectColumn()">Save</button>
+        <button *ngIf="ShowSelectClauseUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateSelectColumn()">Save</button>
+
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+<!--------------------------------------End Create select list pop up-------------------------------------->
+<!--------------------------------------Start Create Order By list pop up-------------------------------------->
+
+
+<div *ngIf="ShowOrderByPopup">
+  <ejs-dialog showCloseIcon='true' header="Order By" class="dialogueClass_50" isModal="true" allowDragging='true'
+              [(visible)]="ShowOrderByPopup" enableResize="true">
+    <ng-template #content style="padding-top:0px;">
+
+      <form [formGroup]="OrderByForm">
+        <ejs-dropdownlist #columnList id="columnList" [dataSource]="SelectedColumnsData" [fields]="OrderByfields"
+                          floatLabelType="Auto" placeholder='Choose Column' (change)="OrderByDFChange($event)"
+                          formControlName="ColumnName"></ejs-dropdownlist>
+
+        <ejs-dropdownlist [dataSource]="OrderTypeList" floatLabelType="Auto" placeholder='Choose Order'
+                          formControlName="Order"></ejs-dropdownlist>
+
+      </form>
+      <div>
+        <button *ngIf="ShowOrderByCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveOrderByColumn()">Save</button>
+        <button *ngIf="ShowOrderByUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateOrderByColumn()">Save</button>
+
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+<!--------------------------------------End Create Order By list pop up-------------------------------------->
+<!--------------------------------------start--Report Parameter pop up-------------------------------------->
+
+<div *ngIf="ShowParamFormPopup">
+  <ejs-dialog showCloseIcon='true' header="Order By" class="dialogueClass_50" isModal="true" allowDragging='true'
+              [(visible)]="ShowParamFormPopup" enableResize="true">
+    <ng-template #content style="padding-top:0px;">
+      <form [formGroup]="ParameterForm">
+        <div class="row">
+          <div class="col-lg-6">
+            Required &nbsp;&nbsp;
+            <ejs-switch #IsMandatory formControlName="IsMandatory" [checked]="false"></ejs-switch>
+          </div>
+          <div class="col-lg-6">
+            Active <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="Only active fields will be visible in Form,Reports etc. If you temporarily want to hide this field then you can switch it off from here. " />&nbsp;&nbsp;
+            <ejs-switch #IsActive formControlName="IsActive" [checked]="true"></ejs-switch>
+          </div>
+        </div>
+        <br />
+
+
+        <ejs-dropdownlist [dataSource]="Columns" [fields]="chooseColumnfields"
+                          floatLabelType="Auto" placeholder='Choose Column' (change)="ParamDFChange($event)"
+                          formControlName="DataField"></ejs-dropdownlist>
+        <br />
+
+        <ejs-dropdownlist [dataSource]="FunctionList" [fields]="FuncColumnfields"
+                          floatLabelType="Auto" placeholder='Choose Function' (change)="ParamFuncChange($event)"
+                          formControlName="CustomFunc"></ejs-dropdownlist>
+        <br />
+        <div *ngFor="let item of DropdownArr">
+          <ejs-dropdownlist *ngIf="ShowParameterdd" [dataSource]="item.DataSource" formControlName="param_{{item.Index}}"
+                            floatLabelType="Auto" placeholder='Choose Parameters' [fields]="paramfields"
+                            (change)="ParameterDFChange(item.Index,$event)"></ejs-dropdownlist>
+          <br />
+        </div>
+
+
+        <div class="row">
+
+          <div class="col-lg-6" [ngClass]="{'e-success': k.ParameterLabel.valid}">
+            <ejs-textbox #labelTextBoxobj id="labelTextBoxobj" placeholder="Label*" floatLabelType="Always"
+                         (keypress)="omit_special_char($event)"
+                         formControlName="ParameterLabel" [ngClass]="{ 'is-invalid': submitted && k.ParameterLabel.errors }"></ejs-textbox>
+            <div *ngIf="submitted && k.ParameterLabel.errors" class="e-error">
+              <div *ngIf="k.ParameterLabel.errors.required">Label is required</div>
+              <div *ngIf="k.ParameterLabel.errors.maxlength">Label cannot be more than 255 characters</div>
+            </div>
+          </div>
+          <div class="col-lg-6" [ngClass]="{'e-success': k.DataType.valid}">
+            <ejs-dropdownlist #DataTypeListObj [dataSource]="DataTypeSource" [fields]="DataTypeFields"
+                              floatLabelType="Always" (change)="changeDataType($event)"
+                              formControlName="DataType" placeholder='Type*' required
+                              [ngClass]="{ 'is-invalid': submitted && k.DataType.errors }"></ejs-dropdownlist>
+            <div *ngIf="submitted && k.DataType.errors" class="e-error">
+              <div *ngIf="k.DataType.errors.required">Type is required</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div *ngIf="showdivCommonFields" class="row">
+            <div class="col-lg-6">
+              <ejs-textbox #ToolTipobj id="ToolTipobj" placeholder="ToolTip" floatLabelType="Always"
+                           formControlName="ToolTip"></ejs-textbox>
+            </div>
+            <div class="col-lg-6">
+              <ejs-numerictextbox #WidthTextBoxobj id="WidthTextBoxobj" placeholder="Width" floatLabelType="Always"
+                                  decimals="0" validateDecimalOnType="true" min="1" max="12" step="1" formControlName="Width"></ejs-numerictextbox>
+            </div>
+            <div *ngIf="showFieldForEditing" class="col-lg-6">
+              <ejs-textbox *ngIf="showCommonDefault" #defaultValueobj id="defaultValueobj" placeholder="Default Value" floatLabelType="Always"
+                           formControlName="DefaultValue"></ejs-textbox>
+            </div>
+          </div>
+          <div *ngIf="showFieldForEditing">
+            <div *ngIf="showdivCharFields" class="row">
+              <div class="col-lg-6">
+                <!--<div class="control-label">Minimum character count</div>-->
+                <ejs-numerictextbox #MinCharTextBoxobj id="MinCharTextBoxobj" placeholder="Minimum Length(chars)" floatLabelType="Always"
+                                    decimals="0" validateDecimalOnType="true" value="" min="1" max="255" step="1" formControlName="MinLength"></ejs-numerictextbox>
+              </div>
+              <div class="col-lg-6">
+                <!--<div class="control-label">Maximum character count</div>-->
+                <ejs-numerictextbox #MaxCharTextBoxobj id="MaxCharTextBoxobj" placeholder="Maximum Length(chars)" floatLabelType="Always"
+                                    decimals="0" validateDecimalOnType="true" min="0" max="50000" step="1" formControlName="MaxLength"></ejs-numerictextbox>
+              </div>
+            </div>
+            <div *ngIf="showdivNumericFields" class="row">
+              <div class="col-lg-12">
+                <ejs-radiobutton label="Whole Number " [checked]="Whole" [disabled]="numbertypeDisable" name="numbertype" value="Whole" (change)="SetNumberFieldType('Whole')"></ejs-radiobutton> &nbsp;
+                <ejs-radiobutton label="Decimal Number " [checked]="Decimal" [disabled]="numbertypeDisable" name="numbertype" value="Decimal" (change)="SetNumberFieldType('Decimal')"></ejs-radiobutton>&nbsp;
+              </div>
+              <br />
+              <div class="col-lg-4">
+                <!--<div class="control-label">Min Value</div>-->
+                <ejs-numerictextbox #MinValueTextBoxobj id="MinValueTextBoxobj" placeholder="Min Value" floatLabelType="Always"
+                                    formControlName="MinValue"></ejs-numerictextbox>
+              </div>
+              <div class="col-lg-4">
+                <!--<div class="control-label">Max Value</div>-->
+                <ejs-numerictextbox #MaxValueTextBoxobj id="MaxValueTextBoxobj" placeholder="Max Value" floatLabelType="Always"
+                                    decimals="0" validateDecimalOnType="true" formControlName="MaxValue"></ejs-numerictextbox>
+              </div>
+              <div class="col-lg-4" *ngIf="showDecimal">
+                <!--<div class="control-label">Decimal Digits</div>-->
+                <ejs-numerictextbox #DecimalDigitsTextBoxobj id="DecimalDigitsTextBoxobj" placeholder="Decimal Digits" floatLabelType="Always"
+                                    formControlName="DigitsAfterDecimal"></ejs-numerictextbox>
+              </div>
+            </div>
+            <div *ngIf="showdivDateFields" class="row">
+              <div class="col-lg-4">
+                <!--<div class="control-label">Min Date</div>-->
+                <ejs-datepicker placeholder="Min Date" floatLabelType="Always" formControlName="MinDateInclusive"></ejs-datepicker>
+              </div>
+              <div class="col-lg-4">
+                <ejs-datepicker placeholder="Max Date" floatLabelType="Always" formControlName="MaxDateInclusive"></ejs-datepicker>
+                <span class="text-danger"
+                      *ngIf="f.MaxDateInclusive.touched && f.MaxDateInclusive.errors?.endBeforeStart">
+                  Max Date should be greater than Min Date.
+                </span>
+              </div>
+              <div class="col-lg-4">
+                <ejs-datepicker placeholder="Default Date" floatLabelType="Always" [value]='dateValue' formControlName="DefaultDateValue"></ejs-datepicker>
+              </div>
+
+            </div>
+            <div *ngIf="showdivTimeFields" class="row">
+
+              <div class="col-lg-6">
+                <ejs-timepicker id='timepicker' floatLabelType="Always"
+                                placeholder='Default Time' formControlName="DefaultTimeValue"></ejs-timepicker>
+              </div>
+            </div>
+            <div *ngIf="showdivBooleanFields" class="row">
+              <div class="col-lg-6">
+                Default &nbsp;&nbsp;
+                <ejs-switch #DefaultBooleanValue formControlName="DefaultBooleanValue" [checked]="false"></ejs-switch>
+
+              </div>
+            </div>
+            <div *ngIf="showdivDropdownFields" class="row">
+              <div class="col-lg-6">
+                <ejs-dropdownlist #EntityTypeDD [dataSource]="EntityTypeSource" [fields]="EntityTypeDataFields" floatLabelType='Always'
+                                  placeholder='List From' (change)="LoadEntities($event);"
+                                  [allowFiltering]="true" formControlName="EntityTypeValue">
+                </ejs-dropdownlist>
+              </div>
+              <div class="col-lg-6">
+                <ejs-dropdownlist *ngIf="showListName" #ListNamelistObj [dataSource]="ListName" [fields]="ListNameFields" floatLabelType='Always'
+                                  placeholder='List Name' (change)="LoadMasterDataValues($event);"
+                                  [allowFiltering]="true" formControlName="ListNameValue">
+                </ejs-dropdownlist>
+                <a *ngIf="showNewLink" [routerLink]="[]" (click)="OpenMoreValuesDialogue(EntityTypeDD.value);">Add New List</a>
+              </div>
+              <div *ngIf="showSimpleDropdown" class="col-lg-6">
+                <ejs-dropdownlist #DisplayColumnListDD [dataSource]="DisplayColumnListSource" [fields]="DisplayColumnListDataFields" floatLabelType='Always'
+                                  placeholder='Display Column*'
+                                  [allowFiltering]="true" formControlName="DisplayColumnListValue">
+                </ejs-dropdownlist>
+
+              </div>
+              <div *ngIf="showMultiselect" class="col-lg-6">
+                <ejs-multiselect #DisplayColumnListDD [dataSource]="DisplayColumnListSource" [fields]="DisplayColumnListDataFields" floatLabelType='Always'
+                                 placeholder='Display Column*' [value]="selectedValues"
+                                 [allowFiltering]="true" formControlName="DisplayColumnListValue">
+                </ejs-multiselect>
+              </div>
+              <div *ngIf="showPrepopulatedColumn" class="col-lg-6">
+                <ejs-dropdownlist #PrepopulateColumnListDD [dataSource]="PrepopulateColumnListSource" [fields]="PrepopulateColumnListDataFields" floatLabelType='Always'
+                                  placeholder='Prepopulate Column'
+                                  [allowFiltering]="true" formControlName="PrepopulateColumnListValue">
+                </ejs-dropdownlist>
+              </div>
+              <div *ngIf="submitted && f.DisplayColumnListValue.errors" class="e-error">
+                <div *ngIf="f.DisplayColumnListValue.errors.required">Display Column is required </div>
+              </div>
+              <div class="col-lg-6" style="margin-top:20px;">
+                Allow Multi-selection &nbsp;&nbsp;
+                <ejs-switch #IsMultiSelection formControlName="IsMultiSelection" [checked]="false"></ejs-switch>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div>&nbsp;</div>
+        <button ejs-button *ngIf="ShowParamAddBtn" class="e-control e-btn e-primary" (click)="SaveParam()">Save</button>
+        <button ejs-button *ngIf="ShowParamUpdateBtn" class="e-control e-btn e-primary" (click)="UpdateParam()">Save</button>
+
+      </form>
+    </ng-template>
+  </ejs-dialog>
+</div>
+<!--------------------------------------end--Report Parameter pop up-------------------------------------->

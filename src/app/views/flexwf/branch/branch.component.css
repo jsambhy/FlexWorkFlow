@@ -1,0 +1,36 @@
+/*.dialogueClass {
+  max-height: 100% !important;
+  left: 0px;
+  top: 0px;
+  position: relative;
+  max-width: 50%;
+  width: 100%;
+}*/
+
+.margin-right_30{
+    margin-right:30px;
+}
+
+.margin-top_35 {
+  margin-top: 35px;
+}
+.margin-top_10 {
+  margin-top: 10px;
+}
+
+.margin-top_25 {
+  margin-top: 25px;
+}
+
+.float_left {
+  float: left;
+}
+
+.text-allign_right{
+    text-align:right;
+}
+
+
+.float_right {
+  float: right;
+}

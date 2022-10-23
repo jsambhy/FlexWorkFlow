@@ -1,0 +1,9 @@
+
+
+.e-dlg-target.e-scroll-disabled {
+  overflow: auto !important;
+}
+
+.e-dlg-container {
+  position: absolute !important;
+} 

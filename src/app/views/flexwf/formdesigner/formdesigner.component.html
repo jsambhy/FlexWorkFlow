@@ -1,0 +1,347 @@
+
+<ejs-toast #toasttype id='toasttype' [position]="position" content='test'
+           [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' showCloseIcon="true" [visible]="hidden"
+            [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true"></ejs-dialog>
+
+<div class="card-group">
+  <div class="card">
+    <div id="mainCard" class="card-body" style="height:700px;">
+
+      <h4 class="header-text">{{FormHeader}} </h4>
+
+      <form [formGroup]="FlexForm" class="col-lg-12 roundedcorners">
+        <div class="row">
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <span>Form Title*</span>
+            <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="This text will be displayed as Title in the beginning of the form." />
+            <ejs-textbox floatLabelType="Auto" id="Title" formControlName="Title">
+            </ejs-textbox>
+            <div *ngIf="submitted && fm.Title.errors" class="e-error">
+              <div *ngIf="fm.Title.errors.required">Form Title is required</div>
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <span>Browser Title*</span>
+            <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="This text will be displayed on the title bar of your browser." />
+            <ejs-textbox floatLabelType="Auto" id="WebTitle"
+                         formControlName="WebTitle">
+            </ejs-textbox>
+            <div *ngIf="submitted && fm.WebTitle.errors" class="e-error">
+              <div *ngIf="fm.WebTitle.errors.required">Browser Title is required</div>
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <span>Layout*</span>
+            <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="Arrange fields in these many columns." />
+            <ejs-dropdownlist id='DefaultLayout' #DefaultLayout [dataSource]='layoutData' floatLabelType="Auto" formControlName="ColumnsCount"></ejs-dropdownlist>
+            <div *ngIf="submitted && fm.ColumnsCount.errors" class="e-error">
+              <div *ngIf="fm.ColumnsCount.errors.required">Layout is required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+            <span>Description</span>
+            <ejs-textbox floatLabelType="Auto" id="Description" formControlName="Description" columns="2" [multiline]='true'>
+            </ejs-textbox>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <span>Default Font</span>
+            <ejs-dropdownlist id='DefaultFont' #DefaultFont [dataSource]='fontData' formControlName="DefaultFont"
+                              [fields]='fontfields' floatLabelType="Auto"></ejs-dropdownlist>
+          </div>
+
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <span>Default Size</span>
+            <ejs-dropdownlist id='DefaultSize' #DefaultSize [dataSource]='sizeData' formControlName="DefaultSize"
+                              [fields]='sizefields' floatLabelType="Auto"></ejs-dropdownlist>
+          </div>
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <span>Default Color</span>
+            <input ejs-colorpicker id='default-color-picker' type='color' [value]="colorValue" formControlName="TextColor" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <span>Tab BackGround Color</span>
+            <input ejs-colorpicker id='tab-color-picker' type='color' [value]="tabcolorValue" formControlName="TabBGColor" />
+          </div>
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <span>Section BackGround Color</span>
+            <input ejs-colorpicker id='section-color-picker' type='color' [value]="sectioncolorValue" formControlName="SectionBGColor" />
+          </div>
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            Active &nbsp;&nbsp;
+            <ejs-switch #IsActive formControlName="IsActive" [checked]="false"></ejs-switch>
+          </div>
+        </div>
+
+        <br />
+        <div>
+          <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="FnSubmit()">Save</button>&nbsp;&nbsp;
+          <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="goToPrevious()">Back</button>
+        </div>
+      </form>
+      <br />
+      <!--Main grid managing Tabs, sections, fields-->
+      <div *ngIf="ShowTabs">
+        <!--<button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="FnManageTabs()">Manage Tabs</button>&nbsp;&nbsp;
+        <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="FnManageSections()">Manage Sections</button>&nbsp;&nbsp;
+        <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="FnManageFields()">Manage Fields</button>&nbsp;&nbsp;-->
+        <ejs-grid #mainGrid id="mainGrid" [dataSource]='mainGridDataSource' height='150' width="100%"
+                  gridLines="Both" [allowSelection]='true' allowSorting='true' allowFiltering='true' [toolbar]='toolbar'
+                  [allowRowDragAndDrop]='true' (toolbarClick) ="mainGridToolbarClick($event)"  
+                  [filterSettings]='filterSettings' (recordDoubleClick)='mainGridDoubleClick($event)'>
+          <e-columns>
+            <e-column field="TabName" headerText="Tab" width="150"></e-column>
+            <e-column field="SectionName" headerText="Section" width="150"></e-column>
+            <e-column field="FieldsCount" headerText="Field Count" width="150"></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Popup open on Manage Tabs Button-->
+<ejs-dialog #ManageTabs
+            showCloseIcon='true' header="Manage Tabs"
+            class="dialogueClass_35"  (beforeClose)="ManageTabsdialogClose($event)"
+            isModal="true" allowDragging='true' [(visible)]="ShowManageTabsPopup" enableResize="true">
+  <ng-template #content>
+    <p class="notes-flex">Create,rename,remove or change position of your tabs here.</p>
+    <div class="margin_top_10">
+      <ejs-grid #FormTabsGrid id='FormTabsGrid' [dataSource]='TabsDetails' [toolbar]='tabsGridtoolbar'
+                [allowSelection]='true' allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+                [allowRowDragAndDrop]='true' (rowDrop)="rowDropTab($event)"
+                gridLines="Both" allowResizing='true' width="100%"
+                (toolbarClick)='tabstoolbarClick($event)' (recordDoubleClick)="recordDoubleClickTab($event)">
+        <e-columns>
+          <e-column field='Label' headerText='Tab Name'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </ng-template>
+</ejs-dialog>
+<!-- Popup open on Manage Section Button-->
+<ejs-dialog #ManageSections
+            showCloseIcon='true' [header]="ManageSectionsHeader"
+            class="dialogueClass_35"  (beforeClose)="ManageTabsdialogClose($event)"
+            isModal="true" allowDragging='true' [(visible)]="ShowManageSectionsPopup" enableResize="true">
+  <ng-template #content>
+    <p class="notes-flex">Create,rename,remove or change position of your Sections here.</p>
+    <div class="margin_top_10">
+
+      <ejs-grid #FormSectionsGrid id='FormSectionsGrid' [dataSource]='SectionDetails' [toolbar]='sectionsGridtoolbar'
+                [allowSelection]='true' allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+                [allowRowDragAndDrop]='true' (rowDrop)="rowDropSection($event)"
+                gridLines="Both" allowResizing='true' width="100%"
+                (toolbarClick)='sectionstoolbarClick($event)' (recordDoubleClick)="recordDoubleClickSection($event)">
+        <e-columns>
+          <e-column field='Label' headerText='Section Name'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </ng-template>
+</ejs-dialog>
+<!-- Popup open on Manage Fields Button-->
+<ejs-dialog #ManageFields
+            showCloseIcon='true' [header]="ManageFieldsHeader"
+            class="dialogueClass_50"  (beforeClose)="ManageTabsdialogClose($event)"
+            isModal="true" allowDragging='true' [(visible)]="ShowManageFieldsPopup" enableResize="true">
+  <ng-template #content>
+    <p class="notes-flex"> Click on create(+) in order to add datafields to this section</p>
+    <ejs-grid #FieldsGrid id="FieldsGrid" [dataSource]='gridDataSource' height='300' width="100%"
+              gridLines="Both" [allowSelection]='true' allowSorting='true' allowFiltering='true' [toolbar]='fieldstoolbar'
+              [allowRowDragAndDrop]='true' (rowDrop)="rowDropField($event)"
+              [filterSettings]='filterSettings' (toolbarClick)='fieldsToolbarClick($event)' (recordDoubleClick)='recordDoubleClick($event)'>
+      <e-columns>
+        <div *ngFor="let col of gridColumns">
+          <e-column [field]="col.field" [headerText]="col.Label" width="150"></e-column>
+        </div>
+      </e-columns>
+    </ejs-grid>
+  </ng-template>
+</ejs-dialog>
+    <!--Add new Fields Pop Up-->
+    <div *ngIf="ShowAddFieldsPopup">
+      <ejs-dialog #AddFieldsDialogue
+                  showCloseIcon='true' [header]="FormFieldsHeader"
+                  class="dialogueClass_50"
+                  isModal="true" allowDragging='true' [(visible)]="ShowAddFieldsPopup" enableResize="true">
+        <div>&nbsp;</div>
+        <form [formGroup]="AddFieldsForm">
+          <div class="row">
+            <div class="col-lg-6">
+              <span>Type*</span>
+              <ejs-dropdownlist #TypeListObj [dataSource]="TypeSource" [fields]="TypeFields" floatLabelType="Always"
+                                formControlName="Type" required
+                                [enabled]="enableDataType" (change)='typeSelected($event)'
+                                [ngClass]="{ 'is-invalid': submitted && f.Type.errors }"></ejs-dropdownlist>
+              <div *ngIf="submitted && f.Type.errors" class="e-error">
+                <div *ngIf="f.Type.errors.required">Type is required</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <span>Width</span>
+              <!--<ejs-textbox floatLabelType="Always"
+                           formControlName="Width" [ngClass]="{ 'is-invalid': submitted && f.Width.errors }"></ejs-textbox>-->
+              <ejs-dropdownlist #widthListObj [dataSource]="widthSource" [fields]="widthFields"
+                                floatLabelType="Always" formControlName="Width"></ejs-dropdownlist>
+
+              <div *ngIf="submitted && f.Width.errors" class="e-error">Width is required</div>
+            </div>
+            <div class="col-lg-6">
+              <div *ngIf="IsDataField ">
+                <span>Label*</span>
+                <ejs-dropdownlist #DataFieldListObj [dataSource]="DataFieldSource" [fields]="DataFieldFields"  [enabled]="DataFieldlabelEnabled"
+                                  floatLabelType="Always" (change)="changeDataField($event)" formControlName="DataField"></ejs-dropdownlist>
+                <div *ngIf="submitted && f.DataField.errors" class="e-error">
+                  <div *ngIf="f.DataField.errors.required">Label is required</div>
+                </div>
+                
+              </div>
+              <!--<ng-template #Text>-->
+                <span>Default Value</span>
+                <ejs-textbox #labelTextBoxobj id="labelTextBoxobj" floatLabelType="Always" [multiline]='true' columns="2"
+                             formControlName="DefaultValue" [ngClass]="{ 'is-invalid': submitted && f.DefaultValue.errors }"></ejs-textbox>
+                <div *ngIf="submitted && f.DefaultValue.errors" class="e-error">
+                  <div *ngIf="f.DefaultValue.errors.required">Default Value is required</div>
+                </div>
+              <!--</ng-template>-->
+            </div>
+            <div *ngIf="IsDataField" class="col-lg-6">
+              <span>Data Type</span>
+              <ejs-textbox #DataTypeTextBox id="DataTypeTextBox" floatLabelType="Always" [enabled]="false" formControlName="DataType"></ejs-textbox>
+            </div>
+            <div class="col-lg-12">
+              <span>Description</span>
+              <ejs-textbox floatLabelType="Always" id="fldDescription" formControlName="Description" [multiline]='true' columns="2">
+              </ejs-textbox>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+              <span>Font</span>
+              <ejs-dropdownlist [dataSource]='fontData' formControlName="TextFont"
+                                [fields]='fontfields' floatLabelType="Auto"></ejs-dropdownlist>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+              <span>Font Size</span>
+              <ejs-dropdownlist [dataSource]='sizeData' formControlName="TextSize"
+                                [fields]='sizefields' floatLabelType="Auto"></ejs-dropdownlist>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+              <span>Font Color</span>
+              <input ejs-colorpicker id='tab-color-picker' type='color' [value]="FieldColorValue" formControlName="TextColor" />
+            </div>
+          </div>
+          <div>
+
+          </div>
+          <div>&nbsp;</div>
+          <button *ngIf="ShowAddBtn" type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="SaveFormField()">Save</button>
+          <button ejs-button *ngIf="ShowUpdateBtn" class="e-control e-btn e-primary" (click)="UpdateFormField()">Update</button>
+
+        </form>
+
+      </ejs-dialog>
+
+    </div>
+
+
+    <!--Create Tabs Pop Up-->
+    <ejs-dialog #createTabDialog class="dialogueClass_35"
+                showCloseIcon='true' (close)="dialogClose()"
+                isModal="true" allowDragging='true' [(visible)]="showCreateTabPopup" enableResize="true">
+      <ng-template #header>
+        Create Tab
+      </ng-template>
+      <ng-template #content>
+        <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+          <ejs-textbox #tabtitle placeholder="Title*" floatLabelType="Always" id="tab-title"></ejs-textbox>
+          <div *ngIf="TabError" class="e-error">
+            Title is required
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+          <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="FnAddTab(tabtitle.value)">Add Tab</button>
+        </div>
+      </ng-template>
+    </ejs-dialog>
+
+
+    <!--Edit tab form popup-->
+    <div *ngIf="showEditTabPopup">
+      <ejs-dialog #EditTabDialog class="dialogueClass_35"
+                  showCloseIcon='true' isModal="true" allowDragging='true' enableResize="true">
+        <ng-template #header>
+          Edit Tab
+        </ng-template>
+        <ng-template #content>
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <ejs-textbox #edittitle placeholder="Title" floatLabelType="Always" id="edittitle"
+                         [value]="edittitlevalue"></ejs-textbox>
+            <div *ngIf="TabError" class="e-error">
+              Title is required
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+            <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="FnUpdateTab(edittitle.value)">Update</button>
+          </div>
+        </ng-template>
+      </ejs-dialog>
+    </div>
+
+
+    <!--Create Sections popups -->
+
+    <ejs-dialog #CreateSectionsDialog class="dialogueClass_35"
+                showCloseIcon='true' (close)="dialogClose()" isModal="true" allowDragging='true' [(visible)]="showSectionsGridPopup" enableResize="true">
+      <ng-template #header>
+        Create Section
+      </ng-template>
+      <ng-template #content>
+        <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+          <ejs-textbox #sectiontitle placeholder="Title" floatLabelType="Always" id="section-title"></ejs-textbox>
+          <div *ngIf="SectionError" class="e-error">
+            Title is required
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+          <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="FnAddSection(sectiontitle.value)">Add Section</button>
+        </div>
+      </ng-template>
+    </ejs-dialog>
+
+
+    <!--Edit section form popup-->
+    <div *ngIf="showEditSectionPopup">
+      <ejs-dialog #EditSectionDialog class="dialogueClass_35"
+                  showCloseIcon='true'
+                  isModal="true" allowDragging='true' [(visible)]="showEditSectionPopup" enableResize="true">
+        <ng-template #header>
+          Edit Section
+        </ng-template>
+        <ng-template #content>
+          <div class="col-xs-4 col-sm-4 col-lg-4 col-md-4">
+            <ejs-textbox #editSectionTitle placeholder="Title" floatLabelType="Always" id="editSectionTitle"
+                         [value]="editSectionTitlevalue"></ejs-textbox>
+            <div *ngIf="SectionError" class="e-error">
+              Title is required
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+            <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="FnUpdateSection(editSectionTitle.value)">Update</button>
+          </div>
+        </ng-template>
+      </ejs-dialog>
+    </div>
+
+ 
+

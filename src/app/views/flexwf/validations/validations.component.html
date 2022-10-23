@@ -1,0 +1,134 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' showCloseIcon="true" [visible]="hidden"
+            [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true"></ejs-dialog>
+
+<!--Card group for the page on the menu access validation-->
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Validations</h4>
+      <div class="row">
+        <span class="notes-flex col-10">
+          These workflow validations will be applied to a transaction, whenever an action is pressed.
+        </span>
+      </div>
+      <div>&nbsp;</div>
+      <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <ejs-dropdownlist id="WFdropdown" #WFdropdown
+                            [dataSource]="WFSource" floatLabelType="Auto" [fields]="WFfields" [enabled]="enableWFDD"
+                            (change)="WFNameChange($event)" placeholder='Choose Workflow'>
+          </ejs-dropdownlist>
+
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <ejs-dropdownlist id="Stepsdropdown" #Stepsdropdown
+                            [dataSource]="StepsSource" floatLabelType="Auto" [fields]="Stepsfields" [enabled]="enableStepDD"
+                            (change)="StepsChange($event)" placeholder='Choose Steps for the selected WF'>
+          </ejs-dropdownlist>
+
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <ejs-dropdownlist id="Actionsdropdown" #Actionsdropdown
+                            [dataSource]="ActionsSource" floatLabelType="Auto" [fields]="Actionsfields" [enabled]="enableActionDD"
+                            (change)="ActionChange($event)" placeholder='Choose Actions for the selected step'>
+          </ejs-dropdownlist>
+        </div>
+      </div>
+      <br />
+      <div *ngIf="ShowGrid">
+        <ejs-grid #Validationsgrid id='Validationsgrid' [enableHover]='true' [filterSettings]='filterSettings' [dataSource]='validationGridData'
+                  [toolbar]='toolbar' [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true"
+                  (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true' gridLines="Both" (recordDoubleClick)="recordDoubleClick($event)">
+          <e-columns>
+            <e-column field='StepName' headerText='Step'></e-column>
+            <e-column field='ActionName' headerText='Action'></e-column>
+            <e-column field='Name' headerText='Name'></e-column>
+            <e-column field='Description' headerText='Description'></e-column>
+            <e-column field='Type' headerText='Type'></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+
+      <!-- -------------------------------------------Pop up for creating and editing validations------------------------------------------------------------->
+      <div *ngIf="ShowPopupcreateval">
+        <ejs-dialog showCloseIcon='true' [header]="Header" class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="ShowPopupcreateval" enableResize="true" (beforeClose)="ShowPopupcreatevaldialogClose($event)">
+          <ng-template #content>
+            <form [formGroup]="validationForm">
+              <div>
+                <ejs-textbox placeholder="For Step" floatLabelType="Auto" title="label" #labelStep id="labelStep" [value]="stepvalue" [enabled]="false"></ejs-textbox>
+              </div>
+              <div>&nbsp;</div>
+              <div>
+                <ejs-textbox placeholder="For Action" floatLabelType="Auto" title="Action" #labelAction id="labelAction" [value]="SelectedActionName" [enabled]="false"></ejs-textbox>
+              </div>
+              <div>&nbsp;</div>
+              <div [ngClass]="{'e-success': f.Name.valid}">
+                <ejs-textbox #Name id="Name" placeholder="Name*" floatLabelType="Auto" formControlName="Name"
+                             [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></ejs-textbox>
+              </div>
+              <div *ngIf="f.Name.touched && f.Name.errors" class="e-error">
+                <div *ngIf="f.Name.errors.required">Name is required</div>
+                <div *ngIf="f.Name.errors.maxlength">Name cannot be max than 255 characters</div>
+              </div>
+
+              &nbsp;&nbsp;
+              <div>
+                <ejs-checkbox #IsActive id="IsActive" label="Uncheck to make rule InActive" [checked]="true" formControlName="IsActive"></ejs-checkbox>&nbsp;
+              </div>
+
+
+              <div>&nbsp;</div>
+              <div [ngClass]="{'e-success': f.Description.valid}">
+                <ejs-textbox #Description id="Description" placeholder="Description" floatLabelType="Auto" formControlName="Description"
+                             [ngClass]="{ 'is-invalid': submitted && f.Description.errors }"></ejs-textbox>
+              </div>
+              <div *ngIf="f.Description.touched && f.Description.errors" class="e-error">
+                <div *ngIf="f.Description.errors.maxlength">Decription cannot be max than 4000 characters</div>
+              </div>
+              <div>&nbsp;</div>
+              <div [ngClass]="{'e-success': f.ErrorTypeDD.valid}">
+                <ejs-dropdownlist #TypeListObj id="TypeListObj" formControlName="ErrorTypeDD"
+                                  [dataSource]="errorTypes" floatLabelType="Auto" [fields]="ErrorTypeFields"
+                                  (change)="ErrortypeChange($event)" placeholder='Choose Error Type*'></ejs-dropdownlist>
+              </div>
+              <div *ngIf="(f.ErrorTypeDD.touched || submitted) && f.ErrorTypeDD.errors" class="e-error">
+                <div *ngIf="f.ErrorTypeDD.errors.required">Please select error type</div>
+              </div>
+
+              <div>&nbsp;</div>
+              <p>Select Existing Validation Rule from below list or you can create new by clicking <a (click)="openVRScreen()">HERE</a></p>
+
+              <div class="dual-list-wrapper">
+                <div class="dual-list-groupa">
+                  <ejs-listbox #unSelectValidationRuleslistbox [dataSource]="validationRulesDataSource" [fields]="validationRulesfields" height="200px"
+                               [toolbarSettings]="Listtoolbar" scope="#SelectValidationRuleslistbox" [allowDragAndDrop]="true"></ejs-listbox>
+                </div>
+                <div class="dual-list-groupb">
+                  <ejs-listbox #SelectValidationRuleslistbox id="SelectValidationRuleslistbox" [fields]="validationRulesfields" height="200px" [allowDragAndDrop]="true"
+                               [dataSource]='SelectedValidationRulesListDataSource'></ejs-listbox>
+                </div>
+              </div>
+
+              <div>
+                <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>&nbsp;
+                <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+              </div>
+            </form>
+          </ng-template>
+        </ejs-dialog>
+      </div>
+      <div *ngIf="showValidationRulePage">
+        <ejs-dialog showCloseIcon='true' class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="showValidationRulePage" enableResize="true">
+
+
+          <app-validation-rules [PreSelected_WFId]="configuringWFId" Level="ValidationLevel" [PreSelected_WFName]="configuringWFLabel"></app-validation-rules>
+
+        </ejs-dialog>
+      </div>
+    </div>
+  </div>
+</div>

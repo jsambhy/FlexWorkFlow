@@ -1,0 +1,25 @@
+
+
+.roundedcorners {
+  border-radius: 8px;
+  border: 1px solid #ada9aa;
+  height:auto;
+  padding-bottom:8px;
+  padding-top: 8px;
+}
+
+.checkbox-font {
+  font-weight: lighter;
+  color: #bfb5b5;
+  padding-top:10px;
+}
+
+.button-style {
+  padding-top: 8px;
+}
+
+
+.div-margin{
+    margin-top:15px;
+    margin-bottom:10px;
+}

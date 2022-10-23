@@ -1,0 +1,57 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Restrict Datafields  </h4>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <ejs-dropdownlist #WorkflowlistObj [dataSource]="workflowList" [fields]="WorkflowFields"
+                            [allowFiltering]="true" floatLabelType='Auto' placeholder='Data Fields For' (change)='onChangeWorkflow($event)'>
+          </ejs-dropdownlist>
+        </div>
+        <div class="col-lg-6">
+          <ejs-dropdownlist #EntityIdlistObj [dataSource]="EntityIdList" [fields]="EntityIdFields" floatLabelType='Auto'
+                            placeholder='Workflow/MasterData Name'
+                            [allowFiltering]="true" (change)='onChangeSelecter($event)'>
+          </ejs-dropdownlist>
+        </div>
+      </div>
+      <p *ngIf="ShowGrid" class="notes-flex">Note: You can edit Restrictions by double clicking any row.</p>
+      <div *ngFor="let grid of GridLoop">
+        <ejs-grid id= {{grid.Text}} *ngIf="ShowGrid" #Grid [dataSource]='participantGridDataSource' height=300
+                  gridLines='Both' allowSorting='true' [frozenColumns]='1' (recordDoubleClick)="recordDoubleClick($event)">
+
+        </ejs-grid>
+      </div>
+      <br/>
+      <!--<div *ngIf="ShowSaveButton" style="text-align:left">
+        <button ejs-button class="e-control e-btn e-primary" (click)="fnSaveMappingdata()">Save</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+
+
+<ejs-dialog *ngIf="ShowModifyRestrictions"   class="dialogueClass_35" [animationSettings]='animationSettings'
+            showCloseIcon="true" isModal="true" allowDragging='true' enableResize="true" [(visible)]="ShowModifyRestrictions">
+  <ng-template #header>
+    {{PopupHeader}}
+  </ng-template>
+  <form [formGroup]="RestrictionForm">
+    <ejs-dropdownlist #ParticipantList [dataSource]="participantDataSource" [fields]="participantFields" floatLabelType='Always'
+                      placeholder='Participant'
+                      [allowFiltering]="true" (change)='onChangeParticipant($event)'>
+    </ejs-dropdownlist>
+    <ejs-dropdownlist #RestrictionType [dataSource]="RestrictionTypeDataSource" [fields]="RestrictionTypeFields" floatLabelType='Always'
+                      placeholder='Restriction Type' [allowFiltering]="true" formControlName="RestrictionType" [value]="restrictionValue">
+    </ejs-dropdownlist>
+    <ejs-textbox #Comments id="Comments" placeholder="Comments" floatLabelType="Always"
+                 formControlName="Comments">
+    </ejs-textbox>
+    <div *ngIf="ShowSaveButton" style="text-align:left">
+      <button ejs-button class="e-control e-btn e-primary" (click)="UpdateRestrictions()">Update</button>
+    </div>
+  </form>
+</ejs-dialog>
+

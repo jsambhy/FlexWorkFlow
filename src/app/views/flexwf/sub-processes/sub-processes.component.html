@@ -1,0 +1,77 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<!--Confirmation Dialogue-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]='hidden' showCloseIcon="true" [content]='confirmcontent' class="dialogueClass_35" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+
+
+
+<div>
+  <ejs-dropdownlist *ngIf="showStepdropdown" #StepDropdown id="StepDropdown" [dataSource]="LandingStepData" [fields]="LandingStepFields" title="Choose steps from the dropdown"
+                    (change)="stepchange($event)" placeholder='Choose step*'>
+  </ejs-dropdownlist>
+  <div>&nbsp;</div>
+  <ejs-dropdownlist *ngIf="showActiondropdown" [dataSource]="StepsActionData" [fields]="StepActionDropdownfields" title="Choose Action from the dropdown"
+                    (change)="stepActionchange($event)" placeholder='Choose Action*'>
+  </ejs-dropdownlist>
+  <div>&nbsp;</div>
+</div>
+
+<div *ngIf="ShowProcessGrid">
+  <ejs-grid #SubProcessGrid id='SubProcessGrid' [dataSource]='SubProcessData' [toolbar]='toolbar'
+            (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+            gridLines='Both'>
+    <e-columns>
+      <e-column field='SubProcessName' headerText='Sub Process'></e-column>
+      <e-column field='LandingStepName' headerText='Landing Step'></e-column>
+      <e-column field='IsReadyWait' headerText='Wait for completion' displayAsCheckBox='true'></e-column>
+    </e-columns>
+  </ejs-grid>
+</div>
+
+<!--Form-->
+<div *ngIf="ShowCreatePopup">
+  <ejs-dialog showCloseIcon='true' header="Sub Processes" class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="ShowCreatePopup" enableResize="true">
+    <ng-template #content style="padding-top:0px;">
+
+      <form [formGroup]="SubProcessForm">
+        <div [ngClass]="{'e-success': f.SubProcessName.valid}">
+          <ejs-dropdownlist [dataSource]="WorkflowDropdownData" [fields]="WorkflowDropdownFields" floatLabelType="Always"
+                            [allowFiltering]="true" formControlName="SubProcessName" placeholder='Select SubProcess*'
+                            (change)="WFChangeEvent($event)" [enabled]="enableWorkflowDropdown"
+                            [ngClass]="{ 'is-invalid': submitted &&  f.SubProcessName.errors }">
+          </ejs-dropdownlist>
+        </div>
+        <div *ngIf="f.SubProcessName.touched && f.SubProcessName.errors" class="e-error">
+          <div *ngIf="f.SubProcessName.errors.required">Sub Process Name is required</div>
+          <div *ngIf="f.SubProcessName.errors.maxlength">SubProcessName cannot be max than 255 characters</div>
+        </div>
+
+        <div>&nbsp;</div>
+        <div [ngClass]="{'e-success': f.LandingStepName.valid}">
+          <ejs-dropdownlist [dataSource]="LandingStepData" [fields]="LandingStepFields" floatLabelType="Always"
+                            [allowFiltering]="true" formControlName="LandingStepName" placeholder='Select Landing Step*'
+                            [ngClass]="{ 'is-invalid': submitted &&  f.SubProcessName.errors }">
+          </ejs-dropdownlist>
+        </div>
+        <div *ngIf="f.LandingStepName.touched && f.LandingStepName.errors" class="e-error">
+          <div *ngIf="f.LandingStepName.errors.required">Landing Step Name is required</div>
+          <div *ngIf="f.LandingStepName.errors.maxlength">Landing Step Name cannot be max than 255 characters</div>
+        </div>
+
+        <div>&nbsp;</div>
+        <ejs-checkbox #IsReadyWait id="IsReadyWait" label="Wait for completion" [checked]="false" formControlName="IsReadyWait"></ejs-checkbox>&nbsp;
+        <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="If checked, workflow will wait for this Sub Process to get into ‘Ready’ step before moving it to next step in main process." />
+      </form>
+      <div>&nbsp;</div>
+      <div>
+        <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>
+        <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>

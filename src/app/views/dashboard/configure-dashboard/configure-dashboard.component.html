@@ -1,0 +1,43 @@
+<div class="control-section">
+  <div class="col-lg-12 col-sm-12 col-md-12" id="sidebar-section">
+    <div id="head">
+      <div class="header">
+        <div class="menu"><span class="e-icons expand"></span></div>
+        <div class="searchContent">
+          <div class="analysis">Dashboard</div>
+        </div>
+        <div class="right-content">
+          
+        </div>
+      </div>
+    </div>
+    <!-- sidebar element declaration -->
+    <ejs-sidebar id="dockSidebar" #sidebarInstance [type]="type" [enableDock]='enableDock' [dockSize]='dockSize'
+                 [target]="target" [closeOnDocumentClick]="closeOnDocumentClick">
+      <div class="content-area">
+        <div class="dock">
+          <ul>
+            <li id="lihome" class="sidebar-item" [class.filterHover]="!create" (click)="fnShowConfigureDashboardRender();"><span class="e-icons home"></span></li>
+
+            <li id="lisettings" class="sidebar-item" [class.filterHover]="create" (click)="fnShowConfigureDashboardDesign();"><span class="e-icons settings"></span></li>
+
+          </ul>
+        </div>
+      </div>
+    </ejs-sidebar>
+    <!-- end of sidebar element -->
+    <!-- main content declaration -->
+    <div id="target">
+      <div class="sidebar-content">
+        <!--For rendering panels><-->
+        <app-configure-dashboard-render *ngIf="showConfigureDashboardRender"></app-configure-dashboard-render>
+        <!--For creating panel-->
+        <!--<app-configure-dashboard *ngIf="showConfigureDashboardDesign"></app-configure-dashboard>-->
+        <app-configure-dashboard-design *ngIf="showConfigureDashboardDesign"></app-configure-dashboard-design>
+      </div>
+    </div>
+
+
+    <!--end of main content declaration -->
+  </div>
+</div>

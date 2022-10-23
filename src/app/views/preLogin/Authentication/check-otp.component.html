@@ -1,0 +1,24 @@
+<ejs-toast #toasttype id='toasttype' [position]="position"
+           content='test' [showCloseButton]="true"></ejs-toast>
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card mx-4">
+            <div class="card-body p-4">
+              <h1>One Time Password</h1>
+              <p>
+                An email with One Time Password (OTP) has been sent to your registered email id.
+                The OTP is valid upto {{OTPValidity}} minutes.
+              </p>
+              <ejs-textbox #OTP placeholder="Enter OTP" cssClass="e-float"
+                           floatLabelType="Always" name="OTP" ngModel></ejs-textbox>
+              <button ejs-button class="e-control e-btn e-primary" (click)="VerifyOtp(OTP.value)">Verify</button>&nbsp;&nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,132 @@
+
+  
+<!--Page design updated by RS on 2nd july with updated functionality-->
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true"></ejs-toast>
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]="hidden" showCloseIcon="true" [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true" enableResize="true"></ejs-dialog>
+
+<div class="card-group">
+<div class="card">
+  <div class="card-body">
+    <h4 class="header-text">Email Templates</h4>
+
+    <!--Email Template Grid Definition-->
+    <ejs-grid #grid id='grid' [dataSource]='listEmailTemplate' [toolbar]='toolbar' [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true" (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true' gridLines="Both"
+              [filterSettings]='filterSettings' allowResizing='true' (recordDoubleClick)="recordDoubleClick($event)">
+      <e-columns>
+        <e-column field='TemplateName' headerText='Name'></e-column>
+        <e-column field='EmailSubject' headerText='Subject'></e-column>
+        <e-column field='Signature' headerText='Signature'></e-column>
+      </e-columns>
+    </ejs-grid>
+  </div>
+</div>
+</div>
+
+<!-->Pop up for creating and editing template</!-->
+<div *ngIf="ShowPopupFlag">
+  <ejs-dialog #EmailTemplateDialog showCloseIcon='true' (open)="opened()" [header]="EmailTempHeader" class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="ShowPopupFlag" enableResize="true">
+    <ng-template #content>
+      <form [formGroup]="EmailTemplateForm" class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <br />
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+          <ejs-dropdownlist #WorkflowlistObj [dataSource]="workflowList" [fields]="WorkflowFields"
+                            [allowFiltering]="true" floatLabelType='Auto' placeholder='Data Fields For' (change)='onChangeWorkflow($event)'
+                            [value]="WFlist" [enabled]="false">
+          </ejs-dropdownlist>
+
+          <div>&nbsp;</div>
+          <div [ngClass]="{'e-success': f.Entities.valid}">
+            <ejs-dropdownlist #EntityIdlistObj [dataSource]="EntityIdList" [fields]="EntityIdFields" floatLabelType='Auto'
+                              placeholder='Workflow/MasterData Name*' formControlName="Entities"
+                              [allowFiltering]="true" (change)='onChangeSelecter($event)'>
+            </ejs-dropdownlist>
+          </div>
+          <div *ngIf="f.Entities.touched && f.Entities.errors" class="e-error">
+            <div *ngIf="f.Entities.errors.required">Entity is required</div>
+          </div>
+
+          <div [ngClass]="{'e-success': f.TemplateName.valid}">
+            <ejs-textbox placeholder="Name*" floatLabelType="Auto" formControlName="TemplateName"></ejs-textbox>
+
+          </div>
+          <div *ngIf="(f.TemplateName.touched || submitted) && f.TemplateName.errors" class="e-error">
+            <div *ngIf="f.TemplateName.errors.required">Name is required</div>
+            <div *ngIf="f.TemplateName.errors.maxlength">Name cannot be max than 255 characters</div>
+          </div>
+          <div>&nbsp;</div>
+          <div>&nbsp;</div>
+          <ejs-textbox placeholder="Signature" floatLabelType="Auto" formControlName="Signature"></ejs-textbox>
+        </div>
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+          <div [ngClass]="{'e-success': f.EmailSubject.valid}">
+            <ejs-richtexteditor id="customRTESubject" #customRTESubject formControlName="EmailSubject" placeholder="Type Email subject here.." required [ngClass]="{ 'is-invalid': submitted && f.EmailSubject.errors }"
+                                [toolbarSettings]="toolbarRTE" height="100"
+                                (created)="oncreatedEmailSubject()">
+            </ejs-richtexteditor>
+          </div>
+          <div *ngIf="(f.EmailSubject.touched  || submitted) && f.EmailSubject.errors" class="e-error">
+            <div *ngIf="f.EmailSubject.errors.required">Email subject is required</div>
+            <div *ngIf="f.EmailSubject.errors.maxlength">Email subject cannot be max than 70 characters</div>
+          </div>
+          <div>&nbsp;</div>
+          <div [ngClass]="{'e-success': f.EmailBody.valid}">
+            <ejs-richtexteditor id="customRTE" #customRTE formControlName="EmailBody" placeholder="Type Email body here.."
+                                [toolbarSettings]="this.documentEditorToolbarSettings" height="250"
+                                (created)="oncreated()">
+            </ejs-richtexteditor>
+          </div>
+          <div *ngIf="(f.EmailBody.touched || submitted) && f.EmailBody.errors" class="e-error">
+            <div *ngIf="f.EmailBody.errors.required">Email body is required</div>
+          </div>
+        </div>
+        <br />
+        <div *ngIf="ShowCreateBtn">
+          <button ejs-button class="e-control e-btn e-primary" (click)="onFormSubmit()">Save</button>
+        </div>
+        <div *ngIf="ShowUpdateBtn">
+          <button ejs-button class="e-control e-btn e-primary" (click)="UpdateBtnClick()">Save</button>
+        </div>
+      </form>
+
+    </ng-template>
+  </ejs-dialog>
+</div>
+<!------------------------------------------------------------------------------------------------------------------------------------------------------->
+<!--Old code commented by RS on 2 july 2020 as now it is updating-->
+<!--<div *ngIf="ShowPopupFlag">
+  <ejs-dialog #Dialog [header]='EmailTempHeader' [position]="position" showCloseIcon='true'>
+    <ng-template #content>
+      <div class="div-bottomMargin"></div>
+      <form [formGroup]="EmailTemplateForm">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+          <ejs-textbox placeholder="Template Name" floatLabelType="Auto" formControlName="TemplateName"></ejs-textbox>
+          <div>&nbsp;</div>
+          <ejs-textbox placeholder="Subject" floatLabelType="Auto" formControlName="EmailSubject"></ejs-textbox>
+          <div>&nbsp;</div>
+          <ejs-textbox placeholder="Signature" floatLabelType="Auto" formControlName="Signature"></ejs-textbox>
+          <div>&nbsp;</div>
+
+
+          <ejs-richtexteditor id='customRTE' #customRTE formControlName="EmailBody" [toolbarSettings]='tools'
+                              height="300" placeholder='Write Email Body here'>
+
+          </ejs-richtexteditor>
+
+        </div>
+        <div *ngIf="ShowCreateBtn" style="margin-top:5px">
+          <flex-button buttonType="e-primary" buttonText="Submit" (click)="onFormSubmit()"></flex-button>
+        </div>
+        <div *ngIf="ShowUpdateBtn">
+          <flex-button buttonType="e-primary" buttonText="Update" (click)="UpdateBtnClick()"></flex-button>
+        </div>
+      </form>
+    </ng-template>
+  </ejs-dialog>
+
+</div>-->
+<!--<ejs-grid #grid [dataSource]='listEmailTemplate' [filterSettings]='filterSettings' allowReordering="true"
+          [allowFiltering]='true' (dataStateChange)='dataStateChange($event)'></ejs-grid>-->

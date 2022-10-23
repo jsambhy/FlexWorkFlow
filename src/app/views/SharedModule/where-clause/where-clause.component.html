@@ -1,0 +1,119 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<div *ngIf="ShowRadiobutton" class="row col-xs-9 col-sm-9 col-md-9 col-lg-9">
+  Is Next Column is a Parameter?
+
+  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+    <ejs-radiobutton #radiobutton title="Param Column" name="ParamColumnName" label="No" value="No" [(checked)]="NoParamChecked" (change)="changeHandler()"></ejs-radiobutton>
+  </div>
+  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+    <ejs-radiobutton title="Param Column" name="ParamColumnName" label="Yes" value="Yes" [(checked)]="YesParamChecked" (change)="changeHandler()"></ejs-radiobutton>
+  </div>
+
+</div>
+&nbsp;&nbsp;
+<div *ngIf="ShowParamLabel" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <ejs-textbox #ParamLabel id="ParamLabel" placeholder="Label" floatLabelType="Auto"></ejs-textbox>
+</div>
+
+
+<div *ngIf="ShowHeirarchyDD" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <ejs-dropdownlist #HierarchyScope id="HierarchyScope" [dataSource]="HierarchyScopeData"
+                    (change)="hierarchyScopeChange($event)" floatLabelType="Auto"
+                    placeholder='Hierarchy Scope'></ejs-dropdownlist>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <ejs-dropdownlist #entity id="entity" [dataSource]="choosecolumn" [fields]="choosecolumnfieldsforcondition"
+                    (change)="entityChange($event)" floatLabelType="Auto" placeholder='Data Field'></ejs-dropdownlist>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <ejs-dropdownlist [dataSource]="FunctionList" [fields]="FuncColumnfields"
+                    floatLabelType="Auto" placeholder='Choose Function' (change)="SelectFuncChange($event)"></ejs-dropdownlist>
+
+  </div>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div *ngFor="let item of DropdownArr">
+    <ejs-dropdownlist *ngIf="ShowParameterdd" [dataSource]="item.DataSource"
+                      floatLabelType="Auto" placeholder='Choose Parameters' [fields]="paramfields"
+                      (change)="ParameterDFChange(item.Index,$event)"></ejs-dropdownlist>
+  </div>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="float:left">
+      <!--<div *ngIf="showAndOr2">
+        <ejs-radiobutton style="margin-right:30px" #radiobutton1 title="Add" label="And" name="position" value="And" checked="true" (change)="changeHandler()"></ejs-radiobutton>
+
+        <ejs-radiobutton style="margin-right:30px" #radiobutton2 title="Or" label="Or" name="position" value="Or" (change)="changeHandler()"></ejs-radiobutton>
+      </div>-->
+
+      <ejs-dropdownlist #SaprationOperators id="SaprationOperators" [dataSource]="SaprationOperatorsData"
+                        floatLabelType="Auto" placeholder='Select'></ejs-dropdownlist>
+
+
+      <ejs-dropdownlist [dataSource]="AgreegateFunc" floatLabelType="Auto" placeholder="Agreegate Function*"
+                        formControlName="AggFuncName" (change)="AggFuncChange($event)"></ejs-dropdownlist>
+
+      <ejs-dropdownlist *ngIf="ShowOperator" #operatorobj id="{{Source}}" [dataSource]="operators" floatLabelType="Auto"
+                        (change)="operatorChange($event)" placeholder="Operator"></ejs-dropdownlist>
+
+      <ejs-dropdownlist *ngIf="ShowValueTypeDD" #DataType id="DataType" [dataSource]="DataTypeSrc" (change)="DataTypeChange($event)"
+                        floatLabelType="Auto" placeholder='Select Input DataType'></ejs-dropdownlist>
+
+      <div [ngSwitch]="dataTypeValue">
+        <div>&nbsp;</div>
+        <div *ngSwitchCase="'nvarchar'">
+          <ejs-textbox #Tobj id="Tobj" placeholder="Value" cssClass="e-outline" floatLabelType="Auto" [enabled]="enabled"></ejs-textbox>
+        </div>
+        <div *ngSwitchCase="'numeric'">
+          <ejs-textbox #NTobj id="NTobj" typeof="number" placeholder="Value" cssClass="e-outline" floatLabelType="Auto" [enabled]="enabled"></ejs-textbox>
+        </div>
+        <div *ngSwitchCase="'int'">
+          <ejs-textbox #NTobj id="NTobj" typeof="number" placeholder="Value" cssClass="e-outline" floatLabelType="Auto" [enabled]="enabled"></ejs-textbox>
+        </div>
+        <div *ngSwitchCase="'multiline'">
+          <ejs-textbox #MLobj id="MLobj" [multiline]='true' placeholder="Value" cssClass="e-outline" [enabled]="enabled" floatLabelType="Auto"></ejs-textbox>
+        </div>
+        <div *ngSwitchCase="'date'">
+          <ejs-datepicker #Dobj id="Dobj" [enabled]="enabled" placeholder="Date" floatLabelType="Auto"></ejs-datepicker>
+        </div>
+        <div *ngSwitchCase="'datetime'">
+          <ejs-datetimepicker #DTobj id="DTobj" [enabled]="enabled" placeholder="Date And Time" DateTimeFormat="d/M/yy h:mm tt" floatLabelType="Auto"></ejs-datetimepicker>`
+        </div>
+        <div *ngSwitchCase="'bit'">
+          <ejs-dropdownlist #bitObj id="bitObj" [enabled]="enabled" [dataSource]="BitValues" floatLabelType="Auto" (change)="change($event)" placeholder="Choose TRUE/FALSE"></ejs-dropdownlist>
+        </div>
+        <div>&nbsp;</div>
+      </div>
+    </div>
+
+    <div class="row col-lg-9 col-xs-9 col-md-9 col-sm-9 float_right" style="margin-top:15px">
+      <!--style="float:right"    style="margin-top:35px"-->
+      <div class="col-lg-2 col-xs-2 col-md-2 col-sm-2 margin-top_35">
+        <button ejs-button class="e-control e-btn e-primary" (click)="fnAddCondition()">>></button>
+      </div>
+
+      <div class="col-lg-10 col-xs-10 col-md-10 col-sm-10" style="padding-top:2px">
+        <!--style="margin-top:25px"-->
+
+        <ejs-textbox #ResultMLobj id="ResultMLobj" [multiline]='true' placeholder="Resultant Expression"
+                     formControlName="actionlabel" cssClass="e-outline" enabled="false" floatLabelType="Auto" style="height:180px"></ejs-textbox>
+
+        <div class="text-align_right">
+
+          <button *ngIf="ShowWhereBtn" ejs-button class="e-control e-btn e-primary" (click)="SetWhereClause()">Verify and Lock</button>&nbsp;
+          <button *ngIf="ShowHavingBtn" ejs-button class="e-control e-btn e-primary" (click)="SetHavingClause()">Lock</button>&nbsp;
+          <button ejs-button class="e-control e-btn e-primary" (click)="Reset()">Clear</button>&nbsp;
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div>&nbsp;</div>
+  <div>&nbsp;</div>

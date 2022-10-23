@@ -1,0 +1,18 @@
+<ejs-dialog class="dialogueClass_70" #WFValidationDialogue (beforeClose)="closeDialog()" showCloseIcon="true" isModal="true" allowDragging='true' enableResize="true">
+  <ng-template #header>
+    Validation Report for workflow '{{configuringWFLabel}}'
+  </ng-template>
+  <ng-template #content>
+    <p class="notes-flex">You can download the file from the options given in toolbar</p>
+    <div class="margin_top_10">
+      <ejs-grid #validationDetailgrid id='validationDetailgrid' [filterSettings]='filterSettings' height="50%"
+                [dataSource]='ValidatedWFdata' [toolbar]='toolbar' [editSettings]='editSettings'
+                [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true"
+                (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true' [gridLines]="lines"
+                [contextMenuItems]="contextMenuItems"> </ejs-grid>
+    </div>
+  </ng-template>
+  <ng-template #footerTemplate>
+    <button ejs-button class = "e-control e-btn e-primary" (click)="closePopUp()">Ok</button>
+  </ng-template>
+</ejs-dialog>

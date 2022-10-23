@@ -1,0 +1,25 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card mx-4">
+            <div class="card-body p-4">
+              <h5>
+                How to get MFA Code?
+              </h5>
+              <br />
+              <p>
+                Step 1:- If you have Google Authenticator in your Mobile then add new account on clicking + sign and scan the barcode which is provided below.
+                And if you don't have Google Authenticator then download it in your mobile and create account with scanning the bar Code.
+              </p>
+              <img src={{qrcodeURL}} alt="click here" />
+              <br />
+              <p>After setting Google Authenticator account <a [routerLink]="[]" class="contact-link" (click)="SaveSecretAndUpdateMFA();">Click here</a>  to login</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

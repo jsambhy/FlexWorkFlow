@@ -1,0 +1,126 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' showCloseIcon="true" [visible]="hidden"
+            [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true"></ejs-dialog>
+<!--Card group for the page on the menu access validation-->
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Validation Rules</h4>
+      <div class="row">
+        <span class="notes-flex col-10">
+          Manage validation rules here for a particular workflow, that can then be applied to validations. <br /> we can add multipkle validation rules to a single validation (applied on action on a particular step)
+        </span>
+      </div>
+      <div>&nbsp;</div>
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <ejs-dropdownlist id="WFdropdown" #WFdropdown [enabled]="enableWFDD"
+                          [dataSource]="WFSource" floatLabelType="Auto" [fields]="WFfields"
+                          (change)="WFNameChange($event)" placeholder='Choose Workflow'>
+        </ejs-dropdownlist>
+      </div>
+      <br />
+      <div *ngIf="ShowVRGrid">
+        <ejs-grid #ValidationsRulesgrid id='ValidationsRulesgrid' [enableHover]='true' [filterSettings]='filterSettings' [dataSource]='validationRulesGridData'
+                  [toolbar]='toolbar' [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true"
+                  (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true' gridLines="Both" (recordDoubleClick)="recordDoubleClick($event)">
+          <e-columns>
+            <e-column field='Name' headerText='Name'></e-column>
+            <e-column field='Description' headerText='Description'></e-column>
+            <e-column field='Message' headerText='Message'></e-column>
+
+          </e-columns>
+        </ejs-grid>
+      </div>
+
+      <!-- -------------------------------------------Pop up for creating and editing validations rules------------------------------------------------------------->
+      <div *ngIf="ShowPopupCreateEditvalidationrules">
+        <ejs-dialog showCloseIcon='true' [header]="Header" class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="ShowPopupCreateEditvalidationrules" enableResize="true" (beforeClose)="ShowPopupcreatevaldialogClose($event)">
+          <ng-template #content>
+            <form [formGroup]="validationRulesForm">
+
+              <div>
+                <table>
+                  <tr>
+                    <td>Is FormGrid Special Validation?</td>
+                    <td></td>
+                    <td></td>
+                    <td><ejs-radiobutton class="col-xs-2 col-sm-2 col-md-2 col-lg-2" #radiobutton title="Form Renderer Special Validation" name="SpecialValidation" label="Yes" value="Yes" [(checked)]="YesChecked" (change)="changeHandler()"></ejs-radiobutton></td>
+                    <td></td>
+                    <td></td>
+                    <td> <ejs-radiobutton class="col-xs-3 col-sm-3 col-md-3 col-lg-3" title="Form Renderer Special Validation" name="SpecialValidation" label="No" value="No" [(checked)]="Nochecked" (change)="changeHandler()"></ejs-radiobutton>
+                  </tr>
+
+                </table>
+
+              </div>
+
+              <div [ngClass]="{'e-success': f.Name.valid}">
+                <ejs-textbox #Name id="Name" placeholder="Name*" floatLabelType="Auto" formControlName="Name"
+                             [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></ejs-textbox>
+              </div>
+              <div *ngIf="f.Name.touched && f.Name.errors" class="e-error">
+                <div *ngIf="f.Name.errors.required">Name is required</div>
+                <div *ngIf="f.Name.errors.maxlength">Name cannot be max than 255 characters</div>
+              </div>
+              <div>&nbsp;</div>
+              <ejs-dropdownlist *ngIf="showValidationType" #FormGridType id="FormGridType"
+                                [dataSource]="ValidationTypes" floatLabelType="Auto" [fields]="ValidationTypeFields" formControlName="ValidationType"
+                                (change)="ValidationTypeChange($event)" placeholder='Choose Validation Type*'></ejs-dropdownlist>
+
+
+              <div>&nbsp;</div>
+              <ejs-numerictextbox *ngIf="showNumericTextBox" placeholder="Voilation Threshold*" min='1' max='10' formControlName="VoilationThreshold"></ejs-numerictextbox>
+              <div>&nbsp;</div>
+
+              
+
+              <ejs-multiselect *ngIf="showColumns" #entityCol id="entityCol" [dataSource]='choosecolumn' [allowFiltering]="true" mode='Box'
+                               [fields]='choosecolumnfieldsforcondition' floatLabelType="Always" (change)="entityChange($event)"
+                               formControlName="Entity" placeholder='Select Column(s)'>
+
+              </ejs-multiselect>
+
+              <div>&nbsp;</div>
+              <div [ngClass]="{'e-success': f.Description.valid}">
+                <ejs-textbox #Description id="Description" placeholder="Description" floatLabelType="Auto" formControlName="Description"
+                             [ngClass]="{ 'is-invalid': submitted && f.Description.errors }"></ejs-textbox>
+              </div>
+              <div *ngIf="f.Description.touched && f.Description.errors" class="e-error">
+                <div *ngIf="f.Description.errors.maxlength">Decription cannot be max than 4000 characters</div>
+              </div>
+              <div>&nbsp;</div>
+              <div [ngClass]="{'e-success': f.Message.valid}">
+                <ejs-textbox #Name id="Message" placeholder="Message*" floatLabelType="Auto" formControlName="Message"
+                             [ngClass]="{ 'is-invalid': submitted && f.Message.errors }"></ejs-textbox>
+              </div>
+              <div *ngIf="f.Message.touched && f.Message.errors" class="e-error">
+                <div *ngIf="f.Message.errors.required">Message is required</div>
+                <div *ngIf="f.Message.errors.maxlength">Message cannot be max 255 4000 characters</div>
+              </div>
+              &nbsp;&nbsp;
+              <div>
+                <ejs-checkbox #IsActive id="IsActive" label="Uncheck to make rule InActive" [checked]="true" formControlName="IsActive"></ejs-checkbox>&nbsp;
+              </div>
+
+              <div>&nbsp;</div>
+              <app-where-clause *ngIf="showWhereClause" [TableEntityType]="TableEntityType" [TableEntityId]="TableEntityId" Source="WhereClause"
+                                (PostWhereClauseEvent)="PostWhereClauseEvent($event);" [ExpressionVal]="ExpressionVal"></app-where-clause>
+
+              <div>&nbsp;</div>
+              <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <button *ngIf="ShowCreateBtn" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="Save()">Save</button>
+                <div>&nbsp;&nbsp;</div>
+                <button *ngIf="ShowUpdateBtn" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="Update()">Save</button>
+              </div>
+            </form>
+          </ng-template>
+        </ejs-dialog>
+      </div>
+
+    </div>
+  </div>
+</div> .
+

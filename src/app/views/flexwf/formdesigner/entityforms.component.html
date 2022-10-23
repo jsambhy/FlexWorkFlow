@@ -1,0 +1,39 @@
+
+
+<ejs-toast #toasttype id='toasttype' [position]="position"  class="toastTopPosition"
+           content='test' [showCloseButton]="true"></ejs-toast>
+<div class="card-group">
+  <div class="card">
+    <div class="card-body" >
+      <h4 class="header-text">Manage Forms {{SelectedEntity}}</h4>
+      <div *ngIf="showDropdowns" class="row" style="margin-top: 5px;">
+        <div class="col-lg-6">
+          <ejs-dropdownlist #entitytypelistObj [dataSource]="entitytypelistDataSource" [fields]="entitytypelistFields"
+                            [allowFiltering]="true" floatLabelType='Auto' placeholder='Form For'
+                            (change)='onChangeEntityType($event)'>
+          </ejs-dropdownlist>
+        </div>
+        <div class="col-lg-6">
+          <ejs-dropdownlist #EntityIdlistObj [dataSource]="EntityIdList" [fields]="EntityIdFields" floatLabelType='Auto'
+                            placeholder='Workflow/MasterData Name'
+                            [allowFiltering]="true" (change)='onChangeEntity($event)'>
+          </ejs-dropdownlist>
+        </div>
+      </div>
+
+      <ejs-grid *ngIf="ShowGrid" #entityFormGrid [dataSource]='gridDataSource' height='200'
+                [gridLines]="lines" [allowSelection]='true' allowSorting='true' allowFiltering='true' [toolbar]='toolbar'
+                  (toolbarClick)='toolbarClick($event)' (recordDoubleClick)="recordDoubleClick($event)"
+                [filterSettings]='filterSettings' allowTextWrap="true" width="100%" allowResizing='true'>
+        <e-columns>
+          <e-column field='Title' headerText='Title' width="150"></e-column>
+          <e-column field='WebTitle' headerText='WebTitle' width="150"> </e-column>
+          <e-column field='Description' headerText='Description' width="150"> </e-column>
+          <e-column field='ColumnsCount' headerText='Layout' width="150"> </e-column>
+          <e-column field='IsActive' headerText='Active' width="150" ditType='booleanedit' displayAsCheckBox='true'> </e-column>
+        </e-columns>
+      </ejs-grid>
+      <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="goToPrevious()">Back</button>
+    </div>
+  </div>
+</div>

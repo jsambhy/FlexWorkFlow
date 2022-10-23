@@ -1,0 +1,99 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" content='test' [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' showCloseIcon="true" [visible]="hidden"
+            [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true"></ejs-dialog>
+
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Map Data Fields</h4>
+      <div class="row">
+        <span class="notes-flex col-12">
+          This form will help you quickly create data fields for Sub Process. While adding Data fields, you can choose in which direction data will flow between Parent Process and Sub Process.
+          You can always change certain cosmetic properties (Label, ToolTip etc) of these Data Fields in the Manage Data Fields -> Edit form.
+        </span>
+
+      </div>
+      <div class="row" style="margin-top: 5px;">
+        <div class="col-lg-6">
+          <ejs-dropdownlist #ParentProcesslistObj [dataSource]="parentDataSource" [fields]="parentFields"
+                            [allowFiltering]="true" floatLabelType='Auto' placeholder='Parent Process' (change)='ChangeParentProcess($event)'>
+          </ejs-dropdownlist>
+        </div>
+        <div class="col-lg-6">
+          <ejs-dropdownlist #SubProcesslistObj [dataSource]="SubProcessDataSource" [fields]="SubProcessFields" floatLabelType='Auto'
+                            placeholder='Sub Process'
+                            [allowFiltering]="true" (change)='ChangeSubProcess($event)'>
+          </ejs-dropdownlist>
+        </div>
+      </div>
+
+      <div *ngIf="ShowGrid">
+        <br />
+        <ejs-grid #mappingGrid [dataSource]='mappingGridDataSource' [toolbar]='toolbar'
+                  allowSelection='true' allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings'
+                  gridLines="Both" height='300' width="100%" allowResizing='true'
+                  (toolbarClick)='toolbarClick($event)'>
+          <e-columns>
+            <!--<e-column field='ParentWfName' headerText='Parent Process' width="150"></e-column>
+            <e-column field='SubProcessWFName' headerText='Sub Process' width="150"> </e-column>-->
+            <e-column field='ParentDataField' headerText='Parent DataField' width="150"></e-column>
+            <e-column field='SubProcessDataField' headerText='Sub Process DataField' width="150"> </e-column>
+            <e-column field='ToDirection' headerText='To (Parent -> Sub Process)' width="200" displayAsCheckBox='true'></e-column>
+            <e-column field='FroDirection' headerText='Fro (Sub Process -> Parent)' width="200" displayAsCheckBox='true'></e-column>
+
+
+          </e-columns>
+        </ejs-grid>
+      </div>
+      <br />
+    </div>
+  </div>
+</div>
+
+<br />
+
+
+<ejs-dialog *ngIf="showCreatePopup" showCloseIcon='true' header="Create Data Field Mapping" class="dialogueClass_35" isModal="true"
+            enableResize="true" allowDragging='true' [(visible)]="showCreatePopup"> 
+  <ng-template #content>
+    <span class="notes-flex">
+      Choose datafields from Parent and Sub Process for mapping. You can choose the dataflow to be from parent-> sub process(To Direction), from sub process-> parent(Fro Direction) or both. Data will accordingly flow from one process to another during handover between these processes.
+      <br/>Note:- If you want system to create a new sub process datafield as a clone of parent then simply leave sub proces datafield blank.
+    </span>
+    <br/><br/>
+    <form [formGroup]="CreateForm">
+      <label>Parent Process Data Field*</label>&nbsp;<img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip"
+                                                          title="Select Datafield from parent process that needs to be mapped to the sub process" />&nbsp;&nbsp;
+
+      <ejs-dropdownlist #ParentDFList [dataSource]="ParentDFDataSource" [fields]="ParentDFFields" floatLabelType="Always" (change)="ChangeParentDF($event)"
+                        formControlName="ParentDF" required
+                        [ngClass]="{ 'is-invalid': submitted && f.DataType.errors }"></ejs-dropdownlist>
+      <div *ngIf="submitted && f.ParentDF.errors" class="e-error">
+        <div *ngIf="f.ParentDF.errors.required">Parent Process Data Field is required</div>
+      </div>
+      <label>Sub Process Data Field</label>&nbsp;<img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip"
+                                                      title="If you want the parent data field to be mapped to an existing sub process datafield then choose it here. If you do not select any value here, system will create a new datafield sub process datafield same as parent datafield." />&nbsp;&nbsp;
+
+      <ejs-dropdownlist #SubProcessDFList [dataSource]="SubProcessDFDataSource" [fields]="SubProcessDFFields" floatLabelType="Always"
+                        formControlName="SubProcessDF" required
+                        [ngClass]="{ 'is-invalid': submitted && f.DataType.errors }"></ejs-dropdownlist>
+      <div class="row">
+        <div class="col-lg-6">
+          To Direction&nbsp;<img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip"
+                                 title="If checked data will flow from parent process datafield  to subprocess datafield." />&nbsp;&nbsp;
+          <ejs-switch #ToDirection formControlName="ToDirection" [checked]="false"></ejs-switch>
+        </div>
+        <div class="col-lg-6">
+          Fro Direction&nbsp;<img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip"
+                                  title="If checked data will flow from subprocess datafield  to parent process datafield." />&nbsp;&nbsp;
+          <ejs-switch #FroDirection formControlName="FroDirection" [checked]="false"></ejs-switch>
+        </div>
+      </div>
+      <div>&nbsp;</div>
+      <button ejs-button class="e-control e-btn e-primary" (click)="SaveMapping()">Save</button>
+
+    </form>
+  </ng-template>
+</ejs-dialog>

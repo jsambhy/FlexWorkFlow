@@ -1,0 +1,48 @@
+<!--<!--<ejs-chart style='display:block;width:90%;margin:0 auto;overflow:scroll' id='chartcontainer' [primaryXAxis]='primaryXAxis'title="Salary Age wise" >
+  <e-series-collection >
+    <e-series [dataSource]='data' type='Column' xName='x' yName='y' > </e-series>
+  </e-series-collection>
+
+<ejs-chart style='display:block;' align='center' [width]='width' #colchart [chartArea]='chartArea' width='100%'
+           height='100%' [legendSettings]="collegendSettings" [margin]='margin' [primaryXAxis]='primaryXAxis'
+           [primaryYAxis]='primaryYAxis'
+           id='chartcontainer'
+           [title]='title' [tooltip]='tooltip'>
+  <e-series-collection>
+    <e-series [dataSource]='data' type='Column' xName='x' yName='y' name='Salary' width=2 [marker]='marker'> </e-series>
+    <e-series [dataSource]='data1' type='Column' xName='x' yName='y' name='Silver'
+              width=2 [marker]='marker'> </e-series>
+    <e-series [dataSource]='data2' type='Column' xName='x' yName='y' name='Bronze'
+              width=2 [marker]='marker'> </e-series>
+  </e-series-collection>
+</ejs-chart>-->
+
+<ng-template #header>
+  <div>Demo Column Chart </div>
+</ng-template>
+<ng-template #content>
+  <div id="column">
+    <ejs-chart style='display:block;' id='colChart' #colchart [chartArea]='chartArea' width='100%'
+               height='100%' [legendSettings]="collegendSettings" [margin]='margin' [primaryXAxis]='primaryXAxis'
+               [primaryYAxis]='primaryYAxis' (load)='load($event)'>
+      <e-series-collection>
+        <e-series [dataSource]='data' type='Column' xName='x' yName='y' name='Salary' width=2
+                  [marker]='marker'> </e-series>
+      </e-series-collection>
+    </ejs-chart>
+  </div>
+</ng-template>
+
+<!--<ng-template #header>
+  <div>Product usage ratio</div>
+</ng-template>
+<ng-template #content>
+  <div id="column">
+    <ejs-accumulationchart id="chart-container" [legendSettings]='legendSettings'>
+      <e-accumulation-series-collection>
+        <e-accumulation-series [dataSource]='pieData' xName='x' yName='y'>
+        </e-accumulation-series>
+      </e-accumulation-series-collection>
+    </ejs-accumulationchart>
+  </div>
+</ng-template>-->

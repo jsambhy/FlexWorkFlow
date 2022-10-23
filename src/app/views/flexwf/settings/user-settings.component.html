@@ -1,0 +1,26 @@
+<div id="action-description">
+  <p>This sample demonstrates the default functionalities of the ListView. Click any list item to select and highlight an item.</p>
+</div>
+
+<div class="control-section">
+  <div id='flat-list'>
+    <h4>Settings</h4>
+    <!-- ListView element -->
+    <!--<ejs-listview id='sample-list-flat' [dataSource]='data'></ejs-listview>-->
+    
+    <ul>
+      <li>
+        <a href="#" [routerLink]="['/prelogin/DefaultRole']" class="header-icon"> Set default login role </a>
+      </li>
+      <li>
+        <a href="#" [routerLink]="['/prelogin/ResetPassword',Email,Id]" class="header-icon"> Change password </a>
+      </li>
+      <li>
+        <a href="#" [routerLink]="['/prelogin/SecurityQuestions',Id,Email]"  class="header-icon"> Manage Security questions </a>
+      </li>
+      <li>
+        <a href="#" [routerLink]="['/prelogin/Personalizations']" class="header-icon"> Personalizations </a>
+      </li>
+    </ul>
+  </div>
+  </div>

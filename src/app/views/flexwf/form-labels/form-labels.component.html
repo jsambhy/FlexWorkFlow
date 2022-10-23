@@ -1,0 +1,307 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" content='test' [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Data Fields {{SelectedWorkflow}}</h4>
+      <div class="row">
+        <span class="notes-flex col-10">Manage data fields that belong to the selected Workflow or Master data.</span>
+
+      </div>
+      <div *ngIf="showDropdowns" class="row" style="margin-top: 5px;">
+        <div class="col-lg-6">
+          <ejs-dropdownlist #entityTypeListObj [dataSource]="entityTypeList" [fields]="EntityTypeFields"
+                            [allowFiltering]="true" floatLabelType='Auto' placeholder='Data Fields For' (change)='onChangeEntityType($event)'>
+          </ejs-dropdownlist>
+        </div>
+        <div class="col-lg-6">
+          <ejs-dropdownlist #EntityIdlistObj [dataSource]="EntityIdList" [fields]="EntityIdFields" floatLabelType='Auto'
+                            placeholder='Workflow/MasterData Name'
+                            [allowFiltering]="true" (change)='onChangeSelecter($event)'>
+          </ejs-dropdownlist>
+        </div>
+      </div>
+      <div *ngIf="showUserDropdowns" class="row">
+        <div class="col-lg-6">
+          <ejs-dropdownlist #ProjectObj [dataSource]="ProjectDataSource" [fields]="ProjectFields" [value]="SelectedProject"
+                            [allowFiltering]="true" floatLabelType='Auto' placeholder='Project Name'>
+          </ejs-dropdownlist>
+        </div>
+        <div class="col-lg-6">
+          <ejs-dropdownlist #RoleTypeObj [dataSource]="RoleTypeDataSource" [fields]="RoleTypeFields" floatLabelType='Auto'
+                            placeholder='Role Type' [allowFiltering]="true" (change)='onRoleChange($event)'>
+          </ejs-dropdownlist>
+        </div>
+      </div>
+      <div *ngIf="ShowGrid">
+        <br />
+        <ejs-grid #ColumnsGrid [dataSource]='columnConfigurationGridData' [toolbar]='toolbar'
+                  [allowSelection]='true' allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+                  [allowRowDragAndDrop]='true' (rowDrop)="rowDrop($event)" (rowSelected)="rowSelected($event)"
+                  [gridLines]="lines" height='300' width="100%" allowResizing='true' (recordDoubleClick)="recordDoubleClick($event)"
+                  (toolbarClick)='toolbarClick($event)'>
+          <e-columns>
+            <e-column field='Label' headerText='Label' width="150"></e-column>
+            <e-column field='IsActive' headerText='Active' width="150" editType='booleanedit' displayAsCheckBox='true'></e-column>
+            <e-column field='UserDataType' headerText='Type' width="150"></e-column>
+            <e-column field='IsMandatory' headerText='Required' width="150" editType='booleanedit' displayAsCheckBox='true'></e-column>
+            <e-column field='ToolTip' headerText='ToolTip' width="150"></e-column>
+            <e-column field='DefaultValue' headerText='Default Value' width="150"></e-column>
+            <e-column field='MinimumLength' headerText='Min Characters' width="150"></e-column>
+            <e-column field='MaximumLength' headerText='Max Characters' width="150"></e-column>
+            <e-column field='DigitsAfterDecimal' headerText='Decimal Digits' width="150"></e-column>
+            <e-column field='MinValueInclusive' headerText='Min Value' width="150"></e-column>
+            <e-column field='MaxValueInclusive' headerText='Max Value' width="150"></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+      <br />
+      <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="goToPrevious()">Back</button>
+    </div>
+  </div>
+</div>
+
+<br />
+<!--<div *ngIf="ShowGrid" class="col-12">
+  <div class="row">
+
+    <br /><br />
+  </div>
+</div>-->
+<!--Add new column Pop Up-->
+<div *ngIf="ShowPopupCreateColumn">
+  <ejs-dialog #columnCreateDialogue [header]="createcolumnheader"
+              showCloseIcon='true' [target]='target' enableResize="true"
+              class="dialogueClass" [animationSettings]='animationSettings'
+              isModal="true" allowDragging='true' [(visible)]="ShowPopupCreateColumn">
+    <ng-template #content>
+      <p *ngIf="fieldMapped" class="notes-flex">{{mappingText}}</p>
+      <div>&nbsp;</div>
+      <form [formGroup]="ColumnCreateForm">
+        <div *ngIf="showFieldForEditing" class="row">
+          <div class="col-lg-6">
+            Required &nbsp;&nbsp;
+            <ejs-switch #IsMandatory formControlName="IsMandatory" [checked]="false"></ejs-switch>
+          </div>
+          <div class="col-lg-6">
+            Active <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="Only active fields will be visible in Form,Reports etc. If you temporarily want to hide this field then you can switch it off from here. " />&nbsp;&nbsp;
+            <ejs-switch #IsActive formControlName="IsActive" [checked]="true"></ejs-switch>
+          </div>
+        </div>
+        <br />
+        <div class="row">
+
+          <div class="col-lg-6" [ngClass]="{'e-success': f.columnlabel.valid}">
+            <ejs-textbox #labelTextBoxobj id="labelTextBoxobj" placeholder="Label*" floatLabelType="Always"
+                         (keypress)="omit_special_char($event)"
+                         formControlName="columnlabel" [ngClass]="{ 'is-invalid': submitted && f.columnlabel.errors }"></ejs-textbox>
+            <div *ngIf="submitted && f.columnlabel.errors" class="e-error">
+              <div *ngIf="f.columnlabel.errors.required">Label is required</div>
+              <div *ngIf="f.columnlabel.errors.maxlength">Label cannot be more than 255 characters</div>
+            </div>
+          </div>
+          <div class="col-lg-6" [ngClass]="{'e-success': f.DataType.valid}">
+            <ejs-dropdownlist #DataTypeListObj [dataSource]="DataTypeSource" [fields]="DataTypeFields" floatLabelType="Always" (change)="changeDataType($event)"
+                              formControlName="DataType" placeholder='Type*' required
+                              [enabled]="enableDataType"
+                              [ngClass]="{ 'is-invalid': submitted && f.DataType.errors }"></ejs-dropdownlist>
+            <div *ngIf="submitted && f.DataType.errors" class="e-error">
+              <div *ngIf="f.DataType.errors.required">Type is required</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div *ngIf="showdivCommonFields" class="row">
+            <div class="col-lg-6">
+              <ejs-textbox #ToolTipobj id="ToolTipobj" placeholder="ToolTip" floatLabelType="Always"
+                           formControlName="ToolTip"></ejs-textbox>
+            </div>
+            <div class="col-lg-6">
+              <ejs-numerictextbox #WidthTextBoxobj id="WidthTextBoxobj" placeholder="Width" floatLabelType="Always"
+                                  decimals="0" validateDecimalOnType="true" min="1" max="12" step="1" formControlName="Width"></ejs-numerictextbox>
+            </div>
+            <div *ngIf="showFieldForEditing" class="col-lg-6">
+                <ejs-textbox *ngIf="showCommonDefault" #defaultValueobj id="defaultValueobj" placeholder="Default Value" floatLabelType="Always"
+                             formControlName="DefaultValue"></ejs-textbox>
+            </div>
+            </div>
+            <div *ngIf="showFieldForEditing">
+              <div *ngIf="showdivCharFields" class="row">
+                <div class="col-lg-6">
+                  <!--<div class="control-label">Minimum character count</div>-->
+                  <ejs-numerictextbox #MinCharTextBoxobj id="MinCharTextBoxobj" placeholder="Minimum Length(chars)" floatLabelType="Always"
+                                      decimals="0" validateDecimalOnType="true" value="" min="1" max="255" step="1" formControlName="MinLength"></ejs-numerictextbox>
+                </div>
+                <div class="col-lg-6">
+                  <!--<div class="control-label">Maximum character count</div>-->
+                  <ejs-numerictextbox #MaxCharTextBoxobj id="MaxCharTextBoxobj" placeholder="Maximum Length(chars)" floatLabelType="Always"
+                                      decimals="0" validateDecimalOnType="true" min="0" max="50000" step="1" formControlName="MaxLength"></ejs-numerictextbox>
+                </div>
+              </div>
+              <div *ngIf="showdivNumericFields" class="row">
+                <div class="col-lg-12">
+                  <ejs-radiobutton label="Whole Number " [checked]="Whole" [disabled]="numbertypeDisable" name="numbertype" value="Whole" (change)="SetNumberFieldType('Whole')"></ejs-radiobutton> &nbsp;
+                  <ejs-radiobutton label="Decimal Number " [checked]="Decimal" [disabled]="numbertypeDisable" name="numbertype" value="Decimal" (change)="SetNumberFieldType('Decimal')"></ejs-radiobutton>&nbsp;
+                </div>
+                <br />
+                <div class="col-lg-4">
+                  <!--<div class="control-label">Min Value</div>-->
+                  <ejs-numerictextbox #MinValueTextBoxobj id="MinValueTextBoxobj" placeholder="Min Value" floatLabelType="Always"
+                                      formControlName="MinValue"></ejs-numerictextbox>
+                </div>
+                <div class="col-lg-4">
+                  <!--<div class="control-label">Max Value</div>-->
+                  <ejs-numerictextbox #MaxValueTextBoxobj id="MaxValueTextBoxobj" placeholder="Max Value" floatLabelType="Always"
+                                      decimals="0" validateDecimalOnType="true" formControlName="MaxValue"></ejs-numerictextbox>
+                </div>
+                <div class="col-lg-4" *ngIf="showDecimal">
+                  <!--<div class="control-label">Decimal Digits</div>-->
+                  <ejs-numerictextbox #DecimalDigitsTextBoxobj id="DecimalDigitsTextBoxobj" placeholder="Decimal Digits" floatLabelType="Always"
+                                      formControlName="DigitsAfterDecimal"></ejs-numerictextbox>
+                </div>
+              </div>
+              <div *ngIf="showdivDateFields" class="row">
+                <div class="col-lg-4">
+                  <!--<div class="control-label">Min Date</div>-->
+                  <ejs-datepicker placeholder="Min Date" floatLabelType="Always" formControlName="MinDateInclusive"></ejs-datepicker>
+                </div>
+                <div class="col-lg-4">
+                  <ejs-datepicker placeholder="Max Date" floatLabelType="Always" formControlName="MaxDateInclusive"></ejs-datepicker>
+                  <span class="text-danger"
+                        *ngIf="f.MaxDateInclusive.touched && f.MaxDateInclusive.errors?.endBeforeStart">
+                    Max Date should be greater than Min Date.
+                  </span>
+                </div>
+                <div class="col-lg-4">
+                  <ejs-datepicker placeholder="Default Date" floatLabelType="Always" [value]='dateValue' formControlName="DefaultDateValue"></ejs-datepicker>
+                </div>
+
+              </div>
+              <div *ngIf="showdivTimeFields" class="row">
+                <!--<div class="col-lg-4">
+        <ejs-dropdownlist #TimeFormatListObj [dataSource]='TimeFormat' floatLabelType="Always"
+                          placeholder='Formats' [value]='TimeFormatValue' formControlName="TimeFormat"></ejs-dropdownlist>
+      </div>-->
+                <div class="col-lg-6">
+                  <ejs-timepicker id='timepicker' floatLabelType="Always"
+                                  placeholder='Default Time' formControlName="DefaultTimeValue"></ejs-timepicker>
+                </div>
+              </div>
+              <div *ngIf="showdivBooleanFields" class="row">
+                <div class="col-lg-6">
+                  Default &nbsp;&nbsp;
+                  <ejs-switch #DefaultBooleanValue formControlName="DefaultBooleanValue" [checked]="false"></ejs-switch>
+                  <!--<ejs-checkbox label="Default" [checked]="checkedBoolDefault" formControlName="DefaultBooleanValue"></ejs-checkbox>-->
+                  <!--<ejs-dropdownlist #BooleanListObj [dataSource]='booleanSrc' floatLabelType="Always"
+        placeholder='Default Value' [value]='booleanValue' formControlName="DefaultBooleanValue"></ejs-dropdownlist>-->
+                </div>
+              </div>
+              <div *ngIf="showdivDropdownFields" class="row">
+                <div class="col-lg-6">
+                  <ejs-dropdownlist #EntityTypeDD [dataSource]="EntityTypeSource" [fields]="EntityTypeDataFields" floatLabelType='Always'
+                                    placeholder='List From' (change)="LoadEntities($event);"
+                                    [allowFiltering]="true" formControlName="EntityTypeValue">
+                  </ejs-dropdownlist>
+                </div>
+                <div class="col-lg-6">
+                  <ejs-dropdownlist *ngIf="showListName" #ListNamelistObj [dataSource]="ListName" [fields]="ListNameFields" floatLabelType='Always'
+                                    placeholder='List Name' (change)="LoadMasterDataValues($event);"
+                                    [allowFiltering]="true" formControlName="ListNameValue">
+                  </ejs-dropdownlist>
+                  <a *ngIf="showNewLink" [routerLink]="[]" (click)="OpenMoreValuesDialogue(EntityTypeDD.value);">Add New List</a>
+                </div>
+                <div *ngIf="showSimpleDropdown" class="col-lg-6">
+                  <ejs-dropdownlist #DisplayColumnListDD [dataSource]="DisplayColumnListSource" [fields]="DisplayColumnListDataFields" floatLabelType='Always'
+                                    placeholder='Display Column*'
+                                    [allowFiltering]="true" formControlName="DisplayColumnListValue">
+                  </ejs-dropdownlist>
+
+                </div>
+                <div *ngIf="showMultiselect" class="col-lg-6">
+                  <ejs-multiselect #DisplayColumnListDD [dataSource]="DisplayColumnListSource" [fields]="DisplayColumnListDataFields" floatLabelType='Always'
+                                   placeholder='Display Column*' [value]="selectedValues"
+                                   [allowFiltering]="true" formControlName="DisplayColumnListValue">
+                  </ejs-multiselect>
+                </div>
+                <div *ngIf="showPrepopulatedColumn" class="col-lg-6">
+                  <ejs-dropdownlist #PrepopulateColumnListDD [dataSource]="PrepopulateColumnListSource" [fields]="PrepopulateColumnListDataFields" floatLabelType='Always'
+                                    placeholder='Prepopulate Column'
+                                    [allowFiltering]="true" formControlName="PrepopulateColumnListValue">
+                  </ejs-dropdownlist>
+                </div>
+                <div *ngIf="submitted && f.DisplayColumnListValue.errors" class="e-error">
+                  <div *ngIf="f.DisplayColumnListValue.errors.required">Display Column is required </div>
+                </div>
+                <div class="col-lg-6" style="margin-top:20px;">
+                  Allow Multi-selection &nbsp;&nbsp;
+                  <ejs-switch #IsMultiSelection formControlName="IsMultiSelection" [checked]="false"></ejs-switch>
+                </div>
+
+
+                <!--<div class="col-lg-4">
+    <ejs-dropdownlist #PreviewMasterDataDropdownList [dataSource]="PreviewMasterData" [fields]="PreviewDataFields"
+                      [allowFiltering]="true" floatLabelType='Always' placeholder='Preview Master Data Values'>
+    </ejs-dropdownlist>
+    <a (click)="OpenMoreValuesDialogue('MasterDataValues');">Change these Values</a>
+  </div>-->
+
+              </div>
+            </div>
+          </div>
+        <div>&nbsp;</div>
+        <button ejs-button *ngIf="ShowAddBtn" class="e-control e-btn e-primary" (click)="SaveFormField()">Save</button>
+        <button ejs-button *ngIf="ShowUpdateBtn" class="e-control e-btn e-primary" (click)="UpdateFormField()">Save</button>
+        <!--<flex-button *ngIf="ShowAddBtn" buttonType="e-primary" buttonText="Save" (click)="SaveFormField()"></flex-button>
+        <flex-button *ngIf="ShowUpdateBtn" buttonType="e-primary" buttonText="Save" (click)="UpdateFormField()"></flex-button>-->
+
+      </form>
+
+    </ng-template>
+
+  </ejs-dialog>
+
+  <!--<flex-button  buttonType="e-primary" buttonText="Back" (click)="GoBack()"></flex-button>-->
+</div>
+<ejs-dialog *ngIf="ShowMoreValuesDialogue" #AddMoreValuesDialogue class="dialogueClass" #WFActionsDialogue [animationSettings]='animationSettings'
+            showCloseIcon="true" isModal="true" allowDragging='true' enableResize="true">
+  <ng-template #header>
+    {{AddMoreValueHeader}}
+  </ng-template>
+  <p class="notes-flex">Please provide comma(,) separated values.</p>
+  <ejs-textbox #label floatLabelType="Always"></ejs-textbox>
+  <div>
+    <button ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="AddNewValues(label.value)">Save</button>
+  </div>
+</ejs-dialog>
+
+<div *ngIf="showConstraintsPopup">
+  <ejs-dialog showCloseIcon='true' header="Constraints" class="dialogueClass_50" isModal="true"
+              enableResize="true" allowDragging='true' [(visible)]="showConstraintsPopup">
+    <ng-template #content>
+      <app-constraints [ProjectId]="ProjectId" [EntityType]="selectedEntityType" [EntityId]="selectedEntityId"></app-constraints>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+
+
+<!--Calculation module Pop up-->
+<div *ngIf="showCalcPopUp">
+  <ejs-dialog class="dialogueClass_50" #CalcDialogue showCloseIcon="true" isModal="true"
+              allowDragging='true' enableResize="true" [(visible)]="showCalcPopUp" header="Manage Calculation for DataFields">
+    
+    <ng-template #content>
+      <app-calculations [popupHeader]="popupHeader" [configuringEntityType]="selectedEntityType"
+                        [configuringEntityId]="selectedEntityId" [calcSource]="calcSource">
+
+      </app-calculations>
+    </ng-template>
+    <ng-template #footerTemplate>
+
+      <p style="text-align:left;margin-left:12px">Note: These calculations will be used to update related tables/fields after execution</p>
+
+    </ng-template>
+  </ejs-dialog>
+</div>

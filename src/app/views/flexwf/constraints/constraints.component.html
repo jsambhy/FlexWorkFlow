@@ -1,0 +1,68 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<!--Workflow Grid Definition-->
+<ejs-grid #ConstraintsGrid id='grid' [dataSource]='ConstraintsGridData' [toolbar]='toolbar' [allowSelection]='true'
+          allowSorting='true' allowFiltering='true' allowTextWrap="true" (toolbarClick)='toolbarClick($event)'
+          [allowExcelExport]='true' [allowPdfExport]='true' allowResizing='true' gridLines="Both"
+          [filterSettings]='filterSettings' (recordDoubleClick)="recordDoubleClick($event)">
+  <e-columns>
+    <e-column field='IsActive' headerText='Active' width="6%">
+      <ng-template #template let-ConstraintsGridData>
+        <ejs-checkbox [(checked)]="ConstraintsGridData.IsActive"></ejs-checkbox>
+      </ng-template>
+    </e-column>
+    <e-column field='ConstraintType' headerText='Type'></e-column>
+    <e-column field='IsPrimaryKey' headerText='Primary'>
+      <ng-template #template let-ConstraintsGridData>
+        <ejs-checkbox [(checked)]="ConstraintsGridData.IsPrimaryKey"></ejs-checkbox>
+      </ng-template>
+    </e-column>
+    <e-column field='Description' headerText='Description'></e-column>
+    <e-column field='ErrorMessage' headerText='ErrorMessage'></e-column>
+    <e-column field='ColumnsUsedInConstraint' headerText='Columns'></e-column>
+  </e-columns>
+</ejs-grid>
+
+<ejs-dialog showCloseIcon='true' [header]="PopupHeader" class="dialogueClass_50" isModal="true" allowDragging='true'
+            [(visible)]="ShowForm" enableResize="true">
+    <ng-template #content>
+      <div class="div-bottomMargin"></div>
+      <form [formGroup]="ConstrainstForm">
+        <div [ngClass]="{'e-success': f.ErrorMessage.valid}">
+          <ejs-textbox placeholder="ErrorMessage" floatLabelType="Always" formControlName="ErrorMessage" title="ErrorMessage"
+                       [ngClass]="{ 'is-invalid': submitted && f.ErrorMessage.errors }"></ejs-textbox>
+        </div>
+        <div *ngIf="(f.ErrorMessage.touched || submitted) && f.ErrorMessage.errors" class="e-error">
+          <div *ngIf="f.ErrorMessage.errors.maxlength">ErrorMessage cannot be max than 255 characters</div>
+        </div>
+
+        <div [ngClass]="{'e-success': f.Description.valid}">
+          <ejs-textbox placeholder="Description" floatLabelType="Always" title="Description" [multiline]='true'
+                       formControlName="Description"></ejs-textbox>
+        </div>
+        <ejs-multiselect #ColumnsList id='ColumnsList' [dataSource]='ColumnsDataSource' [allowFiltering]="true" mode='Box'
+                         [fields]='fields' floatLabelType="Always" placeholder='Columns that will participate in constraint*'
+                         formControlName="Columns" [value]="ColumnsValueList">
+
+        </ejs-multiselect>
+        <div *ngIf="(f.Columns.touched ||  submitted) && f.Columns.errors" class="e-error">
+          <div *ngIf="f.Columns.errors.required">Please choose atleast one column.</div>
+        </div>
+        <ejs-checkbox #IsPrimaryKey id="IsPrimaryKey" label="Is Primary" [checked]="false" formControlName="IsPrimaryKey"></ejs-checkbox>&nbsp;
+
+        <ejs-checkbox #IsActive id="IsActive" label="Is Active" [checked]="true" formControlName="IsActive"></ejs-checkbox>&nbsp;
+
+
+      </form>
+      <div>&nbsp;</div>
+      <div>
+        <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="AddConstraint()">Save</button>
+        <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateConstraint()">Save</button>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+
+
+

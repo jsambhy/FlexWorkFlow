@@ -1,0 +1,12 @@
+.dialogueClass {
+  max-height: 90% !important;
+  left: 0px;
+  top: 0px;
+  position: relative;
+  max-width: 70%;
+}
+
+.userLink {
+  text-align: left;
+  padding-top: 20px
+}

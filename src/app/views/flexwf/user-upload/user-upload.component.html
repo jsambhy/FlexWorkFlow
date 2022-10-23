@@ -1,0 +1,24 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">User Upload Utility</h4>
+      <!--<div class=" btn btn-link userLink">
+        <a (click)="DownloadTemplate();">Download Empty Template</a>
+      </div>-->
+      <div class=" btn btn-link userLink">
+        <a (click)="OpenUploader();">Upload</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ejs-dialog #confirmDialog header='Attach File'
+            isModal="true" [(visible)]="showUploader" class="dialogueClass_50" showCloseIcon='true' enableResize="true">
+  <ng-template #content>
+    <app-uploader [TargetPath]="uploadPath" [AllowedFileTypes]="AllowedFileTypes" [multiple]="false"
+                  (PostUploadEvent)="PostUploadEvent($event);"></app-uploader>
+
+  </ng-template>
+</ejs-dialog>
+

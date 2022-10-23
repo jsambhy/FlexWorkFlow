@@ -1,0 +1,22 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card mx-4">
+            <div class="card-body p-4">
+              <h5>
+                Get MFA from Google Authenticator app and put here:-
+              </h5>
+              <br />
+              <input #MFACode type="text" id="MFACode" class="form-control" placeholder="MFA Code" required>
+              <br />
+              <button ejs-button class="e-control e-btn e-primary" (click)="Verify(MFACode.value)">Submit</button>&nbsp;&nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+

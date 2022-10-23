@@ -1,0 +1,19 @@
+
+
+.dialogueClass {
+  max-height: 90% !important;
+  left: 0px;
+  top: 0px;
+  position: relative;
+  max-width: 70%;
+  width: auto;
+}
+
+
+.dialogueClass_50 {
+  max-height: 90% !important;
+  left: 0px;
+  top: 0px;
+  position: relative;
+  max-width: 50%;
+}

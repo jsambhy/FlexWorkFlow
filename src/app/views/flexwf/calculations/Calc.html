@@ -1,0 +1,152 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue-->
+<!--<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]="hidden" showCloseIcon="true" [content]='confirmcontent' class="dialogueClass_35"  isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>-->
+
+<!--Manage Calculation pop up-->
+<!--<ejs-dialog class="dialogueClass_50" #CalcDialogue showCloseIcon="true" isModal="true" allowDragging='true' enableResize="true">
+  <ng-template #header>
+    {{popupHeader}}-->
+    <!--Calculation for Action '{{configuringStepActionLabel}}' on Step '{{configuringstepname}}'-->
+  <!--</ng-template>
+  <ng-template #content>-->
+<ejs-grid #stepactioncalcgrid id='stepactioncalcgrid' [filterSettings]='filterSettings' [dataSource]='calcmodeldata' [toolbar]='toolbarCalc' [allowSelection]='true'
+          allowSorting='true' allowFiltering='true' allowTextWrap="true" (toolbarClick)='toolbarClickCalc($event)' [allowExcelExport]='true' [allowPdfExport]='true' [gridLines]="lines">
+  <!--[contextMenuItems]="contextMenuItems"-->
+  <e-columns>
+    <e-column field='Name' headerText='Name'></e-column>
+  </e-columns>
+</ejs-grid>
+  <!--</ng-template>
+  <ng-template #footerTemplate>
+    
+    <p style="text-align:left;margin-left:12px">Note: These calculations will be used to update related tables/fields after execution</p>
+    
+  </ng-template>
+</ejs-dialog>-->
+
+<!--Calculation Add pop up-->
+<div *ngIf="showAddCalcPopUp">
+  <ejs-dialog class="dialogueClass_70" [(visible)]="showAddCalcPopUp" showCloseIcon='true' isModal="true" allowDragging='true' height="80%" enableResize="true">
+    <ng-template #header>
+      <!--Manage Calculation for Action '{{configuringStepActionLabel}}'-->
+      {{popupHeader}}
+    </ng-template>
+    <ng-template #content>
+
+      <ejs-tab #tab id="tab" (selected)='onTabSelect($event)'>
+        <e-tabitems>
+          <e-tabitem [header]="{ 'text': 'Basic Info' }">
+            <ng-template #content>
+              <p class="notes-flex">{{NoteText}}</p>
+              <div>&nbsp;</div>
+              <form [formGroup]="CalcForm">
+                <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" [ngClass]="{'e-success': f.CalcName.valid}">
+                    <ejs-textbox #Nameobj id="Nameobj" placeholder="Name*" floatLabelType="Auto" [enabled]="True" formControlName="CalcName"
+                                 [ngClass]="{ 'is-invalid': submitted && f.CalcName.errors }">
+                    </ejs-textbox>
+                    <div *ngIf="f.CalcName.touched && f.CalcName.errors" class="e-error">
+                      <div *ngIf="f.CalcName.errors.required">Name is Required</div>
+                      <div *ngIf="f.CalcName.errors.maxlength">Name cannot be max than 255 characters</div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" [ngClass]="{'e-success': f.TargetCol.valid}">
+                    <ejs-dropdownlist #Targetentity id="Targetentity" [dataSource]="choosecolumn"
+                                      [fields]="choosecolumnfields" (change)="TargetentityChange($event)"
+                                      placeholder='Calculation For Data Field*' floatLabelType="Auto" formControlName="TargetCol"
+                                      [ngClass]="{ 'is-invalid': submitted && f.TargetCol.errors }"></ejs-dropdownlist>
+                    <div *ngIf="f.TargetCol.touched && f.TargetCol.errors" class="e-error">
+                      <div *ngIf="f.TargetCol.errors.required">Target Field is Required</div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div>&nbsp;</div>
+                <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <div class="row col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">Is FormGrid Special Calculations?</div>
+                    <div class="row col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <ejs-radiobutton #radiobutton title="Form Level Calculation" name="SpecialCalculation" label="Yes" value="Yes" [(checked)]="YesChecked" (change)="changeHandler()"></ejs-radiobutton>
+                      </div>
+                      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <ejs-radiobutton title="Form Grid Calculation" name="SpecialCalculation" label="No" value="No" [(checked)]="NoRBChecked" (change)="changeHandler()"></ejs-radiobutton>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div *ngIf="showFormGridDD" class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <ejs-dropdownlist #FormGridDD id="FormGridDD" [dataSource]="FormGridData"
+                                      [fields]="FormGridfields" (change)="FormGridChange($event)" placeholder='Choose FormGrid'
+                                      floatLabelType="Auto" formControlName="FormGridName"></ejs-dropdownlist>
+                  </div>
+
+                </div>
+
+                <div>&nbsp;</div>
+
+              </form>
+              <div>&nbsp;</div>
+              <div>&nbsp;</div>
+              <div style="margin-top:170px">
+
+                <button *ngIf="createbutton" ejs-button class="e-control e-btn e-primary" (click)="SaveData()">Save</button>
+                <button *ngIf="updatebutton" ejs-button class="e-control e-btn e-primary" (click)="UpdateData()">Save</button>
+
+              </div>
+            </ng-template>
+          </e-tabitem>
+
+          <e-tabitem [header]="{ 'text': 'Calculation' }">
+            <ng-template #content>
+              <!--<h6>Calculation</h6>-->
+              <div *ngIf="showCalculationdiv">
+
+                <p class="notes-flex">Construct the calculation below that needs to go into the Target DataField provided above.</p>
+
+                <app-where-clause [TableEntityType]="configuringEntityType" [TableEntityId]="configuringEntityId"
+                                  (PostHavingClauseEvent)="PostHavingClauseEvent($event);" Source="Calculation"
+                                  [ExpressionVal]="CalculationExpression" [FormGridName]="FormGridName"></app-where-clause>
+
+              </div>
+            </ng-template>
+          </e-tabitem>
+
+          <e-tabitem [header]="{ 'text': 'Condition' }">
+            <ng-template #content>
+              <div>
+                <!--<h6 style="padding-top:30px">Where Clause</h6>-->
+                <div *ngIf="showWherediv" style="padding-top:30px">
+                  <p class="notes-flex" style="margin-top:10px">Under what condition do you want this calculation to happen? Skip this section if the calculation is unconditional</p>
+
+                  <app-where-clause [TableEntityType]="configuringEntityType" [TableEntityId]="configuringEntityId"
+                                    (PostWhereClauseEvent)="PostWhereClauseEvent($event);" Source="WhereClause" [ExpressionVal]="ConditionExpression"></app-where-clause>
+                </div>
+
+
+               
+                </div>
+        </ng-template>
+          </e-tabitem>
+
+         
+
+        </e-tabitems>
+      </ejs-tab>
+    </ng-template>
+
+    <!--<ng-template #footerTemplate>
+
+    </ng-template>-->
+  </ejs-dialog>
+</div>

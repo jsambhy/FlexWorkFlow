@@ -1,0 +1,58 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Create Cognito User</h4>
+      <form [formGroup]="CognitoUserForm">
+
+
+        <div>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" [ngClass]="{'e-success': f.UserName.valid}">
+            <ejs-textbox placeholder="UserName*" floatLabelType="Auto" formControlName="UserName"></ejs-textbox>
+          </div>
+          <div *ngIf="(f.UserName.touched || submitted) && f.UserName.errors" class="e-error">
+            <div *ngIf="f.UserName.errors.required">UserName is required</div>
+            <div *ngIf="f.UserName.errors.maxlength">UserName cannot be max than 255 characters</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" [ngClass]="{'e-success': f.Email.valid}">
+            <ejs-textbox placeholder="Email*" floatLabelType="Auto" formControlName="Email"></ejs-textbox>
+          </div>
+          <div *ngIf="(f.Email.touched || submitted) && f.Email.errors" class="e-error">
+            <div *ngIf="f.Email.errors.required">Name is required</div>
+            <div *ngIf="f.Email.errors.maxlength">Name cannot be max than 255 characters</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <ejs-textbox placeholder="PhoneNumber" floatLabelType="Auto" formControlName="PhoneNumber"></ejs-textbox>
+          </div>
+          <!--<div *ngIf="(f.PhoneNumber.touched || submitted) && f.PhoneNumber.errors" class="e-error">
+            <div *ngIf="f.PhoneNumber.errors.required">Name is required</div>
+            <div *ngIf="f.PhoneNumber.errors.maxlength">Name cannot be max than 255 characters</div>
+          </div>-->
+        </div>
+
+        <div>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" [ngClass]="{'e-success': f.Password.valid}">
+            <ejs-textbox placeholder="Password*" floatLabelType="Auto" formControlName="Password"></ejs-textbox>
+          </div>
+          <div *ngIf="(f.Password.touched || submitted) && f.Password.errors" class="e-error">
+            <div *ngIf="f.Password.errors.required">Name is required</div>
+            <div *ngIf="f.Password.errors.maxlength">Name cannot be max than 8 characters</div>
+          </div>
+        </div>
+
+        <div>
+          <button ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,22 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Scheduled Reports</h4>
+      <ejs-grid #SchedulerGrid id='SchedulerGrid' [toolbar]='toolbar' [dataSource]="SchedulerData"
+                (toolbarClick)='toolbarClick($event)'
+                gridLines='Both'>
+        <e-columns>
+          <e-column field='Name' headerText='Name' width="20%"></e-column>
+          <e-column field='Status' headerText='Status'></e-column>
+          <e-column field='StartDateTime' headerText='StartDateTime'></e-column>
+          <e-column field='EndDateTime' headerText='EndDateTime'></e-column>
+          <e-column field='ErrorMessage' headerText='Message'></e-column>
+          <e-column field='SchedulerRunId' headerText='SchedulerRunId'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </div>
+</div>

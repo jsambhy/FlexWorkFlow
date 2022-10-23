@@ -1,0 +1,41 @@
+<ejs-toast #toasttype id='toasttype' [position]="position"
+           content='test' [showCloseButton]="true"></ejs-toast>
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body">
+                <h1>Security Questions</h1>
+                <p>
+                  Note : These security questions are required to retrieve new password using forgot password link in future. Please provide 3 security questions of your choice along with answers.
+                  You can provide answer hint as well. However it has to be different to the answer.
+                </p>
+                <ejs-grid #WFgrid id='grid' [dataSource]='questionData' [editSettings]='editSettings'
+                          allowSorting='true'  
+                          [filterSettings]='filterSettings' allowFiltering='true' allowTextWrap="true"
+                          [gridLines]="lines"
+                          (toolbarClick)='toolbarClick($event)'
+                          (actionComplete)="actionComplete($event)"
+                          [selectionSettings]="selectionOptions"
+                          allowResizing="true"
+                          allowReordering='true'>
+                  <e-columns>
+                    <e-column field='Question' width="100" headerText='Question*'></e-column>
+                    <e-column field='Answer' width="100" headerText='Answer*'></e-column>
+                    <e-column field='Answerhint' width="80" headerText='Hint'></e-column>
+                  </e-columns>
+                </ejs-grid>
+                <p>Note : Please click Save button to save changes permanently.</p>
+                  <button ejs-button class="e-control e-btn e-primary" (click)="saveQuestions()">Save</button>&nbsp;&nbsp;
+                  <button ejs-button class="e-control e-btn e-primary" (click)="cancel()">Cancel</button>&nbsp;&nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

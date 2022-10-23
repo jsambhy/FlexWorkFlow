@@ -1,0 +1,124 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <p class="notes-flex">Note:- Provide parameters for this report. You can select multiple values in dropdown only when operator is 'Equals' or 'Not Equals'.</p>
+      <form *ngIf="ReportParamForm" [formGroup]="ReportParamForm" class="roundedcorners">
+       
+        <div *ngFor="let form_elem of ReportFieldsArray;let i = index">
+          <span>{{form_elem.DisplayName}}</span>
+          <div class="row col-lg-12 col-md-12 col-xs-12 ">
+            <div class="col-lg-4">
+              <ejs-dropdownlist [dataSource]="OperatorDataSource" floatLabelType='Always'
+                                placeholder='Operator' formControlName="Operator{{form_elem.FormName}}"
+                                (change)="OnOperatorChange($event,form_elem.FormName,i)">
+              </ejs-dropdownlist>
+            </div>
+
+            <div [ngSwitch]="form_elem.UserDataType" class="col-lg-4">
+              <div *ngSwitchCase="'ShortAnswer'">
+                <ejs-textbox floatLabelType="Always" id="V1{{form_elem.FormName}}"
+                             placeholder='Value1' formControlName="V1{{form_elem.FormName}}">
+                </ejs-textbox>
+              </div>
+              <div *ngSwitchCase="'Paragraph'">
+                <ejs-textbox floatLabelType="Always" id="V1{{form_elem.FormName}}"
+                             placeholder='Value1' [multiline]='true' formControlName="V1{{form_elem.FormName}}">
+                </ejs-textbox>
+                <span></span>
+              </div>
+              <div *ngSwitchCase="'Number'">
+                <ejs-numerictextbox floatLabelType="Always" decimals="{{form_elem.DigitsAfterDecimal}}" format="n{{form_elem.DigitsAfterDecimal}}"
+                                    min="{{form_elem.MinValue}}" max="{{form_elem.MaxValue}}" step="1"
+                                    id="V1{{form_elem.FormName}}" [showSpinButton]='false' placeholder='Value1'
+                                    formControlName="V1{{form_elem.FormName}}"></ejs-numerictextbox>
+              </div>
+              <div *ngSwitchCase="'Date'">
+                <ejs-datepicker floatLabelType="Always" formControlName="V1{{form_elem.FormName}}" placeholder='Value1'
+                                min="{{form_elem.MinDate}}" max="{{form_elem.MaxDate}}" (keydown)="keydown($event)"></ejs-datepicker>
+              </div>
+
+              <div *ngSwitchCase="'SingleColumnList'">
+                <ejs-multiselect [dataSource]="form_elem.dataSource" [fields]="form_elem.fields" floatLabelType='Always'
+                                 placeholder='Value1' formControlName="V{{form_elem.FormName}}" id="V{{form_elem.FormName}}">
+                </ejs-multiselect>
+              </div>
+
+
+            </div>
+
+
+            <!---->
+            <div id="V2Block{{form_elem.FormName}}" *ngIf="form_elem.ShowHideV2Block" [ngSwitch]="form_elem.UserDataType" class="col-lg-4">
+
+              <div *ngSwitchCase="'ShortAnswer'">
+                <ejs-textbox floatLabelType="Always" id="V2{{form_elem.FormName}}"
+                             placeholder='Value2' formControlName="V2{{form_elem.FormName}}">
+                </ejs-textbox>
+              </div>
+              <div *ngSwitchCase="'Paragraph'">
+                <ejs-textbox floatLabelType="Always" id="V2{{form_elem.FormName}}"
+                             placeholder='Value2' [multiline]='true' formControlName="V2{{form_elem.FormName}}">
+                </ejs-textbox>
+                <span></span>
+              </div>
+              <div *ngSwitchCase="'Number'">
+                <ejs-numerictextbox floatLabelType="Always" decimals="{{form_elem.DigitsAfterDecimal}}" format="n{{form_elem.DigitsAfterDecimal}}"
+                                    min="{{form_elem.MinValue}}" max="{{form_elem.MaxValue}}" step="1"
+                                    id="V2{{form_elem.FormName}}" [showSpinButton]='false' placeholder='Value2'
+                                    formControlName="V2{{form_elem.FormName}}"></ejs-numerictextbox>
+              </div>
+              <div *ngSwitchCase="'Date'">
+                <ejs-datepicker floatLabelType="Always" formControlName="V2{{form_elem.FormName}}" placeholder='Value2'
+                                min="{{form_elem.MinDate}}" max="{{form_elem.MaxDate}}" (keydown)="keydown($event)"></ejs-datepicker>
+              </div>
+
+              <div *ngSwitchCase="'SingleColumnList'">
+                <ejs-multiselect formControlName="VV{{form_elem.FormName}}"
+                                 id="VV{{form_elem.FormName}}" placeholder='Value2'
+                                 [dataSource]="form_elem.dataSource" floatLabelType='Always'
+                                 [fields]="form_elem.fields">
+                </ejs-multiselect>
+
+              </div>
+
+
+            </div>
+
+          </div>
+        </div>
+
+        <button ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="SaveParams()">Run</button>
+      </form>
+
+
+        <!--<form [formGroup]="ReportParamForm">
+      <span>Period*</span>
+      <div class="col-lg-6">
+        <ejs-dropdownlist [dataSource]="OperatorDataSource"   floatLabelType='Always'
+                          placeholder='Operator' formControlName="PeriodOperator">
+        </ejs-dropdownlist>
+      </div>
+      <div class="col-lg-6">
+        <ejs-multiselect [dataSource]="PeriodValueDataSource"   floatLabelType='Always'
+                          placeholder='Value' formControlName="PeriodValue">
+        </ejs-multiselect>
+      </div>
+      <span>Employee*</span>
+      <div class="col-lg-6">
+        <ejs-dropdownlist [dataSource]="OperatorDataSource"   floatLabelType='Always'
+                          placeholder='Operator' formControlName="EmpOperator">
+        </ejs-dropdownlist>
+      </div>
+      <div class="col-lg-6">
+        <ejs-multiselect [dataSource]="EmpDataSource" [fields]="EmpFields" floatLabelType='Always'
+                          placeholder='Value' formControlName="EmpValue">
+        </ejs-multiselect>
+      </div>
+      <button ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="SaveParams()">Run</button>
+    </form>-->
+    </div>
+  </div>
+</div>
+

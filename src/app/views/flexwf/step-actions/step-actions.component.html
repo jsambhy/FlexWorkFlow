@@ -1,0 +1,211 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Calculation module Pop up-->
+<div *ngIf="showCalcPopUp">
+  <ejs-dialog class="dialogueClass_50" #CalcDialogue showCloseIcon="true" isModal="true"
+              allowDragging='true' enableResize="true" [(visible)]="showCalcPopUp" [header]="popupHeader">
+
+    <ng-template #content>
+      <app-calculations [popupHeader]="popupHeader" [calcSource]="calcSource" [configuringEntityType]="ConfiguringEntityType"
+                        [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname"
+                        [configuringEntityId]="configuringFlexTableId" [configuringstepid]="configuringstepid"
+                        [configuringWFId]="configuringWFId" [configuringStepActionId]="selectedstepactionId"
+                        [configuringStepActionLabel]="selectedstepactionlabel" [sourceStepId]="configuringstepid">
+
+      </app-calculations>
+    </ng-template>
+    <ng-template #footerTemplate>
+
+      <p style="text-align:left;margin-left:12px">Note: These calculations will be used to update related tables/fields after execution</p>
+
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+
+<!--Confirmation dialogue for user info in calculation module Pop up-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]="hidden" showCloseIcon="true" [content]='confirmcontent' class="dialogueClass_35" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+
+<!--Confirmation dialogue for delete Pop up-->
+<!--<ejs-dialog #confirmDialogForDelete [buttons]='confirmDlgButtonsForDelete' showCloseIcon="true"  [content]='confirmcontentForDelete' [width]="ConfirmDialogueWidth" (close)="confirmdialogCloseForDelete()" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>-->
+<!--create Action on a step pop up-->
+<ejs-dialog #CreateactionDialog [header]='headerStepAction' showCloseIcon='true' (close)="Close()" class="dialogueClass_35" isModal="true" allowDragging='true' [(visible)]="ShowPopupcreatestepaction" enableResize="true">
+  <ng-template #content>
+    <div class="div-bottomMargin"></div>
+    <form [formGroup]="stepactioncreate">
+      <p class="notes-flex">In order to maintain consistency across workflow, label/icon for already used actions cannot be changed at a particular step.</p>
+      <div>
+        <div [ngClass]="{'e-success': f.actiondrop.valid}">
+          <ejs-dropdownlist [cssClass]="cssClass" #local [dataSource]='ActionsSourceData'
+                            [fields]='localFields' filterType='StartsWith' [placeholder]='ActionPlaceHolder'
+                            formControlName="actiondrop" floatLabelType="Auto"
+                            (change)="change($event)" [ngClass]="{ 'is-invalid': submitted && f.actiondrop.errors }">
+            <ng-template>
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="e-text-center" style="width: 120px;">{{data.Label}}</td>
+                    <td>{{data.Description}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-template>
+            <ng-template #noRecordsTemplate>
+              <span class='norecord'>NO DATA AVAILABLE</span>
+            </ng-template>
+          </ejs-dropdownlist>
+        </div>
+        <div *ngIf="f.actiondrop.touched && f.actiondrop.errors" class="e-error">
+          <div *ngIf="f.actiondrop.errors.required">please select Action Icon</div>
+        </div>
+        <div>&nbsp;</div>
+        <div [ngClass]="{'e-success': f.actionlabel.valid}">
+          <ejs-textbox #label placeholder="Label*" (blur)="focusOut($event)" floatLabelType="Auto" formControlName="actionlabel" title="Action Name" [ngClass]="{ 'is-invalid': submitted && f.actionlabel.errors }"></ejs-textbox>
+        </div>
+        <div *ngIf="f.actionlabel.touched && f.actionlabel.errors" class="e-error">
+          <div *ngIf="f.actionlabel.errors.required">Label is required</div>
+          <div *ngIf="f.actionlabel.errors.maxlength">Label cannot be max than 255 characters</div>
+        </div>
+        <div>&nbsp;</div>
+
+        <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12" *ngIf="ShowIconDropdown">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div [ngClass]="{'e-success': f.Icondrop.valid}">
+
+              <ejs-dropdownlist [cssClass]="cssClass" placeholder="Icon*" id='icons' [dataSource]='ActionIconData'
+                                [fields]='iconFields' [popupHeight]='height'
+                                formControlName="Icondrop" (change)="Iconchange($event)"
+                                [ngClass]="{ 'is-invalid': submitted && f.Icondrop.errors }">
+              </ejs-dropdownlist>
+
+              <!--<ejs-combobox [cssClass]="cssClass" placeholder="Icon*" id='icons' [dataSource]='ActionIconData'
+                            [fields]='iconFields' [popupHeight]='height'
+                            formControlName="Icondrop" (change)="Iconchange($event)"
+                            [ngClass]="{ 'is-invalid': submitted && f.Icondrop.errors }"></ejs-combobox>-->
+            </div>
+            <div *ngIf="f.Icondrop.touched && f.Icondrop.errors" class="e-error">
+              <div *ngIf="f.Icondrop.errors.required">Icon is required</div>
+            </div>
+          </div>
+          <div class="row col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-7">
+              <div *ngIf="showIconImage2">Selected Icon Image</div>
+
+            </div>
+            <div>
+              <div id="icon-image2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="ShowIconImage">
+          <div id="icon-image"></div>
+        </div>
+      </div>
+    </form>
+
+    <div>&nbsp;</div>
+
+    <div>&nbsp;</div>
+    <div>
+      <button ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="onFormSubmit()">Save</button>
+    </div>
+  </ng-template>
+</ejs-dialog>
+
+
+<!--Manage Actions Dialogue-->
+<ejs-dialog class="dialogueClass_35" id="StepActionsDialogue" #StepActionsDialogue showCloseIcon="true" isModal="true" allowDragging='true' [header]="headerManageAction" (beforeClose)="dialogClose()" enableResize="true">
+  <ng-template #content>
+    <p class="notes-flex">For each step create custom actions using out-of-the-box Flex actions</p>
+    <div>&nbsp;</div>
+    <ejs-grid #stepactionsgrid id='stepactionsgrid' allowResizing='true' [dataSource]='stepActionsmodeldata'
+              [toolbar]='toolbar' [filterSettings]='filterSettings' [editSettings]='editSettings'
+              [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true"
+              (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+              [gridLines]="lines" [contextMenuItems]="contextMenuItems">
+      <e-columns>
+        <e-column field='Label' headerText='Action'></e-column>
+        <e-column headerText='Icon'>
+          <ng-template #template let-stepActionsmodeldata>
+            <div class="image">
+              <img src="./assets/flex-images/{{stepActionsmodeldata.Icon}}.png" alt="{{stepActionsmodeldata.Icon}}" />
+            </div>
+          </ng-template>
+        </e-column>
+      </e-columns>
+    </ejs-grid>
+  </ng-template>
+  <ng-template #footerTemplate>
+    Note: To make workflow-wide change to label/icon for any 'Action' <div class="btn btn-link"> <a (click)="fnOpenManageWFActionsPage()">click here</a></div>
+  </ng-template>
+</ejs-dialog>
+
+<!--Workflow Actions module-->
+<div *ngIf="showWFActions">
+  <app-workflow-actions [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId"></app-workflow-actions>
+</div>
+
+<!--Clonning Pop up -->
+<div *ngIf="Showclonepopup">
+  <ejs-dialog id="clonesteps" #clonesteps showCloseIcon='true' class="dialogueClass_35" isModal="true" allowDragging='true' [(visible)]="Showclonepopup">
+    <ng-template #header>
+      Clone Action '{{clonningActionName}}'
+    </ng-template>
+    <ng-template #content>
+      <div class="div-bottomMargin"></div>
+      <form [formGroup]="stepselectionforcloneaction">
+        <div>
+          <p>Choose target Step(s)</p>
+          <div>&nbsp;</div>
+          <ejs-grid #stepselectiongridCloneAction id='stepselectiongridCloneAction' [dataSource]='stepcollectionforclonning' (rowSelected)='rowSelected($event)'>
+            <e-columns>
+              <e-column type='checkbox' width='50'></e-column>
+              <e-column field='Label' headerText='Steps' [filter]='filterSettings'></e-column>
+            </e-columns>
+          </ejs-grid>
+        </div>
+        <div>&nbsp;</div>
+        <button ejs-button class="e-control e-btn e-primary" buttonType="e-primary" (click)="FnCloneActionstoSteps()">Clone</button>
+      </form>
+    </ng-template>
+  </ejs-dialog>
+
+</div>
+
+
+<!--Sub Processes Pop up -->
+<div *ngIf="showSubProcessPopUp">
+  <ejs-dialog id="SubProcess" #SubProcess showCloseIcon='true' class="dialogueClass_35" isModal="true" allowDragging='true' [(visible)]="showSubProcessPopUp">
+    <ng-template #header>
+      Sub Processes List
+    </ng-template>
+    <ng-template #content>
+      <app-sub-processes [StepActionId]="selectedstepactionId" [WorkflowId]="configuringWFId"></app-sub-processes>
+    </ng-template>
+  </ejs-dialog>
+
+</div>
+
+
+<!--show validation screen in pop up-->
+<div *ngIf="showValidationPage">
+  <ejs-dialog showCloseIcon='true' class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="showValidationPage" enableResize="true">
+    <app-validations [PreSelected_WFId]="configuringWFId" [PreSelected_StepId]="selectedStepId" [Level]="level" [PreSelected_WFName]="configuringWFLabel" [PreSelected_StepActionId]="selectedstepactionId"></app-validations>
+  </ejs-dialog>
+</div>
+
+<!--Not needed for mow-->
+<!--<div *ngIf="participantMatrix">
+  <app-step-participants [isRefresh]="isRefresh"></app-step-participants>
+</div>-->

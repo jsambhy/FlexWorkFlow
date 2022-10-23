@@ -1,0 +1,213 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <table>
+        <tr>
+          <td>
+            <h4 class="header-text">{{WorkflowsDetails.UILabel}}</h4>
+          </td>
+          <td>
+            <img src="./assets/flex-images/outline_room_black_24dp.png" (click)="showDiagram()" title="Workflow Design" />
+          </td>
+          <td>
+            &nbsp;<ejs-radiobutton #radiobuttonorder label="Active ({{ActiveCount}})" name="order" checked="true" value="Active" (change)="changeStatus()"></ejs-radiobutton>&nbsp;
+          </td>
+          <!--<td>
+            &nbsp;<ejs-radiobutton label="Cancelled ({{CanceledCount}})" *ngIf="IsCanceledRecExist" name="order" value="Canceled" (change)="changeStatus()"></ejs-radiobutton>
+          </td>-->
+          <td>
+            &nbsp;<ejs-radiobutton label="Sub Process ({{SubProcessCount}})" *ngIf="IsSubProExist" name="order" value="SubProcess" (change)="changeStatus()"></ejs-radiobutton>
+          </td>
+        </tr>
+      </table>
+
+
+      <!--<div *ngIf="IsCreateAvailable">
+        <div class=" btn btn-link userLink">
+          <a (click)="DownloadTemplate();">Download Empty Template</a>
+        </div>
+        <div class=" btn btn-link userLink">
+          <a (click)="OpenUploader();">Upload</a>
+        </div>
+      </div>-->
+
+
+      <ejs-dialog #confirmDialog header='Attach File'
+                  isModal="true" [(visible)]="showUploader" class="dialogueClass_50" showCloseIcon='true' enableResize="true">
+        <ng-template #content>
+          <app-uploader [TargetPath]="uploadPath" [AllowedFileTypes]="AllowedFileTypes" [multiple]="false"
+                        (PostUploadEvent)="PostUploadEvent($event);"></app-uploader>
+        </ng-template>
+      </ejs-dialog>
+      <ejs-tab #tabs id="element" (selected)='onTabSelect($event)' (created)='onTabCreate($event)'>
+        <e-tabitems>
+
+          <div *ngFor="let item of TabsDetails">
+
+            <!--<e-tabitem [header]="{ 'text': item.Label, 'iconCss': 'e-custom-icons e-branch-Icon' }">-->
+            <!--<e-tabitem [header]="{ 'text': item.Label}">-->
+            <e-tabitem>
+              <ng-template #headerText>
+                <div *ngIf="item.IsBranch">
+                  <img src={{branchIconImageSource}} (click)="fnBranchPopUp(item.Id)" alt="ToolTip" style="padding-right:5px" />
+                </div>
+                {{item.Label}}
+              </ng-template>
+
+              <ng-template #content>
+                
+                <ejs-grid #genericgrid id={{item.Name}} [dataSource]='gridDataSource' rowHeight='38'
+                          [allowSelection]='true'
+                          height='190' width="100%" (rowDeselected)='rowDeselected($event)'
+                          [toolbar]='toolbar' (toolbarClick)='clickHandler($event)' (rowSelected)='rowSelected($event)'
+                          [contextMenuItems]='contextMenuItems' (contextMenuClick)='contextMenuClick($event)'
+                          allowSorting='true' showColumnMenu='true'
+                          [filterSettings]='filterSettings' allowReordering="true"
+                          [allowPdfExport]='true' [allowExcelExport]='true' gridLines='Both'
+                          [allowPaging]='true' [pageSettings]='pageSetting' allowResizing='true'
+                          allowFiltering='true' (dataStateChange)='dataStateChange($event)'
+                          (recordDoubleClick)='recordDoubleClick($event)'>
+                  <!--allowGrouping='true'-->
+
+                  <e-columns>
+                    <e-column type='checkbox' width='50'></e-column>
+
+                    <div *ngFor="let item of gridColumns">
+
+                      <div *ngIf="item.Datatype =='datetime'; else otherColumns">
+                        <e-column [field]="item.Label" [headerText]="item.Label" type="datetime" [format]="DateTimeFormat"></e-column>
+                      </div>
+                      <ng-template #otherColumns>
+                        <e-column [field]="item.Label" [headerText]="item.Label" displayAsCheckBox='true'></e-column>
+                      </ng-template>
+
+                      <!--<ng-container [ngSwitch]="item.CustomDataType">
+
+    <e-column *ngSwitchCase="nvarchar" [field]="item.Label" [headerText]="item.Label"></e-column>
+    <e-column *ngSwitchDefault [field]="item.Label" [headerText]="item.Label">
+    </e-column>
+  </ng-container>-->
+                      <!--`<div *ngSwitchCase="'datetime'">
+    <e-column [field]="item.Label" [headerText]="item.Label" type="datetime" [format]="DateTimeFormat"></e-column>
+  </div>
+
+  <div *ngSwitchCase="'date'">
+    <e-column [field]="item.Label" [headerText]="item.Label" type="date" [format]="DateTimeFormat"></e-column>
+  </div>
+
+  <div *ngSwitchCase="'bit'">
+    <e-column [field]="item.Label" [headerText]="item.Label" displayAsCheckBox='true'></e-column>
+  </div>
+
+  <div *ngSwitchCase="'int'">
+    <e-column [field]="item.Label" [headerText]="item.Label" type="number"></e-column>
+  </div>
+
+  <div *ngSwitchCase="'numeric'">
+    <e-column [field]="item.Label" [headerText]="item.Label" type="number"></e-column>
+  </div>-->
+                      <!--</div>-->
+
+                    </div>
+                  </e-columns>
+                </ejs-grid>
+              </ng-template>
+            </e-tabitem>
+          </div>
+        </e-tabitems>
+      </ejs-tab>
+
+      &nbsp;&nbsp;
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ejs-textbox #Comments id="Comments" placeholder="Comments" floatLabelType="Auto" [multiline]='true'></ejs-textbox>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]='hidden' [header]='confirmHeader'
+            [showCloseIcon]='confirmCloseIcon'
+            [width]='confirmWidth'>
+  <ng-template #content>
+    <span>{{ConfirmationBoxMsg}}</span>
+  </ng-template>
+</ejs-dialog>
+
+<!--Step Branch PopUp-->
+<!--<div *ngIf="ShowBranchPopupFlag">-->
+<ejs-dialog header='Select Step' showCloseIcon='true' class="dialogueClass_50" [(visible)]="ShowBranchPopupFlag"
+            isModal="true" enableResize="true">
+  <ng-template #content>
+    <div class="control-section">
+
+      <ejs-grid #branchStepGrid [dataSource]="branchStepInfo" [allowSelection]='true'
+                GridLines="Both" height='auto' width='650'>
+        <e-columns>
+          <e-column field="Label" headerText="Step Name" width='230'></e-column>
+          <e-column field="BranchCondition" headerText="Branch Condition" width='230'></e-column>
+        </e-columns>
+      </ejs-grid>
+      <div>
+        &nbsp;&nbsp;
+      </div>
+      <button ejs-button class="e-control e-btn e-primary" (click)="fnChangeStep();">Change Step</button>
+
+      <!--<flex-button buttonType="e-primary" buttonText="Change Step" (click)="fnChangeStep();"></flex-button>-->
+    </div>
+  </ng-template>
+
+</ejs-dialog>
+
+<!--</div>-->
+<!--Diagram Pop-Up added by RS on 18th June 2020-->
+<ejs-dialog showCloseIcon='true' header={{WorkflowsDetails.UILabel}} class="dialogueClass_70 designer-height" isModal="true" allowDragging='true' [(visible)]="ShowDiagramPopUp" enableResize="true">
+  <ng-template #content>
+    <div class="control-section">
+      <span class="notes-flex col-10">You can navigate to data tab of any step by clicking on these step in the diagram</span>
+
+      <!--Diagram Area here width and height parameter are necessary to provide without this diagram will not get rendered-->
+      <ejs-diagram #diagram id="diagram" [getConnectorDefaults]='connDefaults' [getNodeDefaults]='getNodeDefaults' [nodes]="nodes" [connectors]="connectors" [constraints]="constraints" (click)="click($event)" [tool]='tool' width="100%" height="500px"></ejs-diagram>
+    </div>
+  </ng-template>
+</ejs-dialog>
+
+
+
+<!--Show sub processes Progress Dialogue box-->
+<ejs-dialog showCloseIcon='true' header="Sub Process Progress" class="dialogueClass_35" isModal="true"
+            allowDragging='true' [(visible)]="ShowSubProgressPopUp" enableResize="true">
+  <ng-template #content>
+    <div class="control-section">
+      <ejs-grid #subProcessProgressGrid [dataSource]="SubProcessData" [allowSelection]='true'
+                GridLines="Both" height='auto' width='650' gridLines='Both'>
+        <e-columns>
+          <e-column field="SubWFName" headerText="Sub Process" width='230'></e-column>
+          <e-column field="CurrentStepId" headerText="Landing Step" width='230'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </ng-template>
+</ejs-dialog>
+
+
+
+<!--Show Forms Dialogue box-->
+<ejs-dialog showCloseIcon='true' header="Select Form" class="dialogueClass_50" isModal="true"
+            allowDragging='true' [(visible)]="ShowFormsDialoge" enableResize="true"  >
+  <ng-template #content>
+    <div class="control-section">
+      <ejs-grid #formsGrid [dataSource]="formsData" [allowSelection]='true' allowTextWrap='true' [textWrapSettings]='wrapSettings'
+                GridLines="Both" height='auto'   gridLines='Both' (rowSelected)='rowSelectedForms($event)'>
+        <e-columns>
+          <e-column field="Title" headerText="Title" width='70'></e-column>
+          <e-column field="description" headerText="Description" width='150'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </ng-template>
+</ejs-dialog>

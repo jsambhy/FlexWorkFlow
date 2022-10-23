@@ -1,0 +1,57 @@
+<!--toast definition-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<div class="control-section">
+  <div class="row col-lg-12" style="text-align:right">
+    <div class="col-lg-8 notes-flex">To preview your configured dashboard, click on home button on the left</div>
+    <div class="col-lg-4">
+      <button id="add" class="e-btn e-info" (click)="addPanel()" style="padding:5px;">Add Panel</button>
+    </div>
+  </div>
+
+  <ejs-dashboardlayout id='default_dashboard' columns="5" #default_dashboard [cellSpacing]='cellSpacing' [allowResizing]='true'
+                       (created)="created($event)" (resizeStop)="onResizeStop($event)" (dragStop)="onDragStop($event)">
+    <e-panels>
+      <div *ngFor="let panel of panels">
+        <e-panel [id]="panel.id" [sizeX]="panel.sizeX" [sizeY]="panel.sizeY" [row]="panel.row" [col]="panel.col" [header]="panel.header">
+
+          <div [ngSwitch]="panel.ComponentName">
+            <div *ngSwitchCase="'Card'">
+              <ng-template #content>
+                <p>{{panel.ComponentName}} ({{panel.PanelLabel}})</p>
+                <app-card [passcounts]="panel.CalculatedData" [cardLabel]="panel.Label"></app-card>
+              </ng-template>
+            </div>
+
+            <div *ngSwitchCase="'Chart'">
+              <ng-template #content>
+                <p>{{panel.ComponentName}} ({{panel.PanelLabel}}) Type={{panel.chartType}}</p>
+                <!--<app-pivot-views [jsonSource]="panel.CalculatedData" [chartSource]="panel.chartData"></app-pivot-views>-->
+                <app-pivot-views [jsonSource]="panel.CalculatedData" [chartSource]="panel.chartData" [panelId]="panel.id" [configJson]="panel.configJson" source="design"></app-pivot-views>
+
+              </ng-template>
+            </div>
+            <div *ngSwitchCase="'Grid'">
+              <ng-template #content>
+                <p>{{panel.ComponentName}} ({{panel.PanelLabel}})</p>
+                <app-grid [gridSource]="panel.CalculatedData"></app-grid>
+              </ng-template>
+            </div>
+
+          </div>
+        </e-panel>
+      </div>
+    </e-panels>
+  </ejs-dashboardlayout>
+
+  <!--For creating panel-->
+  <div *ngIf="showWidgetPopUp">
+    <ejs-dialog #widgetdialog showCloseIcon='true' isModal="true"
+                allowDragging='true' [(visible)]="showWidgetPopUp" class="dialogueClass_50" enableResize="true">
+      <ng-template #header>Choose Component</ng-template>
+      <ng-template #content>
+        <app-dashboard-widget [PanelId]="PanelId" Source="onDemandDashboard" [PanelJson]="PanelJson" [Id]="Id"></app-dashboard-widget>
+      </ng-template>
+    </ejs-dialog>
+  </div>
+</div>

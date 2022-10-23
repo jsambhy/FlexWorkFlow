@@ -1,0 +1,505 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+  <p style="color: white">Please Wait. </p>
+</ngx-spinner>
+ 
+  <div class="mx-auto div-margin">
+    <!--*ngIf="dynamicFormGroup" is added as value of first control was not displaying in form -->
+    <form *ngIf="dynamicFormGroup" [formGroup]="dynamicFormGroup" class="roundedcorners" (ngSubmit)="FnSubmit($event)">
+      <p *ngIf="showErrors" style="color:red;">{{ErrorMessage}}</p>
+      <!---->
+      <ejs-tab *ngIf="ShowAsTabs;else normalDiv" #FormTabs id="tab_default" (selected)='onTabSelect($event)'>
+        <e-tabitems>
+          <div *ngFor="let tabItem of TabSectionDataFieldsArr">
+            <e-tabitem>
+              <ng-template #headerText>
+                {{tabItem.TabName}}
+              </ng-template>
+              <ng-template #content>
+                <div style="border-radius: 10px; border-color: #cdd1de;margin-bottom: 5px; border-style: solid;"
+                     *ngFor="let section of tabItem.Sections" [ngStyle]="section.SectionCSS" >
+                  <div class="row" >
+                    <div style="margin-top:5px;" *ngFor="let form_elem of section.DataFields" class="{{form_elem.CSSclassMain}}">
+                      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <span *ngIf="form_elem.UserDataType=='FormGrid'; else normalLabel" [ngStyle]="form_elem.styling"><b>{{form_elem.DisplayLabel}}</b></span>
+                        <ng-template #normalLabel>
+                          <span [ngStyle]="form_elem.styling">{{form_elem.DisplayLabel}}</span>
+                        </ng-template>
+                        <img *ngIf="form_elem.ToolTip" src="./assets/flex-images/Info.png" class="info-img"
+                             alt="Tooltip" title="{{form_elem.ToolTip}}" />
+                        <!--(click)="openGridView(form_elem.Id,form_elem.Label,0,form_elem.UserDataType,0)">-->
+                        <a *ngIf="form_elem.UserDataType=='Paragraph'  "
+                           (click)="OpenPopup(form_elem.Id,form_elem.ColumnName,form_elem.Label,0,null,null)">
+                          <i class="fa fa-search" aria-hidden="true" title="zoom" style="color:#e60000;"></i>
+                        </a>
+
+                        <a *ngIf="form_elem.ShowCalcIcon" title="Recalculate"
+                           (click)="RecalculateData(form_elem.Id,null)">
+                          <i class="fa fa-refresh" aria-hidden="true" title="zoom" style="color: #e60000;display: none; "></i>
+                        </a>
+                      </div>
+                      <!--*ngIf="section.SectionId==form_elem.SectionId"-->
+                      <div [ngSwitch]="form_elem.UserDataType" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div *ngSwitchCase="'Text'">
+                          <p [ngStyle]="form_elem.styling">{{form_elem.Value}}</p>
+                        </div>
+                        <div *ngSwitchCase="'ShortAnswer'">
+                          <ejs-textbox floatLabelType="Auto" id="{{form_elem.ColumnName}}"
+                                       formControlName="{{form_elem.ColumnName}}">
+                          </ejs-textbox>
+                        </div>
+                        <div *ngSwitchCase="'Paragraph'">
+                          <ejs-textbox floatLabelType="Auto" id="{{form_elem.ColumnName}}"
+                                       [multiline]='true' formControlName="{{form_elem.ColumnName}}">
+                          </ejs-textbox>
+                          <span></span>
+                        </div>
+                        <div *ngSwitchCase="'Number'">
+                          <ejs-numerictextbox floatLabelType="Auto" decimals="{{form_elem.DigitsAfterDecimal}}" format="n{{form_elem.DigitsAfterDecimal}}"
+                                              min="{{form_elem.MinValue}}" max="{{form_elem.MaxValue}}" step="1"
+                                              id="{{form_elem.ColumnName}}" [showSpinButton]='false'
+                                              formControlName="{{form_elem.ColumnName}}"></ejs-numerictextbox>
+                        </div>
+                        <div *ngSwitchCase="'Date'">
+                          <ejs-datepicker floatLabelType="Auto" formControlName="{{form_elem.ColumnName}}"
+                                          min="{{form_elem.MinDate}}" max="{{form_elem.MaxDate}}" (keydown)="keydown($event)"></ejs-datepicker>
+                        </div>
+
+                        <div *ngSwitchCase="'SingleColumnList'">
+                          <div *ngIf="form_elem.IsMultiSelection; else simpleDropdown">
+                            <!--Show MultiSelect dropdown when multislection is enabled-->
+                            <ejs-multiselect formControlName="SCL{{form_elem.Id}}"
+                                             id="SCL{{form_elem.Id}}"
+                                             [dataSource]="form_elem.dataSource" [value]="form_elem.selectedValues"
+                                             [fields]="form_elem.fields" [popupHeight]='height'
+                                             (change)='multiselectChange($event)'>
+                            </ejs-multiselect>
+                          </div>
+                          <ng-template #simpleDropdown>
+                            <!--Show Simple dropdown when multislection not enabled-->
+                            <ejs-dropdownlist floatLabelType="Auto" formControlName="SCL{{form_elem.Id}}"
+                                              id="SCL{{form_elem.Id}}" [dataSource]="form_elem.dataSource" [value]="form_elem.selectedValues"
+                                              [fields]="form_elem.fields" [popupHeight]='height' (select)='ddChange($event)'>
+                            </ejs-dropdownlist>
+                          </ng-template>
+                        </div>
+
+                        <div *ngSwitchCase="'MultiColumnList'">
+                          <ejs-grid #MCL{{form_elem.Id}} id="MCL{{form_elem.Id}}" [dataSource]="form_elem.dataSource" gridLines='Both' [filterSettings]='filterSettings'
+                                    [allowSelection]='true' [selectedRowIndex]="form_elem.selectedIndex"
+                                    [selectionSettings]='form_elem.selectionOptions' (rowSelected)="gridRowSelected($event)"
+                                    (rowDeselected)='gridRowDeselected($event)'>
+                            <e-columns>
+                              <div *ngFor="let item of form_elem.gridColumns">
+                                <e-column [field]="item.ColumnName" [headerText]="item.Label" displayAsCheckBox='true'></e-column>
+                              </div>
+                            </e-columns>
+                          </ejs-grid>
+                        </div>
+
+                        <div *ngSwitchCase="'FormGrid'" class="card-body" style="background-color: #d5dde0">
+
+                          <button buttonType="e-primary" class="e-control e-btn " type="button" title="Expand/Collapse '{{form_elem.Label}}'"
+                                  (click)="showHide(form_elem.Id)">
+                            &#9776;
+                          </button>&nbsp;&nbsp;
+                          <button *ngIf="form_elem.ShowEditIcons" type="button" buttonType="e-primary" class="e-control e-btn "
+                                  (click)="AddControls(form_elem.Label,null,form_elem.Id)" title="Add new '{{form_elem.Label}}'">
+                            +
+                          </button>
+                          <div #{{form_elem.Label}} *ngIf="form_elem.showHide" id="{{form_elem.Label}}" formArrayName="{{form_elem.Label}}">
+                            <div class="row" *ngFor="let ctrl of dynamicFormGroup.get(form_elem.Label)['controls']; let i = index" [formGroupName]="i">
+
+                              <input type="hidden" id="grpIdx{{i}}" [value]="i" />
+                              <div *ngFor="let column of form_elem.GridControls" class="{{column.CSSFormGrid}}"
+                                   [ngStyle]="(i%2 == 0)? {'background-color': '#F5F3E7'} : {'background-color':'#F5E2E4'}">
+                                <div>
+                                  <span>{{column.DisplayLabel}}</span>
+                                  <!--&& (column.allowEditing=== true);else NormalLabel-->
+                                  <a *ngIf="(column.ColumnType=='Paragraph')"
+                                     (click)="OpenPopup(column.Id,column.ColumnName,column.Label,1,i,form_elem.Label)">
+                                    <i class="fa fa-search" aria-hidden="true" title="zoom" style="color:#e60000;"></i>
+                                  </a>
+
+
+                                  <a *ngIf="column.ShowCalcIcon" title="Recalculate"
+                                     (click)="RecalculateData(column.Id,i)">
+                                    <i class="fa fa-refresh" aria-hidden="true" title="zoom" style="color:#e60000; display:none;"></i>
+                                  </a>
+                                  <div [ngSwitch]="column.ColumnType">
+
+                                    <div *ngSwitchCase="'ShortAnswer'">
+                                      <ejs-textbox floatLabelType="Auto"
+                                                   formControlName="{{column.ColumnName}}">
+                                      </ejs-textbox>
+                                    </div>
+                                    <div *ngSwitchCase="'SingleColumnList'">
+                                      <ejs-dropdownlist floatLabelType="Auto" formControlName="{{column.Label}}" id="dd_{{column.Id}}_{{i}}"
+                                                        [dataSource]="column.dataSource" [value]="columnSelectedValues"
+                                                        [fields]="column.fields" [popupHeight]='height'>
+                                      </ejs-dropdownlist>
+                                    </div>
+                                    <div *ngSwitchCase="'MultiColumnList'">
+                                      <!--<ejs-dropdownlist floatLabelType="Auto" formControlName="{{column.Label}}" id="dd_{{column.Id}}_{{i}}"
+                                                    [dataSource]="column.dataSource" [value]="columnSelectedValues"
+                                                    [fields]="column.fields" [popupHeight]='height'>
+                                  </ejs-dropdownlist>-->
+
+                                      <ejs-dropdownlist floatLabelType="Auto" formControlName="{{column.Label}}" id="dd_{{column.Id}}_{{i}}"
+                                                        [dataSource]="column.dataSource" [value]="columnSelectedValues"
+                                                        [fields]="column.fields" [popupHeight]='height'
+                                                        [headerTemplate]='headerTemplate' [itemTemplate]='itemTemplate'>
+                                        <ng-template #headerTemplate>
+                                          <div style="font-weight:bold;">
+                                            <span *ngFor="let griditem of column.ColumnsFieldInfoArray" style="margin-right:17px;">
+                                              {{griditem.Label}}
+                                            </span>
+                                          </div>
+                                        </ng-template>
+
+                                        <ng-template #itemTemplate let-data>
+                                          <!--set the value to itemTemplate property-->
+                                          <span *ngFor="let griditem of column.ColumnsFieldInfoArray" style="margin-right:17px;">
+                                            {{data[griditem.ColumnName]}}
+                                          </span>
+                                        </ng-template>
+                                        <ng-template #valueTemplate let-data>
+                                          <!--set the value to valueTemplate property-->
+                                          <span *ngFor="let griditem of column.ColumnsFieldInfoArray">
+                                            <span style="font-weight:bold;">{{griditem.Label}} : </span>
+                                            <span>{{data[griditem.ColumnName]}} </span><span style="font-weight:bold;"> | </span>
+                                          </span>
+                                        </ng-template>
+                                      </ejs-dropdownlist>
+                                      <!--<ejs-grid  [dataSource]="column.dataSource" gridLines='Both' [filterSettings]='filterSettings'
+                                            [allowSelection]='true' [selectedRowIndex]="column.selectedIndex"
+                                            [selectionSettings]='column.selectionOptions' >
+                                    <e-columns>
+                                      <div *ngFor="let item of column.fields">
+                                        <e-column [field]="item.ColumnName" [headerText]="item.Label" displayAsCheckBox='true'></e-column>
+                                      </div>
+                                    </e-columns>
+                                  </ejs-grid>-->
+                                    </div>
+                                    <div *ngSwitchCase="'Paragraph'">
+                                      <ejs-textbox floatLabelType="Auto" id="{{column.ColumnName}}" rows="1"
+                                                   [multiline]='true' formControlName="{{column.ColumnName}}">
+                                      </ejs-textbox>
+                                      <span></span>
+                                    </div>
+                                    <div *ngSwitchCase="'Boolean'" class="checkbox-font">
+                                      <ejs-checkbox id="{{column.ColumnName}}" formControlName="{{column.ColumnName}}" [checked]="false"></ejs-checkbox>
+                                    </div>
+                                    <div *ngSwitchCase="'Number'">
+                                      <ejs-numerictextbox floatLabelType="Auto" decimals="{{column.DigitsAfterDecimal}}" format="n{{column.DigitsAfterDecimal}}"
+                                                          min="{{column.MinValueInclusive}}" max="{{column.MaxValueInclusive}}" step="1"
+                                                          id="{{column.ColumnName}}" [showSpinButton]='false'
+                                                          formControlName="{{column.ColumnName}}"></ejs-numerictextbox>
+
+                                    </div>
+                                    <div *ngSwitchCase="'Date'">
+                                      <ejs-datepicker floatLabelType="Auto" formControlName="{{column.ColumnName}}"
+                                                      min="{{column.MinDate}}" max="{{column.MaxDate}}"></ejs-datepicker>
+                                    </div>
+
+                                  </div>
+
+                                </div>
+                              </div>
+                              <div class="col-lg-1">
+                                <button *ngIf="form_elem.ShowEditIcons" ejs-button class="e-control e-btn" title="Remove this '{{form_elem.Label}}'"
+                                        style="background-color: #d5dde0"
+                                        (click)="RemoveControls(i,form_elem.Label)">
+                                  X
+                                </button>
+                              </div>
+
+
+                            </div>
+
+                          </div>
+                        </div>
+                        <div *ngSwitchCase="'Boolean'" class="checkbox-font">
+                          <ejs-checkbox id="{{form_elem.ColumnName}}" formControlName="{{form_elem.ColumnName}}" [checked]="false"></ejs-checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </ng-template>
+            </e-tabitem>
+          </div>
+        </e-tabitems>
+      </ejs-tab>
+      <ng-template #normalDiv>
+         
+          <div class="row">
+            <div style="margin-top:5px;" *ngFor="let form_elem of DataFieldsArray" class="{{form_elem.CSSclassMain}}">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <span *ngIf="form_elem.UserDataType=='FormGrid'; else normalLabel" [ngStyle]="form_elem.styling"><b>{{form_elem.DisplayLabel}}</b></span>
+                <ng-template #normalLabel>
+                  <span [ngStyle]="form_elem.styling">{{form_elem.DisplayLabel}}</span>
+                </ng-template>
+                <img *ngIf="form_elem.ToolTip" src="./assets/flex-images/Info.png" class="info-img"
+                     alt="Tooltip" title="{{form_elem.ToolTip}}" />
+                <!--(click)="openGridView(form_elem.Id,form_elem.Label,0,form_elem.UserDataType,0)">-->
+                <a *ngIf="form_elem.UserDataType=='Paragraph'  "
+                   (click)="OpenPopup(form_elem.Id,form_elem.ColumnName,form_elem.Label,0,null,null)">
+                  <i class="fa fa-search" aria-hidden="true" title="zoom" style="color:#e60000;"></i>
+                </a>
+
+                <a *ngIf="form_elem.ShowCalcIcon" title="Recalculate"
+                   (click)="RecalculateData(form_elem.Id,null)">
+                  <i class="fa fa-refresh" aria-hidden="true" title="zoom" style="color: #e60000;display: none; "></i>
+                </a>
+              </div>
+              <!--*ngIf="section.SectionId==form_elem.SectionId"-->
+              <div [ngSwitch]="form_elem.UserDataType" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div *ngSwitchCase="'Text'">
+                  <p [ngStyle]="form_elem.styling">{{form_elem.Value}}</p>
+                </div>
+                <div *ngSwitchCase="'ShortAnswer'">
+                  <ejs-textbox floatLabelType="Auto" id="{{form_elem.ColumnName}}"
+                               formControlName="{{form_elem.ColumnName}}">
+                  </ejs-textbox>
+                </div>
+                <div *ngSwitchCase="'Paragraph'">
+                  <ejs-textbox floatLabelType="Auto" id="{{form_elem.ColumnName}}"
+                               [multiline]='true' formControlName="{{form_elem.ColumnName}}">
+                  </ejs-textbox>
+                  <span></span>
+                </div>
+                <div *ngSwitchCase="'Number'">
+                  <ejs-numerictextbox floatLabelType="Auto" decimals="{{form_elem.DigitsAfterDecimal}}" format="n{{form_elem.DigitsAfterDecimal}}"
+                                      min="{{form_elem.MinValue}}" max="{{form_elem.MaxValue}}" step="1"
+                                      id="{{form_elem.ColumnName}}" [showSpinButton]='false'
+                                      formControlName="{{form_elem.ColumnName}}"></ejs-numerictextbox>
+                </div>
+                <div *ngSwitchCase="'Date'">
+                  <ejs-datepicker floatLabelType="Auto" formControlName="{{form_elem.ColumnName}}"
+                                  min="{{form_elem.MinDate}}" max="{{form_elem.MaxDate}}" (keydown)="keydown($event)"></ejs-datepicker>
+                </div>
+
+                <div *ngSwitchCase="'SingleColumnList'">
+                  <div *ngIf="form_elem.IsMultiSelection; else simpleDropdown">
+                    <!--Show MultiSelect dropdown when multislection is enabled-->
+                    <ejs-multiselect formControlName="SCL{{form_elem.Id}}"
+                                     id="SCL{{form_elem.Id}}"
+                                     [dataSource]="form_elem.dataSource" [value]="form_elem.selectedValues"
+                                     [fields]="form_elem.fields" [popupHeight]='height'
+                                     (change)='multiselectChange($event)'>
+                    </ejs-multiselect>
+                  </div>
+                  <ng-template #simpleDropdown>
+                    <!--Show Simple dropdown when multislection not enabled-->
+                    <ejs-dropdownlist floatLabelType="Auto" formControlName="SCL{{form_elem.Id}}"
+                                      id="SCL{{form_elem.Id}}" [dataSource]="form_elem.dataSource" [value]="form_elem.selectedValues"
+                                      [fields]="form_elem.fields" [popupHeight]='height' (select)='ddChange($event)'>
+                    </ejs-dropdownlist>
+                  </ng-template>
+                </div>
+
+                <div *ngSwitchCase="'MultiColumnList'">
+                  <ejs-grid #MCL{{form_elem.Id}} id="MCL{{form_elem.Id}}" [dataSource]="form_elem.dataSource" gridLines='Both' [filterSettings]='filterSettings'
+                            [allowSelection]='true' [selectedRowIndex]="form_elem.selectedIndex"
+                            [selectionSettings]='form_elem.selectionOptions' (rowSelected)="gridRowSelected($event)"
+                            (rowDeselected)='gridRowDeselected($event)'>
+                    <e-columns>
+                      <div *ngFor="let item of form_elem.gridColumns">
+                        <e-column [field]="item.ColumnName" [headerText]="item.Label" displayAsCheckBox='true'></e-column>
+                      </div>
+                    </e-columns>
+                  </ejs-grid>
+                </div>
+
+                <div *ngSwitchCase="'FormGrid'" class="card-body" style="background-color: #d5dde0">
+
+                  <button buttonType="e-primary" class="e-control e-btn " type="button" title="Expand/Collapse '{{form_elem.Label}}'"
+                          (click)="showHide(form_elem.Id)">
+                    &#9776;
+                  </button>&nbsp;&nbsp;
+                  <button *ngIf="form_elem.ShowEditIcons" type="button" buttonType="e-primary" class="e-control e-btn "
+                          (click)="AddControls(form_elem.Label,null,form_elem.Id)" title="Add new '{{form_elem.Label}}'">
+                    +
+                  </button>
+                  <div #{{form_elem.Label}} *ngIf="form_elem.showHide" id="{{form_elem.Label}}" formArrayName="{{form_elem.Label}}">
+                    <div class="row" *ngFor="let ctrl of dynamicFormGroup.get(form_elem.Label)['controls']; let i = index" [formGroupName]="i">
+
+                      <input type="hidden" id="grpIdx{{i}}" [value]="i" />
+                      <div *ngFor="let column of form_elem.GridControls" class="{{column.CSSFormGrid}}"
+                           [ngStyle]="(i%2 == 0)? {'background-color': '#F5F3E7'} : {'background-color':'#F5E2E4'}">
+                        <div>
+                          <span>{{column.DisplayLabel}}</span>
+                          <!--&& (column.allowEditing=== true);else NormalLabel-->
+                          <a *ngIf="(column.ColumnType=='Paragraph')"
+                             (click)="OpenPopup(column.Id,column.ColumnName,column.Label,1,i,form_elem.Label)">
+                            <i class="fa fa-search" aria-hidden="true" title="zoom" style="color:#e60000;"></i>
+                          </a>
+
+
+                          <a *ngIf="column.ShowCalcIcon" title="Recalculate"
+                             (click)="RecalculateData(column.Id,i)">
+                            <i class="fa fa-refresh" aria-hidden="true" title="zoom" style="color:#e60000; display:none;"></i>
+                          </a>
+                          <div [ngSwitch]="column.ColumnType">
+
+                            <div *ngSwitchCase="'ShortAnswer'">
+                              <ejs-textbox floatLabelType="Auto"
+                                           formControlName="{{column.ColumnName}}">
+                              </ejs-textbox>
+                            </div>
+                            <div *ngSwitchCase="'SingleColumnList'">
+                              <ejs-dropdownlist floatLabelType="Auto" formControlName="{{column.Label}}" id="dd_{{column.Id}}_{{i}}"
+                                                [dataSource]="column.dataSource" [value]="columnSelectedValues"
+                                                [fields]="column.fields" [popupHeight]='height'>
+                              </ejs-dropdownlist>
+                            </div>
+                            <div *ngSwitchCase="'MultiColumnList'">
+                              <!--<ejs-dropdownlist floatLabelType="Auto" formControlName="{{column.Label}}" id="dd_{{column.Id}}_{{i}}"
+                                            [dataSource]="column.dataSource" [value]="columnSelectedValues"
+                                            [fields]="column.fields" [popupHeight]='height'>
+                          </ejs-dropdownlist>-->
+
+                              <ejs-dropdownlist floatLabelType="Auto" formControlName="{{column.Label}}" id="dd_{{column.Id}}_{{i}}"
+                                                [dataSource]="column.dataSource" [value]="columnSelectedValues"
+                                                [fields]="column.fields" [popupHeight]='height'
+                                                [headerTemplate]='headerTemplate' [itemTemplate]='itemTemplate'>
+                                <ng-template #headerTemplate>
+                                  <div style="font-weight:bold;">
+                                    <span *ngFor="let griditem of column.ColumnsFieldInfoArray" style="margin-right:17px;">
+                                      {{griditem.Label}}
+                                    </span>
+                                  </div>
+                                </ng-template>
+
+                                <ng-template #itemTemplate let-data>
+                                  <!--set the value to itemTemplate property-->
+                                  <span *ngFor="let griditem of column.ColumnsFieldInfoArray" style="margin-right:17px;">
+                                    {{data[griditem.ColumnName]}}
+                                  </span>
+                                </ng-template>
+                                <ng-template #valueTemplate let-data>
+                                  <!--set the value to valueTemplate property-->
+                                  <span *ngFor="let griditem of column.ColumnsFieldInfoArray">
+                                    <span style="font-weight:bold;">{{griditem.Label}} : </span>
+                                    <span>{{data[griditem.ColumnName]}} </span><span style="font-weight:bold;"> | </span>
+                                  </span>
+                                </ng-template>
+                              </ejs-dropdownlist>
+                              <!--<ejs-grid  [dataSource]="column.dataSource" gridLines='Both' [filterSettings]='filterSettings'
+                                    [allowSelection]='true' [selectedRowIndex]="column.selectedIndex"
+                                    [selectionSettings]='column.selectionOptions' >
+                            <e-columns>
+                              <div *ngFor="let item of column.fields">
+                                <e-column [field]="item.ColumnName" [headerText]="item.Label" displayAsCheckBox='true'></e-column>
+                              </div>
+                            </e-columns>
+                          </ejs-grid>-->
+                            </div>
+                            <div *ngSwitchCase="'Paragraph'">
+                              <ejs-textbox floatLabelType="Auto" id="{{column.ColumnName}}" rows="1"
+                                           [multiline]='true' formControlName="{{column.ColumnName}}">
+                              </ejs-textbox>
+                              <span></span>
+                            </div>
+                            <div *ngSwitchCase="'Boolean'" class="checkbox-font">
+                              <ejs-checkbox id="{{column.ColumnName}}" formControlName="{{column.ColumnName}}" [checked]="false"></ejs-checkbox>
+                            </div>
+                            <div *ngSwitchCase="'Number'">
+                              <ejs-numerictextbox floatLabelType="Auto" decimals="{{column.DigitsAfterDecimal}}" format="n{{column.DigitsAfterDecimal}}"
+                                                  min="{{column.MinValueInclusive}}" max="{{column.MaxValueInclusive}}" step="1"
+                                                  id="{{column.ColumnName}}" [showSpinButton]='false'
+                                                  formControlName="{{column.ColumnName}}"></ejs-numerictextbox>
+
+                            </div>
+                            <div *ngSwitchCase="'Date'">
+                              <ejs-datepicker floatLabelType="Auto" formControlName="{{column.ColumnName}}"
+                                              min="{{column.MinDate}}" max="{{column.MaxDate}}"></ejs-datepicker>
+                            </div>
+
+                          </div>
+
+                        </div>
+                      </div>
+                      <div class="col-lg-1">
+                        <button *ngIf="form_elem.ShowEditIcons" ejs-button class="e-control e-btn" title="Remove this '{{form_elem.Label}}'"
+                                style="background-color: #d5dde0"
+                                (click)="RemoveControls(i,form_elem.Label)">
+                          X
+                        </button>
+                      </div>
+
+
+                    </div>
+
+                  </div>
+                </div>
+                <div *ngSwitchCase="'Boolean'" class="checkbox-font">
+                  <ejs-checkbox id="{{form_elem.ColumnName}}" formControlName="{{form_elem.ColumnName}}" [checked]="false"></ejs-checkbox>
+                </div>
+              </div>
+            </div>
+          </div>
+
+         
+      </ng-template>
+
+
+    </form>
+  </div>
+  <div class="row" style="margin-top:10px;">
+    <div *ngIf="showSave">
+      <button type="submit" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" [disabled]="savedisabled"
+              (click)="FnSubmit(false,false,0)">
+        Save
+      </button>
+    </div>
+    <div *ngIf="showSaveClose">
+      &nbsp;&nbsp;
+      <button type="submit" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" [disabled]="savedisabled"
+              (click)="FnSubmit(true,false,0)">
+        Save & Close
+      </button>
+    </div>
+    &nbsp;&nbsp;
+    <div>
+      <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="goToPrevious()">Back</button>
+    </div>
+    <div *ngFor="let action of formStepActions; let i = index;">
+      &nbsp;&nbsp;<button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary"
+                          (click)="fnExecuteAction(action.id,action.tooltipText)">
+        {{action.tooltipText}}
+      </button>
+    </div>
+
+  </div>
+
+  <!--<ejs-dialog [header]="MCLPopupHeader"
+              showCloseIcon='true' enableResize="true"
+              width="70%"
+              isModal="true" allowDragging='true' [(visible)]="ShowMCLGridPopup">
+    <ng-template #content>
+      <ejs-grid  id={{MCLPopupGridId}} [dataSource]="MCLdataSource" gridLines='Both'
+                allowResizing="true"
+                allowFiltering='true' [filterSettings]='filterSettings' allowPaging="true" height='400'
+                [allowSelection]='true'>
+       (rowSelected)="MCLgridRowSelected($event,MCLPopupGridId)"
+
+        <e-columns>
+          <div *ngFor="let item of MCLfields">
+            <e-column [field]="item.ColumnName" [headerText]="item.Label" displayAsCheckBox='true'></e-column>
+          </div>
+        </e-columns>
+      </ejs-grid>
+    </ng-template>
+
+  </ejs-dialog>-->
+  <ejs-dialog [header]="popupHeader"
+              showCloseIcon='true' enableResize="true"
+              width="60%"
+              isModal="true" allowDragging='true' [(visible)]="ShowContentPopup">
+    <ng-template #content>
+      <div>{{PopupContent}}</div>
+    </ng-template>
+  </ejs-dialog>

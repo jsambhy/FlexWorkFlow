@@ -1,0 +1,101 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition" ></ejs-toast>
+
+<!--Branch module(Where condition builder HTML)-->
+<div *ngIf="showBranch">
+  <ejs-dialog showCloseIcon='true' class="dialogueClass_50" isModal="true" allowDragging='true' (beforeClose)="dialogClose($event)" enableResize="true">
+    <ng-template #header>
+      Branching condition from Step '{{sourcenodetext}}' to Step '{{destinationnodetext}}''
+    </ng-template>
+    <ng-template #content>
+      <div class="notes-flex">
+        <div>Workflow: {{configuringWFLabel}} </div>
+        <div>Action '{{actionNameforBranching}}' on step '{{sourcenodetext}}' leads to multiple steps, creating branches.</div>
+        <div>Under what condition will the system choose this branch to land on Step '{{destinationnodetext}}'?</div>
+      </div>
+      <div>&nbsp;</div>
+      <app-where-clause [TableEntityType]="ConfiguredEntityType" [TableEntityId]="configuringFlexTableId"
+                        (PostWhereClauseEvent)="PostWhereClauseEvent($event);"
+                        Source="WhereClause" [ExpressionVal]="ExpressionVal" IsParamRequired="false"></app-where-clause>
+      <!--<form [formGroup]="Branchconditioncreateform">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 float_left">
+      <div *ngIf="showAndOr1">
+        <ejs-radiobutton class="margin-right_30" #radiobutton1 title="Add" label="And" name="position" value="And" checked="true" (change)="changeHandler()"></ejs-radiobutton>
+
+        <ejs-radiobutton class="margin-right_30" #radiobutton2 title="Or" label="Or" name="position" value="Or" (change)="changeHandler()"></ejs-radiobutton>
+      </div>
+      <ejs-dropdownlist #entity id="entity" [dataSource]="choosecolumn" [fields]="choosecolumnfields" (change)="entityChange($event)" floatLabelType="Auto" placeholder='Data Field'></ejs-dropdownlist>
+      <ejs-dropdownlist #operatorobj id="operatorobj" [dataSource]="operators" floatLabelType="Auto" (change)="operatorChange($event)" placeholder="Operator" [enabled]="false"></ejs-dropdownlist>
+      <div>
+        <div>&nbsp;</div>
+        <div *ngIf="showTextBox">
+          <ejs-textbox #Tobj id="Tobj" placeholder="Value" cssClass="e-outline" floatLabelType="Auto" [enabled]="enabled"></ejs-textbox>
+        </div>
+        <div *ngIf="showNumTextBox">
+          <ejs-textbox #NTobj id="NTobj" typeof="number" placeholder="Value" cssClass="e-outline" floatLabelType="Auto" [enabled]="enabled"></ejs-textbox>
+        </div>
+        <div *ngIf="showMultiLineTextBox">
+          <ejs-textbox #MLobj id="MLobj" [multiline]='true' placeholder="Value" cssClass="e-outline" [enabled]="enabled" floatLabelType="Auto"></ejs-textbox>
+        </div>
+        <div *ngIf="showDatePicker">
+          <ejs-datepicker #Dobj id="Dobj" [enabled]="enabled" placeholder="Date" floatLabelType="Auto"></ejs-datepicker>
+        </div>
+        <div *ngIf="showDateTimePicker">
+          <ejs-datetimepicker #DTobj id="DTobj" [enabled]="enabled" placeholder="Date And Time" DateTimeFormat="d/M/yy h:mm tt" floatLabelType="Auto"></ejs-datetimepicker>`
+        </div>
+        <div *ngIf="showBitDropDown">
+          <ejs-dropdownlist #bitObj id="bitObj" [enabled]="enabled" [dataSource]="BitValues" floatLabelType="Auto" (change)="change($event)" placeholder="Choose TRUE/FALSE"></ejs-dropdownlist>
+        </div>
+        <div>&nbsp;</div>
+      </div>
+    </div>
+    <div class="col-lg-8 col-xs-8 col-md-8 col-sm-8 float_right">
+      <div class="col-lg-2 col-xs-2 col-md-2 col-sm-2 margin-top_35 float_left">
+        <button ejs-button class="e-control e-btn e-primary" (click)="fnAddCondition()">>></button>
+      </div>
+      <div class="col-lg-10 col-xs-10 col-md-10 col-sm-10 margin-top_25 float_right">
+        <ejs-textbox #ResultMLobj id="ResultMLobj" [multiline]='true' placeholder="Condition" formControlName="actionlabel" cssClass="e-outline" [enabled]="enabled" floatLabelType="Auto"></ejs-textbox>
+      </div>
+
+    </div>
+    <div class="text-allign_right">
+      <button ejs-button class="e-control e-btn e-primary" (click)="Reset()">Clear</button>&nbsp;
+      <button ejs-button class="e-control e-btn e-primary" (click)="Validate()">Check</button>&nbsp;
+      <button ejs-button class="e-control e-btn e-primary" (click)="ValidateAndSave()">Save</button>
+    </div>-->
+      <!--</div>-->
+      <!--<div>&nbsp;</div>
+      <div>&nbsp;</div>
+    </div>
+  </form>-->
+      <button ejs-button class="e-control e-btn e-primary" (click)="Save()">Save Branch Condition</button>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+<!--Manage Branch Condition Pop up-->
+<div *ngIf="ShowManageBranchCondition">
+  <ejs-dialog class="dialogueClass_50" #ManageBranchConditionDialogue showCloseIcon="true" isModal="true" allowDragging='true' [header]="ManageBranchconditionHeader"
+              (beforeClose)="dialogClose()" enableResize="true">    
+    <ng-template #content>
+      <p class="notes-flex">If same action leads to multiple steps, then define conditions under which the transaction will land on a particiular step.</p>
+      <div class="margin-top_10">
+        <ejs-grid #ManageBranchgrid [dataSource]='Branchmodeldata' [toolbar]='toolbar' [editSettings]='editSettings'
+                  [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true"
+                  (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                  allowResizing="true" [filterSettings]='filterSettings' [gridLines]="lines"
+                  [contextMenuItems]="contextMenuItems" (rowSelected)='rowSelected($event)'>
+          <e-columns>
+            <e-column field='StepName' headerText='From Step'></e-column>
+            <e-column field='NextStepName' headerText='To Step'></e-column>
+            <e-column field='ActionLabel' headerText='Action'></e-column>
+            <e-column field='BranchCondition' headerText='Branch Condition'></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>
+

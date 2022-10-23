@@ -1,0 +1,5 @@
+
+.e-popup.e-popup-open.e-dialog {
+  display: inline-flex;
+  height: 80% !important;
+}

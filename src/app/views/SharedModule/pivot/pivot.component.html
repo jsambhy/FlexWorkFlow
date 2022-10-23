@@ -1,0 +1,510 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' showCloseIcon="true" [visible]="hidden"
+            [content]='confirmcontent' [header]="confirmHeader" class="dialogueClass_35" isModal="true"></ejs-dialog>
+<!--Card group for the page on the menu access validation-->
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Pivot View</h4>
+      <div class="row">
+        <span class="notes-flex col-10">
+          A pivot table is a powerful data summarization tool that can automatically sort, count, and sum up data stored in tables and display the summarized data in the form of charts,grid or card
+        </span>
+      </div>
+      <div>&nbsp;</div>
+
+
+      <ejs-grid #pivotGrid id='pivotGrid' [enableHover]='true' [filterSettings]='filterSettings'
+                [dataSource]='pivotGridDataSource'
+                [toolbar]='toolbar' [allowSelection]='true' allowSorting='true' allowFiltering='true'
+                allowTextWrap="true" (toolbarClick)='toolbarClick($event)'
+                [allowExcelExport]='true' [allowPdfExport]='true' gridLines="Both"
+                >
+
+        <e-columns>
+          <e-column field='Name' headerText='Name'></e-column>
+          <e-column field='Description' headerText='Description'></e-column>
+          <e-column field='CreatedBy' headerText='Created By'></e-column>
+          <e-column field='CreatedDateTime' headerText='Created On'></e-column>
+        </e-columns>
+      </ejs-grid>
+
+
+
+      <div *ngIf="ShowPopupcreate">
+        <ejs-dialog #createEditDialog showCloseIcon='true' [(visible)]="ShowPopupcreate"
+                    [header]="Header" class="dialogueClass_50" isModal="true"
+                    allowDragging='true' enableResize="true">
+          <ng-template #content>
+
+            <ejs-tab #tab id="tab" (selected)='onTabSelect($event)'>
+              <e-tabitems>
+                <e-tabitem [header]="{ 'text': 'Basic Info' }">
+                  <ng-template #content>
+                    <form [formGroup]="pivotForm">
+                      <div [ngClass]="{'e-success': f.Name.valid}">
+                        <ejs-textbox placeholder="Name*" floatLabelType="Auto"
+                                     formControlName="Name"></ejs-textbox>
+                      </div>
+                      <div *ngIf="(f.Name.touched || submitted) && f.Name.errors" class="e-error">
+                        <div *ngIf="f.Name.errors.required">Name is required</div>
+                      </div>
+                      <div>
+                        <ejs-textbox [multiline]='true'
+                                     placeholder="Description" floatLabelType="Auto" formControlName="Description"></ejs-textbox>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11" [ngClass]="{'e-success': f.ReportName.valid}">
+
+                          <ejs-dropdownlist [dataSource]="ReportsDataSource"
+                                            [fields]="chooseReportsfields" floatLabelType="Auto"
+                                            formControlName="ReportName"
+                                            placeholder="Data Source (Report)*">
+                          </ejs-dropdownlist>
+
+                          <div *ngIf="(f.ReportName.touched || submitted) && f.ReportName.errors" class="e-error">
+                            <div *ngIf="f.ReportName.errors.required">Report is required</div>
+                          </div>
+
+                        </div>
+                        <div>
+                          <img src="./assets/flex-images/Info.png" style="margin-top:24px" class="info-img" alt="Tooltip" title="If you don't see the data source that you need then, contact your admin to create a Report and assign it to your role" />
+                        </div>
+                      </div>
+                      <div>
+                        <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>&nbsp;
+                        <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="Update()">Update</button>
+                      </div>
+                    </form>
+                  </ng-template>
+                </e-tabitem>
+
+                <!------------------------start------------------------Rows------------------------------------>
+                <e-tabitem [header]="{ 'text': 'Rows' }">
+                  <ng-template #content>
+                      <ejs-grid #RowGrid id='RowGrid' [dataSource]='RowGriddata' [allowSelection]='true'
+                                allowSorting='true' allowFiltering='true'
+                                allowTextWrap="true"
+                                (toolbarClick)='RowtoolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                                gridLines="Both"
+                                [filterSettings]='filterSettings'
+                                [toolbar]='Rowtoolbar'>
+                        <e-columns>
+                          <e-column field='Caption' headerText='Label'></e-column>
+                          <e-column field='Ordinal' headerText='Ordinal'></e-column>
+                        </e-columns>
+                      </ejs-grid>
+</ng-template>
+                </e-tabitem>
+
+                <!------------------------End------------------------Rows------------------------------------>
+                <!------------------------start------------------------Columns------------------------------------>
+                <e-tabitem [header]="{ 'text': 'Columns' }">
+                  <ng-template #content>
+
+
+                    <ejs-grid #ColumnGrid id='ColumnGrid' [toolbar]='Columntoolbar' [dataSource]="ColumnGriddata"
+                              [allowExcelExport]='true' [allowPdfExport]='true'
+                              gridLines='Both' [allowRowDragAndDrop]='true' (toolbarClick)='ColumntoolbarClick($event)'>
+                      <e-columns>
+                        <e-column field='Caption' headerText='Label'></e-column>
+                        <e-column field='Ordinal' headerText='Ordinal'></e-column>
+                      </e-columns>
+                    </ejs-grid>
+
+                  </ng-template>
+                </e-tabitem>
+
+
+                <!------------------------End------------------------Columns------------------------------------>
+
+
+
+
+                <e-tabitem [header]="{ 'text': 'Values' }">
+                  <ng-template #content>
+                    <ejs-grid #ValueGrid id='ValueGrid' [dataSource]='ValueGriddata' [allowSelection]='true'
+                              allowSorting='true' allowFiltering='true'
+                              allowTextWrap="true"
+                              (toolbarClick)='toolbarClickValGrid($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                              gridLines="Both"
+                              [filterSettings]='filterSettings'
+                              [toolbar]='toolbarValGrid'>
+                      <e-columns>
+                        <e-column field='Caption' headerText='Formula Caption'></e-column>
+
+                        <e-column field='Formula' headerText='Created Formula'></e-column>
+                      </e-columns>
+                    </ejs-grid>
+
+
+                    <div *ngIf="showCreateValuePopUp">
+
+                      <form [formGroup]="pivotValForm">
+                        <ejs-dialog showCloseIcon='true' [header]="Header" class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="showCreateValuePopUp" enableResize="true" (beforeClose)="showCreateValuePopUpdialogClose($event)">
+                          <ng-template #content>
+                            <div>
+                              <table>
+                                <tr>
+                                  <td>Is it a calculated field?</td>
+                                  <td></td>
+                                  <td></td>
+                                  <td> <ejs-radiobutton class="col-xs-3 col-sm-3 col-md-3 col-lg-3" title="" name="iscalculatefield" label="No" value="No" [(checked)]="Nochecked" (change)="changeHandler()"></ejs-radiobutton>
+                                  <td></td>
+                                  <td></td>
+                                  <td><ejs-radiobutton class="col-xs-2 col-sm-2 col-md-2 col-lg-2" #radiobutton title="" name="iscalculatefield" label="Yes" value="Yes" [(checked)]="YesChecked" (change)="changeHandler()"></ejs-radiobutton></td>
+                                </tr>
+                              </table>
+                            </div>
+
+                            <ejs-textbox placeholder="Caption" floatLabelType="Auto" formControlName="Caption"></ejs-textbox>
+
+
+                            <ejs-dropdownlist [dataSource]="formatTypeSource"
+                                              [fields]="formatTypeFields" floatLabelType="Auto" formControlName="formatType"
+                                              (change)="formatTypeChange($event)" placeholder="Format">
+                            </ejs-dropdownlist>
+
+                            <ejs-dropdownlist [dataSource]="FieldSource"
+                                              [fields]="Fields" floatLabelType="Auto" formControlName="ValueField"
+                                              (change)="FieldChange($event)" placeholder="Field*">
+                            </ejs-dropdownlist>
+
+                            <ejs-dropdownlist [dataSource]="AggFuncSource" formControlName="AggFunc"
+                                              floatLabelType="Auto" (change)="AggFuncChange($event)"
+                                              placeholder="Aggregate Function*"></ejs-dropdownlist>
+
+                            <ejs-numerictextbox placeholder="Ordinal" floatLabelType="Auto"
+                                                decimals="0" formControlName="Ordinal"></ejs-numerictextbox>
+
+                            <div *ngIf="YesChecked">
+                              <button ejs-button class="e-control e-btn e-primary" (click)="AddFieldsToFormula()">Add to formula</button>&nbsp;
+
+                              <ejs-textbox id="Formula" #Formula multiline="true" [placeholder]="FormulaPlaceHolder"
+                                           floatLabelType="Auto" formControlName="Formula"
+                                           [enabled]="enableTextbox" value={{xx}}></ejs-textbox>
+
+                            </div>
+                            <div>&nbsp;</div>
+                            <button *ngIf="ShowValueCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveValuedata()">Save</button>
+                            <button *ngIf="ShowValueUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateValuedata()">Save</button>
+                          </ng-template>
+                        </ejs-dialog>
+                      </form>
+                    </div>
+                  </ng-template>
+                </e-tabitem>
+
+                <e-tabitem [header]="{ 'text': 'Filters' }">
+                  <ng-template #content>
+
+                    <ejs-grid #FilterGrid id='FilterGrid' [dataSource]='FilterGriddata' [pageSettings]='pageSettings' [columns]='FilterGridcolumns'
+                              [editSettings]='editSettingsConfig' [toolbar]='toolbarConfig'>
+                    </ejs-grid>
+                    <!--<div>
+                      <button ejs-button class="e-control e-btn e-primary" (click)="Next2()">Next</button>&nbsp;
+                    </div>-->
+                  </ng-template>
+                </e-tabitem>
+
+              </e-tabitems>
+            </ejs-tab>
+
+
+          </ng-template>
+        </ejs-dialog>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!----------------------------------Row Dialog Box----------------------------------------------->
+<div *ngIf="showRowsPopUp">
+  <ejs-dialog showCloseIcon='true' [header]="Header" class="dialogueClass_50" isModal="true"
+              allowDragging='true' [(visible)]="showRowsPopUp" enableResize="true">
+    <ng-template #content>
+      <form [formGroup]="pivotRowForm">
+
+        <ejs-dropdownlist [dataSource]="FieldSource"
+                          [fields]="Fields" floatLabelType="Auto" formControlName="RowDataField"
+                          (change)="FieldChange($event)" placeholder="Field*">
+        </ejs-dropdownlist>
+
+        <ejs-textbox placeholder="Caption" floatLabelType="Auto" formControlName="Caption"></ejs-textbox>
+
+        <ejs-numerictextbox placeholder="Ordinal" floatLabelType="Auto"
+                            decimals="0" formControlName="Ordinal"></ejs-numerictextbox>
+
+      </form>
+
+      <div>
+        <button *ngIf="ShowRowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveRowdata()">Save</button>&nbsp;
+        <button *ngIf="ShowRowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateRowdata()">Update</button>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+<!----------------------------------Column Dialog Box----------------------------------------------->
+<div *ngIf="showColumnsPopUp">
+  <ejs-dialog showCloseIcon='true' [header]="Header" class="dialogueClass_50" isModal="true"
+              allowDragging='true' [(visible)]="showColumnsPopUp" enableResize="true">
+    <ng-template #content>
+      <form [formGroup]="pivotColumnForm">
+
+        <ejs-dropdownlist [dataSource]="FieldSource"
+                          [fields]="Fields" floatLabelType="Auto" formControlName="ColumnDataField"
+                          (change)="FieldChange($event)" placeholder="Field*">
+        </ejs-dropdownlist>
+
+        <ejs-textbox placeholder="Caption" floatLabelType="Auto" formControlName="Caption"></ejs-textbox>
+
+        <ejs-numerictextbox placeholder="Ordinal" floatLabelType="Auto"
+                            decimals="0" formControlName="Ordinal"></ejs-numerictextbox>
+
+      </form>
+
+      <div>
+        <button *ngIf="ShowColumnCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="SaveColumndata()">Save</button>&nbsp;
+        <button *ngIf="ShowColumnUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="UpdateColumndata()">Update</button>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<form [formGroup]="pivotForm">
+                <div [ngClass]="{'e-success': f.Name.valid}">
+                  <ejs-textbox #Name id="Name" placeholder="Name*" floatLabelType="Auto" formControlName="Name" [enabled]="enable"></ejs-textbox>
+                </div>
+                <div *ngIf="(f.Name.touched || submitted) && f.Name.errors" class="e-error">
+                  <div *ngIf="f.Name.errors.required">Name is required</div>
+                </div>
+                <div>
+                  <ejs-textbox #Description id="Description" [multiline]='true' placeholder="Description" floatLabelType="Auto" formControlName="Description" [enabled]="enable"></ejs-textbox>
+                </div>
+                <div class="row">
+                  <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11" [ngClass]="{'e-success': f.ReportsName.valid}">
+
+                    <ejs-dropdownlist #ReportsNameobj id="ReportsNameobj" [dataSource]="ReportsDataSource"
+                                      [fields]="chooseReportsfields" floatLabelType="Auto" formControlName="ReportsName"
+                                      (change)="ReportsNamesChange($event)" placeholder="Data Source (Report)*" [enabled]="enable">
+
+                    </ejs-dropdownlist>
+
+                    <div *ngIf="(f.ReportsName.touched || submitted) && f.ReportsName.errors" class="e-error">
+                      <div *ngIf="f.ReportsName.errors.required">Report is required</div>
+                    </div>
+
+                  </div>
+                  <div>
+                    <img src="./assets/flex-images/Info.png" style="margin-top:24px" class="info-img" alt="Tooltip" title="If you don't see the data source that you need then, contact your admin to create a Report and assign it to your role" />
+                  </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="row">
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" [ngClass]="{'e-success': f.YAxisData.valid}">
+                    <ejs-dropdownlist [dataSource]="ChartsDataColumnSource"
+                                      [fields]="ChartsDataColumnfields" floatLabelType="Auto" formControlName="YAxisData"
+                                      (change)="ChartColumnNameChange($event)" placeholder="Field to be displayed in column(Y axis)*" [enabled]="enable">
+                    </ejs-dropdownlist>
+                    <div *ngIf="(f.YAxisData.touched || submitted) && f.YAxisData.errors" class="e-error">
+                      <div *ngIf="f.YAxisData.errors.required">Y axis data is required</div>
+                    </div>
+                  </div>
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <ejs-textbox ColumnCaption id="ColumnCaption" placeholder="Caption for the selected Y axis data" floatLabelType="Auto" [enabled]="enable" formControlName="ColumnCaption"></ejs-textbox>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" [ngClass]="{'e-success': f.XAxisData.valid}">
+
+                    <ejs-dropdownlist [dataSource]="ChartsDataRowSource"
+                                      [fields]="ChartsDataColumnfields" floatLabelType="Auto" formControlName="XAxisData"
+                                      (change)="ChartRowNameChange($event)" placeholder="Field to be displayed in row(X axis)*" [enabled]="enable">
+                    </ejs-dropdownlist>
+
+
+
+                    <div *ngIf="(f.XAxisData.touched || submitted) && f.XAxisData.errors" class="e-error">
+                      <div *ngIf="f.XAxisData.errors.required">X axis data is required</div>
+                    </div>
+                  </div>
+                  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <ejs-textbox #RowCaption id="RowCaption" placeholder="caption for selected x axis data'" floatLabelType="Auto" formControlName="RowCaption" [enabled]="enable"></ejs-textbox>
+                  </div>
+
+                </div>
+
+
+                <div *ngFor="let rowGroup of pivotForm.get('Row').controls;let i = index" [formGroup]="rowGroup">
+
+                  <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                      <ejs-dropdownlist #XAxisobj id="#XAxisobj" [dataSource]="ChartsDataRowSource"
+                                        [fields]="ChartsDataColumnfields" floatLabelType="Auto" formControlName="name"
+                                        (change)="ChartRowNameChange($event)" placeholder="Field to be displayed in row(X axis)" [enabled]="enable">
+                      </ejs-dropdownlist>
+
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                      <ejs-textbox #ColumnLabel id="ColumnLabel" placeholder="Caption" floatLabelType="Auto" formControlName="caption" [enabled]="enable"></ejs-textbox>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                      <a><img src="./assets/flex-images/Delete_1.png" style="margin-top:24px" alt='' title="Delete Component" (click)="deleteAddressGroup(i)"></a>
+                    </div>
+
+                  </div>
+
+                </div>
+                <div>
+                  <a *ngIf="showAddLink" (click)="add(value)" style="color: #20a8d8 !important; cursor:pointer;font-weight: 400;text-decoration: none;" class="btn-link-xx">Add X Sub-division  <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="field selected in X axis will be used for drilled down functionality in the order of selected fields" /></a>
+
+                </div>
+
+
+                <div [ngClass]="{'e-success': f.formatType.valid}">
+                  <ejs-dropdownlist [dataSource]="formatTypeSource"
+                                    [fields]="formatTypeFields" floatLabelType="Auto" formControlName="formatType"
+                                    (change)="formatTypeChange($event)" placeholder="Format*" [enabled]="enable">
+                  </ejs-dropdownlist>
+                </div>
+                <div *ngIf="(f.formatType.touched || submitted) && f.formatType.errors" class="e-error">
+                  <div *ngIf="f.formatType.errors.required">Form type is required</div>
+                </div>
+
+                <div>
+                  <button *ngIf="ShowCloseBtn" ejs-button class="e-control e-btn e-primary" (click)="Close()">Close</button>&nbsp;
+                  <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>&nbsp;
+                  <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+                </div>
+              </form>-->
+<!--<ejs-grid #RowGrid id='RowGrid' [enableHover]='true' [filterSettings]='filterSettings' [dataSource]=''
+          [toolbar]='toolbarConfig' [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true"
+          (toolbarClick)='toolbarClickRowGrid($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+          gridLines="Both" (recordDoubleClick)="recordDoubleClick($event)">
+  <e-columns>
+    <e-column field='Name' headerText='Name'></e-column>
+    <e-column field='Caption' headerText='Caption'></e-column>
+  </e-columns>
+</ejs-grid>-->
+<!--<div class="row">
+  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" [ngClass]="{'e-success': f.XAxisData.valid}">
+
+    <ejs-dropdownlist [dataSource]="ChartsDataRowSource"
+                      [fields]="ChartsDataColumnfields" floatLabelType="Auto" formControlName="XAxisData"
+                      (change)="ChartRowNameChange($event)" placeholder="Field to be displayed in row(X axis)*" [enabled]="enable">
+    </ejs-dropdownlist>
+    <div *ngIf="(f.XAxisData.touched || submitted) && f.XAxisData.errors" class="e-error">
+      <div *ngIf="f.XAxisData.errors.required">X axis data is required</div>
+    </div>
+  </div>
+  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+    <ejs-textbox #RowCaption id="RowCaption" placeholder="caption for selected x axis data'" floatLabelType="Auto" formControlName="RowCaption" [enabled]="enable"></ejs-textbox>
+  </div>
+
+</div>-->
+<!--<div *ngFor="let rowGroup of pivotForm.get('Row').controls;let i = index" [formGroup]="rowGroup">
+
+  <div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+      <ejs-dropdownlist #XAxisobj id="#XAxisobj" [dataSource]="ChartsDataRowSource"
+                        [fields]="ChartsDataColumnfields" floatLabelType="Auto" formControlName="name"
+                        (change)="ChartRowNameChange($event)" placeholder="Field to be displayed in row(X axis)" [enabled]="enable">
+      </ejs-dropdownlist>
+
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+      <ejs-textbox #ColumnLabel id="ColumnLabel" placeholder="Caption" floatLabelType="Auto" formControlName="caption" [enabled]="enable"></ejs-textbox>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+      <a><img src="./assets/flex-images/Delete_1.png" style="margin-top:24px" alt='' title="Delete Component" (click)="deleteAddressGroup(i)"></a>
+    </div>
+
+  </div>
+
+</div>
+<div>
+  <a *ngIf="showAddLink" (click)="add(value)" style="color: #20a8d8 !important; cursor:pointer;font-weight: 400;text-decoration: none;" class="btn-link-xx">Add X Sub-division  <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="field selected in X axis will be used for drilled down functionality in the order of selected fields" /></a>
+
+</div>-->
+<!--<div>
+  <p class="notes-flex">Make sure you have added atleast one row in grid</p>
+  <button ejs-button class="e-control e-btn e-primary" (click)="Next1()">Next</button>&nbsp;
+</div>-->
+<!--<div class="row">
+  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" [ngClass]="{'e-success': f.YAxisData.valid}">
+
+    <ejs-dropdownlist [dataSource]="ChartsDataColumnSource"
+                      [fields]="ChartsDataColumnfields" floatLabelType="Auto" formControlName="YAxisData"
+                      (change)="ChartColumnNameChange($event)" placeholder="Field to be displayed in column(Y axis)*" [enabled]="enable">
+    </ejs-dropdownlist>
+
+
+
+    <div *ngIf="(f.YAxisData.touched || submitted) && f.YAxisData.errors" class="e-error">
+      <div *ngIf="f.YAxisData.errors.required">Y axis data is required</div>
+    </div>
+  </div>
+  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+    <ejs-textbox ColumnCaption id="ColumnCaption" placeholder="Caption for the selected Y axis data" floatLabelType="Auto" [enabled]="enable" formControlName="ColumnCaption"></ejs-textbox>
+  </div>
+</div>-->
+<!--<div *ngFor="let columnGroup of pivotForm.get('Column').controls;let i = index" [formGroup]="columnGroup">
+
+  <div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+      <ejs-dropdownlist #YAxisobj id="#YAxisobj" [dataSource]="ChartsDataColumnSource"
+                        [fields]="ChartsDataColumnfields" floatLabelType="Auto" formControlName="name"
+                        (change)="ChartColumnNameChange($event)" placeholder="Field to be displayed in column(Y axis)" [enabled]="enable">
+      </ejs-dropdownlist>
+
+
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+      <ejs-textbox #ColumnLabel id="ColumnLabel" placeholder="Caption" floatLabelType="Auto" formControlName="caption" [enabled]="enable"></ejs-textbox>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+      <a><img src="./assets/flex-images/Delete_1.png" style="margin-top:24px" alt='' title="Delete Component" (click)="deleteYGroup(i)"></a>
+    </div>
+
+  </div>
+
+</div>-->
+<!--<div>
+  <a *ngIf="showAddLink" (click)="addColumn(value)" style="color: #20a8d8 !important; cursor:pointer;font-weight: 400;text-decoration: none;" class="btn-link-xx">Add Y Sub-division  <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="Field selected in Y axis will be used for drilled down functionality in the order of selected fields" /></a>
+
+</div>-->
+<!--<div>
+  <button ejs-button class="e-control e-btn e-primary" (click)="Next2()">Next</button>&nbsp;
+
+</div>-->

@@ -1,0 +1,2 @@
+D:\megacubeaustralia\FlexWF\FlexWF_Solution\Flexwf_coreui\obj\Debug\Flexwf_coreui.esproj.SuggestedBindingRedirects.cache
+D:\megacubeaustralia\FlexWF\FlexWF_Solution\Flexwf_coreui\obj\Debug\Flexwf_coreui.esproj.CoreCompileInputs.cache

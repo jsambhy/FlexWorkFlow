@@ -1,0 +1,84 @@
+
+
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">User Management</h4>
+      <div *ngIf="ShowTabs">
+        <ejs-tab (selected)='onTabSelect($event)'>
+          <e-tabitems>
+
+            <e-tabitem [header]='headerText[0]'>
+              <ng-template #content>
+                <ejs-grid #projectUserGrid id='projectUserGrid' [dataSource]='ProjectUserList' rowHeight='38' [allowSelection]='true'
+                          height='auto' gridLines="Both" allowResizing='true'
+                          allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true" [allowPaging]='true'
+                          [toolbar]='toolbar' (toolbarClick)='toolbarClick($event)' [childGrid]='childGrid' (recordDoubleClick)="recordDoubleClick($event)">
+                  <e-columns>
+                    <e-column field='GroupName' headerText='Group Name' width='230' [visible]='isGroupColumnVisible'></e-column>
+                    <e-column field='CompanyName' headerText='Company Name' width='230'></e-column>
+                    <e-column field='LoginEmail' headerText='User' width='230'></e-column>
+                  </e-columns>
+                </ejs-grid>
+              </ng-template>
+            </e-tabitem>
+
+            <e-tabitem [header]='headerText[1]'>
+              <ng-template #content>
+                <ejs-grid #nonProjectUserGrid id='nonProjectUserGrid' [dataSource]='NonProjectUserList' rowHeight='38' [allowSelection]='true'
+                          height='auto' gridLines="Both" allowResizing='true'
+                          allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+                          [toolbar]='toolbar' (toolbarClick)='toolbarClick($event)' [childGrid]='childGrid' (recordDoubleClick)="recordDoubleClick($event)">
+                  <e-columns>
+                    <e-column field='GroupName' headerText='Group Name' width='230' [visible]='isGroupColumnVisible'></e-column>
+                    <e-column field='CompanyName' headerText='Company Name' width='230'></e-column>
+                    <e-column field='LoginEmail' headerText='User' width='230'></e-column>
+                  </e-columns>
+                </ejs-grid>
+              </ng-template>
+            </e-tabitem>
+
+          </e-tabitems>
+        </ejs-tab>
+      </div>
+
+      <div *ngIf="ShowUserGrid">
+        <ejs-grid #userGrid id='userGrid' [dataSource]='GridDataSource' rowHeight='38' [allowSelection]='true'
+                  height='auto' gridLines="Both" allowResizing='true'
+                  allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+                  [toolbar]='toolbar' (toolbarClick)='toolbarClick($event)' [childGrid]='childGrid' (recordDoubleClick)="recordDoubleClick($event)">
+          <e-columns>
+            <e-column field='GroupName' headerText='Group Name' width='230' [visible]='isGroupColumnVisible'></e-column>
+            <e-column field='CompanyName' headerText='Company Name' width='230'></e-column>
+            <e-column field='LoginEmail' headerText='User' width='230'></e-column>
+          </e-columns>
+        </ejs-grid>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="showPopup">
+  <ejs-dialog class="dialogueClass_70" height="80%" header="Manage Users" showCloseIcon='true' isModal="true" allowDragging='true' [(visible)]="showPopup" enableResize="true">
+    <ng-template #content>
+      <app-user-common-controls [TransactionId]="TransactionId" [Source]="Source"></app-user-common-controls>
+    </ng-template>
+  </ejs-dialog>
+
+</div>
+
+
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]='hidden' [header]='confirmHeader'
+            [showCloseIcon]='confirmCloseIcon'
+            [width]='confirmWidth'>
+  <ng-template #content>
+    <span>{{ConfirmationBoxMsg}}</span>
+  </ng-template>
+</ejs-dialog>
+
+

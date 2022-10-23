@@ -1,0 +1,113 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">{{header}}</h4>
+      <div *ngIf="AllowUpload" class=" btn btn-link userLink">
+        <a (click)="DownloadTemplate();">Download Empty Template</a>
+      </div>
+      <div *ngIf="AllowUpload" class=" btn btn-link userLink">
+        <a (click)="OpenUploader();">Upload</a>
+      </div>
+      <ejs-grid #MasterDataGrid id='RefGrid' [dataSource]='ReferenceDataGridData' rowHeight='38' [allowSelection]='true'
+                height='190' width="100%"
+                [toolbar]='toolbar' (toolbarClick)='toolbarClick($event)'
+                allowSorting='true' showColumnMenu='true' allowGrouping='true'
+                allowReordering="true"
+                [allowPdfExport]='true' [allowExcelExport]='true' gridLines='Both'
+                allowFiltering="true" [filterSettings]='filterSettings' [allowPaging]='true' [pageSettings]='pageSetting'
+                allowResizing='true'
+                 (dataStateChange)='dataStateChange($event)' (recordDoubleClick)='recordDoubleClick($event)'>
+        <e-columns>
+          <div *ngFor="let item of gridColumns">
+            <e-column [field]="item.Label" [headerText]="item.Label" displayAsCheckBox='true' width="150"></e-column>
+          </div>
+        </e-columns>
+      </ejs-grid>
+      <br />
+      <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="goToPrevious()">Back</button>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="showConfiguredWFs">
+  <ejs-dialog showCloseIcon='true' class="dialogueClass_35" isModal="true"
+              enableResize="true" allowDragging='true' [(visible)]="showConfiguredWFs">
+    <ng-template #header>
+      {{PopupHeader}}
+    </ng-template>
+    <p class="notes-flex">{{notes}} </p>
+    <!--<ng-template #content>-->
+
+      <ejs-grid #WFGrid [dataSource]='WFDataSource'
+                [allowSelection]='true' (rowSelected)="rowSelected($event)"
+                gridLines="Both" allowResizing='true'>
+        <e-columns>
+          <e-column field='WFLabel' headerText='Workflow' width="150"></e-column>
+          <e-column field='StepName' headerText='Step Name' width="150"></e-column>
+          <e-column field='Label' headerText='Dropdown' width="150"></e-column>
+        </e-columns>
+      </ejs-grid>
+    <!--</ng-template>-->
+  </ejs-dialog>
+</div>
+
+<!--Dialogue for constraints details for selected transaction(MasterData) -->
+<div *ngIf="showConstraintsDialogue">
+  <ejs-dialog showCloseIcon='true' class="dialogueClass_50" isModal="true"
+              enableResize="true" allowDragging='true' [(visible)]="showConstraintsDialogue">
+    <ng-template #header>
+      {{RestrictionsHeader}}
+    </ng-template>
+    <!--<p class="notes-flex">{{notes}} </p>--> 
+    <ejs-grid #ConstraintsGrid [dataSource]='ConstraintsDataSource'
+              [allowSelection]='true' (rowSelected)="rowSelected($event)"
+              [toolbar]='constraintstoolbar' (toolbarClick)='ConstraintstoolbarClick($event)'
+              gridLines="Both" allowResizing='true'>
+      <e-columns>
+        <e-column field='RoleName' headerText='Role Name' width="150"></e-column>
+        <e-column field='LoginEmail' headerText='LoginEmail' width="150"></e-column>
+        <e-column field='Type' headerText='Type' width="150"></e-column>
+      </e-columns>
+    </ejs-grid> 
+  </ejs-dialog>
+</div>
+
+
+<!--Dialogue for Modifiying restrictions-->
+<ejs-dialog *ngIf="ShowModifyRestrictions" class="dialogueClass_35" [animationSettings]='animationSettings'
+            showCloseIcon="true" isModal="true" allowDragging='true' enableResize="true" [(visible)]="ShowModifyRestrictions">
+  <ng-template #header>
+    Create Resrictions
+  </ng-template>
+  <form [formGroup]="RestrictionForm">
+    <ejs-dropdownlist #restrictionList [dataSource]="restrictionDataSource" [fields]="restrictionFields" floatLabelType='Always'
+                      placeholder='Include/Exclude' formControlName="Type">
+    </ejs-dropdownlist>
+    <ejs-dropdownlist #roleList [dataSource]="roleDataSource" [fields]="roleFields" floatLabelType='Always'
+                      placeholder='Role' formControlName="RoleId"
+                      [allowFiltering]="true" (change)='onChangeRole($event)'>
+    </ejs-dropdownlist>
+    <div *ngIf="submitted && f.RoleId.errors" class="e-error">
+      <div *ngIf="f.RoleId.errors.required">Role is required</div>
+    </div>
+    <ejs-multiselect #userList id="userList" [dataSource]="UserDataSource" [fields]="userFields" floatLabelType='Always'
+                     placeholder='User' [allowFiltering]="true" formControlName="UserId" mode='Box' [value]="PreSelectedUserList">
+    </ejs-multiselect> 
+    <div *ngIf="submitted && f.UserId.errors" class="e-error">
+      <div *ngIf="f.UserId.errors.required">User is required</div>
+    </div>
+    <button ejs-button class="e-control e-btn e-primary" (click)="UpdateRestrictions()">Save</button>
+
+  </form>
+</ejs-dialog>
+
+
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]='hidden' [header]='confirmHeader'
+            [showCloseIcon]='confirmCloseIcon'
+            class="dialogueClass_35">
+  <ng-template #content>
+    <span>{{ConfirmationBoxMsg}}</span>
+  </ng-template>
+</ejs-dialog>

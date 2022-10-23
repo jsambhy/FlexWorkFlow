@@ -1,0 +1,79 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<!--Confirmation Dialogue called while clonning or deleting step columns-->
+<ejs-dialog #confirmDialog [visible]="hidden" [buttons]='confirmDlgButtons' showCloseIcon="true" [content]='confirmcontent' class="dialogueClass_35" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Tag Categories</h4>
+      <ejs-grid #tagcategoriesgrid id='tagcategoriesgrid' [toolbar]='toolbar' [dataSource]='CatGridDataSource'
+                 [allowSelection]='true' allowSorting='true' allowFiltering='true'
+                allowTextWrap="true" (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                allowResizing='true' [filterSettings]='filterSettings' [gridLines]="lines" [contextMenuItems]="contextMenuItems"
+                (recordDoubleClick)="recordDoubleClick($event)">
+          <e-columns>
+            <e-column field='Name' headerText='Name'></e-column>
+            <e-column field='Description' headerText='Description'></e-column>
+            <e-column field='IsActive' headerText='IsActive' displayAsCheckBox='true'></e-column>
+          </e-columns>
+        </ejs-grid>
+</div>
+  </div>
+</div>
+
+
+<!--Add new Tag Pop Up-->
+<div *ngIf="ShowPopupcreateTagCat">
+  <ejs-dialog #createTagsCatDialogue class="dialogueClass_50" [header]="headerTag" (beforeClose)="dialogClose()" showCloseIcon='true' isModal="true" allowDragging='true' [(visible)]="ShowPopupcreateTagCat" enableResize="true">
+    <ng-template #content>
+      <div>&nbsp;</div>
+      <form [formGroup]="tagCatForm">
+        <div>
+          <div [ngClass]="{'e-success': f.tagcatlabel.valid}">
+            <ejs-textbox #labelTextBoxobj id="labelTextBoxobj"  (blur)="focusOut($event)" placeholder="Label*" floatLabelType="Auto" formControlName="tagcatlabel"
+                         [ngClass]="{ 'is-invalid': submitted && f.tagcatlabel.errors }"></ejs-textbox>
+          </div>
+          <div *ngIf="f.tagcatlabel.touched && f.tagcatlabel.errors" class="e-error">
+            <div *ngIf="f.tagcatlabel.errors.required">Label is required</div>
+            <div *ngIf="f.tagcatlabel.errors.maxlength">Label cannot be max than 255 characters</div>
+          </div>
+          <div [ngClass]="{'e-success': f.tagcatdescription.valid}">
+            <ejs-textbox #Descriptionobj id="Descriptionobj" placeholder="Description" floatLabelType="Auto" formControlName="tagcatdescription"
+                         [ngClass]="{ 'is-invalid': submitted && f.tagcatdescription.errors }"></ejs-textbox>
+          </div>
+          <div *ngIf="f.tagcatdescription.touched && f.tagcatdescription.errors" class="e-error">
+            <div *ngIf="f.tagcatdescription.errors.maxlength">Description cannot be max than 4000 characters</div>
+          </div>
+          <div>&nbsp;</div>
+          <ejs-checkbox #checkBoxIsActive label="IsActive" labelPosition="Before" [checked]="true" formControlName="tagcatactive"></ejs-checkbox>`
+          <div>&nbsp;</div>
+          <div>&nbsp;</div>
+              <div *ngIf="ShowCreateBtn">
+                <button ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>
+
+              </div>
+              <div *ngIf="ShowUpdateBtn">
+                <button ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+              </div>
+          
+         
+        </div>
+
+        
+      </form>
+      
+     
+    </ng-template>
+  </ejs-dialog>
+
+</div>
+
+<!--Manage tags screen calling-->
+<app-tags *ngIf="showManageTag"  [TagCategoryId]="TagCategoryId" [CategoryName]="CategoryName" (PostshowPopupEvent)="PostshowPopupEvent();"></app-tags>

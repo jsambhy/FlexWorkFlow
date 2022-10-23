@@ -1,0 +1,7 @@
+.e-panel-content {
+  overflow: auto;
+}
+.e-popup.e-popup-open.e-dialog {
+  display: inline-flex;
+  height: 60% !important;
+}

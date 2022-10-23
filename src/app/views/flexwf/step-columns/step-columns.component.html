@@ -1,0 +1,135 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue called while clonning or deleting step columns-->
+<ejs-dialog #confirmDialog [visible]="hidden" [buttons]='confirmDlgButtons' showCloseIcon="true" [content]='confirmcontent' class="dialogueClass_35" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+
+
+<!--Manage Landing Page Pop Up-->
+<ejs-dialog class="dialogueClass_50" height="50%" #columndetailDialogue showCloseIcon="true" (beforeClose)="dialogClose()" isModal="true" allowDragging='true' [header]="managecolumnheader" enableResize="true">
+<ng-template #content>
+    <p class="notes-flex">Define the columns of the index grid where you would land when accessing this workflow.</p>
+    <div class="margin-top_10">
+      <ejs-grid #stepcolumngrid id='stepcolumngrid' [dataSource]='stepColumnGriddata' [toolbar]='toolbar'
+                [editSettings]='editSettings'  [allowSelection]='true' allowSorting='true'  allowFiltering='true'
+                allowTextWrap="true" (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                allowResizing='true' [filterSettings]='filterSettings' [gridLines]="lines" [contextMenuItems]="contextMenuItems"
+                [allowRowDragAndDrop]='true'   (rowDrop) ="rowDrop($event)" (rowSelected)="rowSelected($event)" (recordDoubleClick)="recordDoubleClick($event)">
+        <e-columns>
+          <e-column field='StepName' headerText='Step' ></e-column>
+          <e-column field='Label' headerText='Label' ></e-column>
+          <!--<e-column field='Ordinal' headerText='Ordinal' ></e-column>-->
+          <e-column field='AscDesc' headerText='Sorting Order'></e-column>
+          <e-column field='ShouldBeVisible' headerText='Visible' displayAsCheckBox='true'></e-column>
+        </e-columns>
+      </ejs-grid>
+      <div>&nbsp;</div>
+      <button *ngIf="showClonebutton"   ejs-button class = "e-control e-btn e-primary" (click)="showpopup()">Clone Landing page to other steps</button>
+    </div>
+  </ng-template>
+</ejs-dialog>
+
+<!--Add new column Pop Up-->
+<div *ngIf="ShowPopupcreatestepcolumn">
+  <ejs-dialog #columnCreateDialogue class="dialogueClass_50" [header]="createcolumnheader" showCloseIcon='true'  isModal="true" allowDragging='true' [(visible)]="ShowPopupcreatestepcolumn" enableResize="true">
+    <ng-template #content>
+      <div>&nbsp;</div>
+      <form [formGroup]="stepcolumncreate">
+        <div>
+          <div [ngClass]="{'e-success': f.stepdrop.valid}">
+            <ejs-dropdownlist *ngIf="ShowStepdropdown" formControlName="stepdrop" [dataSource]="SourceStepColumns"
+                              floatLabelType="Auto" [fields]="fields" (change)="stepentityChange($event)"
+                              placeholder='Choose step*'></ejs-dropdownlist>
+          </div>
+          <div *ngIf="(f.stepdrop.touched || submitted) && f.stepdrop.errors && ShowStepdropdown" class="e-error">
+            <div *ngIf="f.stepdrop.errors.required">please select step</div>
+          </div>
+          <div [ngClass]="{'e-success': f.coldrop.valid}">
+            <ejs-dropdownlist *ngIf="ShowColumndropdown" formControlName="coldrop" #columnobj id="columnobj"
+                              [dataSource]="choosecolumn"
+                              [fields]="choosecolumnfields" (change)="change($event)" floatLabelType="Auto"
+                              [enabled]="true" [placeholder]="choosecolumnplaceholder"></ejs-dropdownlist>
+          </div>
+          <div *ngIf="(f.coldrop.touched || submitted) && f.coldrop.errors && ShowColumndropdown" class="e-error">
+            <div *ngIf="f.coldrop.errors.required">please select column</div>
+          </div>
+          <div [ngClass]="{'e-success': f.columnlabel.valid}">
+            <ejs-textbox #labelTextBoxobj id="labelTextBoxobj" placeholder="Label"  floatLabelType="Auto" formControlName="columnlabel" [ngClass]="{ 'is-invalid': submitted && f.columnlabel.errors }"></ejs-textbox>
+          </div>
+          <div *ngIf="f.columnlabel.touched && f.columnlabel.errors" class="e-error">
+            <div *ngIf="f.columnlabel.errors.required">Label is required</div>
+            <div *ngIf="f.columnlabel.errors.maxlength">Label cannot be max than 255 characters</div>
+          </div>
+          <!--<ejs-textbox #positionTextBoxobj id="positionTextBoxobj" [enabled]="false" placeholder="column position within index grid" typeof="number" floatLabelType="Auto" formControlName="columnordinal"></ejs-textbox>-->
+          <div>&nbsp;</div>
+          <table>
+            <p>Sorting</p>
+            <tr>
+              <td>
+                <ejs-radiobutton #radiobuttonorder label="None" name="order" value="none" [(checked)]="nonechecked" (change)="changeHandler1()"></ejs-radiobutton>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <ejs-radiobutton label="Ascending" name="order" value="asc" [(checked)]="ascchecked" (change)="changeHandler1()"></ejs-radiobutton>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <ejs-radiobutton label="Descending" name="order" value="desc" [(checked)]="descchecked" (change)="changeHandler1()"></ejs-radiobutton>
+              </td>
+            </tr>
+
+          </table>
+
+          <div>&nbsp;</div>
+          <ejs-checkbox #checkBoxvisible label="Visible" labelPosition="Before" [checked]="true" formControlName="visible"></ejs-checkbox>`
+
+        </div>
+      </form>
+      <div>&nbsp;</div>
+      <div>&nbsp;</div>
+      <div *ngIf="ShowCreateBtn">
+        <button ejs-button class="e-control e-btn e-primary" (click)="onFormSubmit()">Save</button>
+        &nbsp;
+        <button ejs-button class="e-control e-btn e-primary" (click)="AddAllFields()">Add All Fields</button>
+
+
+      </div>
+      <div *ngIf="ShowUpdateBtn">
+        <button ejs-button class = "e-control e-btn e-primary" (click)="Update()">Save</button>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+
+</div>
+
+
+<!--Pop up for the step selection-->
+<div *ngIf="ShowPopupSelectionstep">
+  <ejs-dialog #StepSelectiondlg class="dialogueClass_50" header='Clone landing page' showCloseIcon='true'  isModal="true" allowDragging='true' (beforeClose)="ClonedialogClose()" enableResize="true">
+    <ng-template #content>
+      <div class="div-bottomMargin"></div>
+      <ejs-dropdownlist #step id="step" *ngIf="showstep" [dataSource]='SourceStepColumns'
+                        [fields]="fields" placeholder='From Step*'
+                        (change)="clonestepentitychange($event)"></ejs-dropdownlist>
+
+      <div>&nbsp;</div>
+      <ejs-grid #stepselectiongrid id='stepselectiongrid' [dataSource]='stepcollectionexceptsourcestep' (rowSelected)='rowSelected($event)'>
+        <e-columns>
+          <e-column type='checkbox' width='50'></e-column>
+          <e-column field='Label' headerText='Steps'></e-column>
+        </e-columns>
+      </ejs-grid>
+      <div>&nbsp;</div>
+      <button ejs-button class = "e-control e-btn e-primary" (click)="Clonethis()">Clone</button>
+    </ng-template>
+  </ejs-dialog>
+</div>
+
+
+

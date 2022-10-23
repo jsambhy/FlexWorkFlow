@@ -1,0 +1,49 @@
+<div class="card-group">
+<div class="card">
+  <div class="card-body">
+    <h4 class="header-text">{{ReportHeader}}</h4>
+
+    <!--<ejs-grid *ngIf="showOnlyReport" #ViewReportGrid id='ViewReportGrid' [dataSource]="ReportData"
+            [allowExcelExport]='true' [allowPdfExport]='true' [toolbar]='toolbar' (toolbarClick)='toolbarClick($event)'
+            gridLines='Both' allowFiltering='true' [filterSettings]='filterSettings' height="400"
+            [allowResizing]='true' >
+    
+    <e-columns>
+      <e-column *ngFor="let item of HeaderList" field='{{item}}'
+                headerText='{{item}}'
+                width=150>
+      </e-column>
+    </e-columns>
+
+
+  </ejs-grid>-->
+    <ejs-grid *ngIf="showOnlyReport" #ViewReportGrid id='ViewReportGrid' [dataSource]="ReportData"
+            [allowExcelExport]='true' [allowPdfExport]='true' [toolbar]='toolbar' (toolbarClick)='toolbarClick($event)'
+            gridLines='Both' allowFiltering='true' [filterSettings]='filterSettings' height="400"
+            [allowResizing]='true'>
+      <!--<e-columns>
+        <e-column *ngFor="let col of HeaderList" field='{{col}}'
+                  headerText='{{col}}'
+                  width=200>
+        </e-column>
+      </e-columns>-->
+    </ejs-grid>
+
+
+    <div *ngIf="showPivot" class="control-section" style="overflow:auto;">
+      <ejs-pivotview #pivotview id='PivotView' [dataSourceSettings]=dataSourceSettings width='100%' height='290'>
+
+      </ejs-pivotview>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<div *ngIf="ShowParamScreen">
+  <ejs-dialog showCloseIcon='true' [header]="EntityName" class="dialogueClass_70" isModal="true" allowDragging='true'
+              [(visible)]="ShowParamScreen" enableResize="true">
+    <app-custom-report-parameters [ReportId]="ReportId" (PostParamJsonEvent)="PostParamJsonEvent($event);"></app-custom-report-parameters>
+  </ejs-dialog>
+</div>
+

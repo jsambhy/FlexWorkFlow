@@ -1,0 +1,49 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<!--Popup for managing Recipients-->
+  <ejs-dialog class="dialogueClass_70" height="50%" showCloseIcon="true" isModal="true" allowDragging='true' [header]="RecipientHeader" (beforeClose)="dialogClose()" enableResize="true">
+    <ng-template #content>
+      <p class="notes-flex">
+        you can set multiple recipients for this email. It can be either be Requestor of the transaction or a particular User or a particular Role or Participants(Roles) of a particular step.
+      </p>
+      <div class="margin-top_10">
+        <ejs-grid #Recipientgrid id='Recipientgrid'  [filterSettings]='filterSettings' [dataSource]='recipientsdata'
+                  [toolbar]='toolbar' [allowSelection]='true' allowSorting='true' allowFiltering='true'
+                  allowTextWrap="true" (toolbarClick)='toolbarClick($event)'
+                  [allowExcelExport]='true' [allowPdfExport]='true' [gridLines]="lines">
+          <e-columns>
+            <e-column field='ToEntityType' headerText='Type'></e-column>
+            <e-column field='EntityName' headerText='Name'></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+
+<!-->Pop up for creating recipients-->
+<div *ngIf="ShowCreateRecipientPopUpFlag">
+  <ejs-dialog showCloseIcon='true' height="50%" [header]="CreateRecipientHeader" class="dialogueClass_50" isModal="true" allowDragging='true'
+              [(visible)]="ShowCreateRecipientPopUpFlag" enableResize="true">
+    <ng-template #content>
+      <form [formGroup]="RecipientForm">
+        <ejs-dropdownlist formControlName="RecipientTypeDD" [dataSource]="SourceRecipient" floatLabelType="Auto"
+                          (change)="RecipientChange($event)"
+                          placeholder='Choose Recipient'
+                          [ngClass]="{'is-invalid': submitted && f1.RecipientTypeDD.errors}">
+        </ejs-dropdownlist>
+        <div *ngIf="showMS">
+          <ejs-multiselect #ms id="ms" [dataSource]='SourceList' [allowFiltering]="true" mode='Box'
+                           [fields]='fields' floatLabelType="Always" placeholder='Select Recipient(s)'
+                           formControlName="MSControl">
+          </ejs-multiselect>
+        </div>
+        <div *ngIf="f1.RecipientTypeDD.touched && f1.RecipientTypeDD.errors" class="e-error">
+          <div *ngIf="f1.RecipientTypeDD.errors.required">Please select type of receipent</div>
+        </div>
+        <div>&nbsp;</div>
+        <div>
+          <button ejs-button class="e-control e-btn e-primary" [disabled]="btndisable" (click)="SaveRecipients()">Save</button> &nbsp;
+        </div>
+      </form>
+    </ng-template>
+  </ejs-dialog>
+</div>

@@ -1,0 +1,83 @@
+<ejs-toast #toasttype id='toasttype' [position]="position"
+           content='test' [showCloseButton]="true"></ejs-toast>
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card mx-4">
+            <div class="card-body p-4">
+
+              <form [formGroup]="SignUpForm">
+                <h1>Register New User here:-</h1>
+                <div>
+                  <br />
+
+                  <div [ngClass]="{'e-success': g.FirstName.valid}">
+                    <ejs-textbox placeholder="FirstName" floatLabelType="Always" required
+                                 formControlName="FirstName" [ngClass]="{ 'is-invalid': submitted &&  g.FirstName.errors }"></ejs-textbox>
+                  </div>
+                  <div *ngIf="g.FirstName.touched && g.FirstName.errors" class="e-error">
+                    <div *ngIf="g.FirstName.errors.required">Name is required</div>
+                    <div *ngIf="g.FirstName.errors.maxlength">Name cannot be max than 255 characters</div>
+                  </div>
+
+                  <div style="padding-top:3px;">
+                    <ejs-textbox placeholder="LastName" floatLabelType="Always"
+                                 formControlName="LastName"></ejs-textbox>
+                  </div>
+
+                  <div style="padding-top:3px;" [ngClass]="{'e-success': g.LoginEmail.valid}">
+                    <ejs-textbox placeholder="LoginEmail" floatLabelType="Always" required
+                                 formControlName="LoginEmail" [ngClass]="{ 'is-invalid': submitted &&  g.LoginEmail.errors }"></ejs-textbox>
+                  </div>
+                  <div *ngIf="g.LoginEmail.touched && g.LoginEmail.errors" class="e-error">
+                    <div *ngIf="g.LoginEmail.errors.required">Login Email is required</div>
+                    <div *ngIf="g.LoginEmail.errors.email">Provide a valid Login Email address</div>
+                  </div>
+
+
+                  <div style="padding-top:3px;" [ngClass]="{'e-success': g.Company.valid}">
+                    <ejs-textbox placeholder="Company" floatLabelType="Always" required
+                                 formControlName="Company" [ngClass]="{ 'is-invalid': submitted &&  g.Company.errors }"></ejs-textbox>
+                  </div>
+                  <div *ngIf="g.Company.touched && g.Company.errors" class="e-error">
+                    <div *ngIf="g.Company.errors.required">Company is required</div>
+                  </div>
+
+
+                  <div style="padding-top:3px;">
+                    <ejs-textbox placeholder="JobTitle" floatLabelType="Always" formControlName="JobTitle"></ejs-textbox>
+                  </div>
+
+
+                  <div style="padding-top:3px;">
+                    <ejs-textbox placeholder="PhoneNumber" floatLabelType="Always"
+                                 formControlName="PhoneNumber"></ejs-textbox>
+                  </div>
+
+                  <div style="padding-top:3px;" [ngClass]="{'e-success': g.Country.valid}">
+                    <ejs-dropdownlist [dataSource]="CountryList" [fields]="countryDropdownFields" floatLabelType="auto" required
+                                      placeholder='Select Country' [allowFiltering]="true" formControlName="Country"
+                                      [ngClass]="{ 'is-invalid': submitted &&  g.Country.errors }">
+
+                    </ejs-dropdownlist>
+                  </div>
+                  <div *ngIf="g.Country.touched && g.Country.errors" class="e-error">
+                    <div *ngIf="g.Country.errors.required">Country is required</div>
+                  </div>
+
+                  <br />
+                  <button ejs-button class="e-control e-btn e-primary" (click)="signUpUser();">Register</button>
+                  <br />
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+

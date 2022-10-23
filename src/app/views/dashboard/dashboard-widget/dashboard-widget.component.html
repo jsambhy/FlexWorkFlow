@@ -1,0 +1,177 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<div *ngIf="ShowRoleDropdown">
+  <span>Select Role if you want to create a Template</span>
+  &nbsp;<img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="You can set a default dashboard component for a Role here. If configured, user will see this component by default, untill
+they further customized it for their own need." />
+  <ejs-dropdownlist #RoleDropDown id="RoleDropDown" [dataSource]="RoleData"
+                    floatLabelType="Auto" [fields]="Rolefields"
+                    (change)="RoleChange($event)"></ejs-dropdownlist>
+
+
+</div>
+
+<form [formGroup]="dashboardForm">
+  <!--<div>
+    <ejs-dropdownlist #componentsobj id="componentsobj" [dataSource]="uicomponents" [fields]="componentsFields"
+                      floatLabelType="Auto" formControlName="ComponentName"
+                      (change)="componentsChange($event)" placeholder="Available Components*"></ejs-dropdownlist>
+  </div>-->
+  <div [ngClass]="{'e-success': f.ComponentName.valid}">
+    <ejs-dropdownlist #componentsobj id="componentsobj" [dataSource]="uicomponents" [fields]="componentsFields"
+                      floatLabelType="Auto" formControlName="ComponentName"
+                      (change)="componentsChange($event)" placeholder="Available Components*"></ejs-dropdownlist>
+  </div>
+  <div *ngIf="(f.ComponentName.touched || submitted) && f.ComponentName.errors" class="e-error">
+    <div *ngIf="f.ComponentName.errors.required">Component is required</div>
+  </div>
+
+  <!--<div>
+    <ejs-textbox #Label id="Label" placeholder="Title*" floatLabelType="Auto" formControlName="Label"></ejs-textbox>
+  </div>-->
+  <div [ngClass]="{'e-success': f.Label.valid}">
+    <ejs-textbox #Label id="Label" placeholder="Title*" floatLabelType="Auto" formControlName="Label"></ejs-textbox>
+  </div>
+  <div *ngIf="(f.Label.touched || submitted) && f.Label.errors" class="e-error">
+    <div *ngIf="f.Label.errors.required">Label is required</div>
+  </div>
+
+  <div *ngIf="showCard">
+
+
+    <!--<ejs-dropdownlist #TableNameobj id="TableNameobj" [dataSource]="tablenames"
+                  [fields]="chooseTablefields" (change)="tablenamesChange($event)" floatLabelType="Auto"
+                  placeholder="Choose Source table*" formControlName="EntityName"></ejs-dropdownlist>-->
+    <div [ngClass]="{'e-success': f.EntityName.valid}">
+      <ejs-dropdownlist #TableNameobj id="TableNameobj" [dataSource]="tablenames"
+                        [fields]="chooseTablefields" (change)="tablenamesChange($event)" floatLabelType="Auto"
+                        placeholder="Choose Source table*" formControlName="EntityName"></ejs-dropdownlist>
+    </div>
+    <div *ngIf="(f.EntityName.touched || submitted) && f.EntityName.errors" class="e-error">
+      <div *ngIf="f.EntityName.errors.required">Entity Name is required</div>
+    </div>
+
+
+    <div [ngClass]="{'e-success': f.AggFunction.valid}">
+      <ejs-dropdownlist *ngIf="showAgreegate" #Aggregarteobj id="Aggregarteobj" [dataSource]="AgreegateFunc" [fields]="AggFuncfields"
+                        floatLabelType="Auto" formControlName="AggFunction" (change)="AgreegateFuncChange($event)"
+                        placeholder="Choose Agreegate Function*"></ejs-dropdownlist>
+
+    </div>
+    <div *ngIf="(f.AggFunction.touched || submitted) && f.AggFunction.errors" class="e-error">
+      <div *ngIf="f.AggFunction.errors.required">Aggregate Function is required</div>
+    </div>
+    <!--<ejs-dropdownlist *ngIf="showAgreegate" #Aggregarteobj id="Aggregarteobj" [dataSource]="AgreegateFunc" [fields]="AggFuncfields"
+                    floatLabelType="Auto" formControlName="AggFunction" (change)="AgreegateFuncChange($event)"
+                    placeholder="Choose Agreegate Function*"></ejs-dropdownlist>-->
+    <!--<div *ngIf="showMultiSelect">
+
+      <ejs-multiselect #chooseColumnDD [dataSource]="Columns" [fields]="chooseColumnfields" floatLabelType='Always'
+                       placeholder='Choose column*' (change)="multicolumnnamesChange($event)"
+                       [allowFiltering]="true" formControlName="multuiselectColumnName" [value]="selectedValues">
+      </ejs-multiselect>
+  </div>-->
+
+
+
+
+    <div [ngClass]="{'e-success': f.ColumnName.valid}">
+      <ejs-dropdownlist *ngIf="showColumn" #ColumnNameobj id="ColumnNameobj" [dataSource]="Columns"
+                        [fields]="chooseColumnfields" floatLabelType="Auto" formControlName="ColumnName"
+                        (change)="columnnamesChange($event)" placeholder="Choose column*">
+      </ejs-dropdownlist>
+
+    </div>
+    <div *ngIf="(f.ColumnName.touched || submitted) && f.ColumnName.errors" class="e-error">
+      <div *ngIf="f.ColumnName.errors.required">ColumnName is required</div>
+    </div>
+    <div>&nbsp;</div>
+    <div *ngIf="showCondition">
+      <h6>Where Clause</h6>
+      <app-where-clause [TableEntityType]="TableEntityType" [TableEntityId]="TableEntityId"
+                        (PostWhereClauseEvent)="PostWhereClauseEvent($event);" Source="WhereClause" [ExpressionVal]="ExpressionVal">
+
+      </app-where-clause>
+    </div>
+  
+
+  </div>
+ 
+  <!--<div *ngIf="showPivot ||  showReports">
+    <div class="row">-->
+      <!--<div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+        <ejs-dropdownlist #ReportsNameobj id="ReportsNameobj" [dataSource]="ReportsDataSource"
+                          [fields]="chooseReportsfields" floatLabelType="Auto" formControlName="ReportsName"
+                          (change)="ReportsNamesChange($event)" placeholder="Report*">
+
+        </ejs-dropdownlist>
+      </div>-->
+
+      <!--<div class="col-xs-11 col-sm-11 col-md-11 col-lg-11" [ngClass]="{'e-success': f.ReportsName.valid}">
+
+        <ejs-dropdownlist #ReportsNameobj id="ReportsNameobj" [dataSource]="ReportsDataSource"
+                          [fields]="chooseReportsfields" floatLabelType="Auto" formControlName="ReportsName"
+                          (change)="ReportsNamesChange($event)" placeholder="Data Source (Report)*">
+
+        </ejs-dropdownlist>
+
+        <div *ngIf="(f.ReportsName.touched || submitted) && f.ReportsName.errors" class="e-error">
+          <div *ngIf="f.ReportsName.errors.required">Report is required</div>
+        </div>
+
+      </div>
+      <span class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+        <img src="./assets/flex-images/Info.png" style="margin-top:24px" class="info-img" alt="Tooltip" title="If you don't see the data source that you need then, contact your admin to create a Report and assign it to your role" />
+      </span>
+    </div>
+  </div>
+
+  <div *ngIf="showReports">
+    <ejs-dropdownlist #PivotViewForReport [dataSource]="PivotViewDDDataSource"
+                      [fields]="PivotViewDDfields" floatLabelType="Auto" formControlName="PivotViewForReport"
+                      (change)="PivotViewNamesChange($event)" placeholder="PivotView">
+
+    </ejs-dropdownlist>
+
+  </div>
+
+  <div *ngIf="showPivot">-->
+
+
+    <!--<ejs-dropdownlist #PivotViewDDobj id="PivotViewDDobj" [dataSource]="PivotViewDDDataSource"
+                      [fields]="PivotViewDDfields" floatLabelType="Auto" formControlName="PivotViewName"
+                      (change)="PivotViewNamesChange($event)" placeholder="PivotView*">
+
+    </ejs-dropdownlist>-->
+
+    <!--<div [ngClass]="{'e-success': f.PivotViewName.valid}">
+
+      <ejs-dropdownlist #PivotViewDDobj id="PivotViewDDobj" [dataSource]="PivotViewDDDataSource"
+                        [fields]="PivotViewDDfields" floatLabelType="Auto" formControlName="PivotViewName"
+                        (change)="PivotViewNamesChange($event)" placeholder="PivotView*">
+
+      </ejs-dropdownlist>
+
+      <div *ngIf="(f.PivotViewName.touched || submitted) && f.PivotViewName.errors" class="e-error">
+        <div *ngIf="f.PivotViewName.errors.required">Pivot view is required</div>
+      </div>
+
+    </div>
+    <a (click)="openPivotScreen()" class="btn-link">Manage Pivot View <img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="A pivot table is a powerful data summarization tool that can automatically sort, count, and sum up data stored in tables and display the summarized data in the form of charts,grid or card" /></a>
+  </div>
+  <div *ngIf="openPivotScreenPopUp">
+    <ejs-dialog showCloseIcon='true' isModal="true"
+                allowDragging='true' [(visible)]="openPivotScreenPopUp" class="dialogueClass_50" enableResize="true">
+      <ng-template #content>
+        <app-pivot [Source]="Source" [ReportId]="chosenReportId"></app-pivot>
+      </ng-template>
+    </ejs-dialog>
+  </div>-->
+
+  <div>&nbsp;</div>
+  <div *ngIf="showButton" class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <button ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="save(Label.value)">Save</button>
+    <div>&nbsp;&nbsp;</div>
+    <button ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="Delete()">Clear and Close</button>
+  </div>
+</form>

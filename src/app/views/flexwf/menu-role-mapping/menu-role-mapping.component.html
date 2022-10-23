@@ -1,0 +1,27 @@
+<!--<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<h5>Menu Role Mapping</h5>
+
+<ejs-grid #menuRoleGrid [dataSource]='gridDataSource' height=300
+          gridLines='Both' allowSorting='true' [frozenColumns]='1'>
+  <e-columns>
+    <e-column field="MenuName" headerText="Menu" width='230'></e-column>
+    <div *ngFor="let item of gridColumns">
+      <e-column [field]="item.RoleName" [headerText]="item.RoleName" width='150'>
+        <ng-template #template let-gridDataSource>
+          <ejs-checkbox [(checked)]="gridDataSource[item.RoleName]" (change)='ItemcheckedEvent(item.RoleName,$event)'></ejs-checkbox>
+        </ng-template>
+      </e-column>
+    </div>
+  </e-columns>
+</ejs-grid>
+<span style="color:red">Note:-If the revoked menu contains children, they too will be revoked automatically</span>
+<div>&nbsp;</div>
+<div style="text-align:left">
+  <button ejs-button class = "e-control e-btn e-primary" (click)="fnSaveMappingdata()">Save</button>
+</div>-->
+
+
+
+
+

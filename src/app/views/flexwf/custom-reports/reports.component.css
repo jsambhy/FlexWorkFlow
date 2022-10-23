@@ -1,0 +1,41 @@
+#container {
+  visibility: hidden;
+}
+
+#loader {
+  color: #008cff;
+  height: 40px;
+  width: 30%;
+  position: absolute;
+  top: 45%;
+  left: 45%;
+}
+
+.dual-list-groupa,
+.dual-list-groupb {
+  width: 48%;
+}
+
+.dual-list-groupa {
+  float: left;
+}
+
+.dual-list-groupb {
+  float: right;
+}
+
+
+.dialogueClass_70 {
+  height: 81% !important;
+  width: 70%;
+}
+
+/*.control-section .dual-list-wrapper {
+  width: 60%;
+  margin: 0 auto 10px;
+}
+
+.dual-list-groupa,
+.dual-list-groupb {
+  width: 50%;
+} */

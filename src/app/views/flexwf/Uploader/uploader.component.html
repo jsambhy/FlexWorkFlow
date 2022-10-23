@@ -1,0 +1,27 @@
+<!--<button ejs-button class="e-control e-btn e-primary" (click)="fnAttach();">Attach</button>-->
+<!--<div *ngIf="ShowDialog">
+  <ejs-dialog #confirmDialog header='Attach File'
+              isModal="true" [(visible)]="ShowDialog" class="dialogueClass_50" showCloseIcon='true'>
+    <ng-template #content>
+
+      <ejs-uploader #defaultupload [asyncSettings]='path' (uploading)="onFileUpload($event);">
+      </ejs-uploader>
+
+    </ng-template>
+  </ejs-dialog>
+</div>-->
+
+  <ejs-uploader #chunkupload id='chunkfileupload' [maxFileSize]=104857600 [asyncSettings]='path' [dropArea]='dropElement'
+                [multiple]="multiple"
+                (uploading)="onFileUpload($event);" (removing)="onFileRemove($event)" (success) ="onSuccess($event)"
+                [allowedExtensions]="AllowedFileTypes">
+    <!--(selected)='onFileSelect($event)'-->
+
+  </ejs-uploader>
+
+
+
+
+
+
+

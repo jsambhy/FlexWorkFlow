@@ -1,0 +1,64 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons'  showCloseIcon="true" [visible]="hidden" [content]='confirmcontent' class="dialogueClass_35" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+
+
+<div class="card-group">
+<div class="card">
+  <div class="card-body">
+   
+
+    <p class="notes-flex">
+      Selected Role/Participant will be able to see only those Transactions that are created by them.
+    </p>
+    <!--Toast-->
+    <!--Manage Roles Screen-->
+    <ejs-grid #RestrictParticipantgrid id='RestrictParticipantgrid' [dataSource]='dataSource' [toolbar]='toolbar' [allowSelection]='true' allowResizing='true'
+              allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+              (toolbarClick)='toolbarClick($event)' [gridLines]="lines" (recordDoubleClick)="recordDoubleClick($event)">
+      <e-columns>
+        <e-column field='RoleName' headerText='ParticipantName'></e-column>
+        <e-column field='EnableHeirarchy' headerText='Enable Heirarchy' editType='booleanedit' displayAsCheckBox='true'></e-column>
+      </e-columns>
+    </ejs-grid>
+
+
+  </div>
+</div>
+</div>
+
+
+
+<!--Form-->
+<div *ngIf="ShowCreatePopup">
+  <ejs-dialog showCloseIcon='true' header="Restricted Participants" class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="ShowCreatePopup" enableResize="true">
+    <ng-template #content style="padding-top:0px;">
+      
+      <form [formGroup]="RestrictParticipantForm">
+        <div [ngClass]="{'e-success': f.RestrictParticipant.valid}">
+          <ejs-dropdownlist [dataSource]="ParticipantsData" [fields]="ParticipantsDropdownFields" floatLabelType="Always"
+                            [allowFiltering]="true" formControlName="RestrictParticipant" placeholder='Select Participant*'
+                            [ngClass]="{ 'is-invalid': submitted &&  f.RestrictParticipant.errors }">
+          </ejs-dropdownlist>
+        </div>
+        <div *ngIf="f.RestrictParticipant.touched && f.RestrictParticipant.errors" class="e-error">
+          <div *ngIf="f.RestrictParticipant.errors.required">Participant is required</div>
+          <div *ngIf="f.RestrictParticipant.errors.maxlength">Participant cannot be max than 255 characters</div>
+        </div>
+        <div>&nbsp;</div>
+        <ejs-checkbox #EnableHeirarchy id="EnableHeirarchy" label="EnableHeirarchy" [checked]="true" formControlName="EnableHeirarchy."></ejs-checkbox>&nbsp;
+        <!--<img src="./assets/flex-images/Info.png" class="info-img" alt="Tooltip" title="It will only be able to see transaction that are created by them irrespective of the tags that they have." />-->
+      </form>
+      <div>&nbsp;</div>
+      <div>
+        <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>
+        <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+      </div>
+    </ng-template>
+  </ejs-dialog>
+</div>

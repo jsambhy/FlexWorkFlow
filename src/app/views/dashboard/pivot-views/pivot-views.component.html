@@ -1,0 +1,78 @@
+<!--<div id="pivot-table-section">
+  <div class="row">
+
+    <div class="col-lg-9 control-section sb-property-border">
+
+      <div *ngIf="showChart">
+        <ejs-pivotview #pivotview id='PivotView' showFieldList='false' width='100%' height='450' [displayOption]='displayOption'
+                       [dataSourceSettings]=dataSourceSettings [chartSettings]='chartSettings'>
+        </ejs-pivotview>
+
+      </div>
+      <div *ngIf="showGrid">
+
+        <app-grid [gridSource]="jsonSource"></app-grid>
+      </div>
+
+    </div>
+    <div class="col-lg-3 property-section">
+      <div class="property-panel-section">
+
+        <div class="property-panel-content">
+          <ejs-dropdownlist *ngIf="showDD"
+                            [dataSource]="Source" floatLabelType="Auto" [fields]="DataFields"
+                            (change)="onChange($event)" placeholder='Chart Type' [value]="selectedChartName"></ejs-dropdownlist>
+
+          <p>Show chart  <ejs-switch id="ViewType" onLabel="Chart" offLabel="Grid" [checked]="false" #ViewType (change)="change($event)"></ejs-switch></p>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+
+
+
+<!--<div id="pivot-table-section">
+  <div class="col-lg-9 control-section sb-property-border">
+    <ejs-pivotview *ngIf="showChart" #pivotview showFieldList='true' width='100%' height='100%' [displayOption]='displayOption'
+                   [dataSourceSettings]=dataSourceSettings [chartSettings]='chartSettings'>
+    </ejs-pivotview>
+
+
+    <app-grid *ngIf="showGrid" [gridSource]="jsonSource"></app-grid>
+
+  </div>
+  <div>
+    <ejs-dropdownlist #sample [dataSource]='chartTypes' (change)='onChange($event)' index='0'
+                      [placeholder]='waterMark' [popupHeight]='height'></ejs-dropdownlist>
+  </div>
+
+</div>-->
+<div id="pivot-table-section">
+  <div class="row">
+
+    <div class="col-lg-9 control-section sb-property-border">
+      
+        <ejs-pivotview  *ngIf="showChart" #pivotview width='100%' height='100%' [displayOption]='displayOption'
+                       [dataSourceSettings]=dataSourceSettings [chartSettings]='chartSettings'>
+        </ejs-pivotview>
+       
+       
+
+          <app-grid *ngIf="showGrid" [gridSource]="jsonSource"></app-grid>
+        
+
+      </div>
+      <div class="col-lg-3 property-section">
+        <div class="property-panel-section">
+
+          <div class="property-panel-content">
+            <ejs-dropdownlist *ngIf="showDD"
+                              [dataSource]="chartTypes" floatLabelType="Auto" [fields]="DataFields"
+                              (change)="onChange($event)" [placeholder]='waterMark' [popupHeight]='height' ></ejs-dropdownlist>
+
+            <p>Show chart  <ejs-switch id="ViewType" onLabel="Chart" offLabel="Grid" [checked]="false" #ViewType (change)="change($event)"></ejs-switch></p>
+          </div>
+        </div>
+      </div>
+    </div>

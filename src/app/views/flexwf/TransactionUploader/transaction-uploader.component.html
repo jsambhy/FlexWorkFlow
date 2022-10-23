@@ -1,0 +1,49 @@
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Excel Upload </h4>
+      <div class=" btn btn-link userLink">
+        <a (click)="OpenUploader();">Upload File</a>
+      </div>
+      <ejs-dialog #confirmDialog header='Attach File'
+                  isModal="true" [(visible)]="showUploader" class="dialogueClass_50" showCloseIcon='true' enableResize="true">
+        <ng-template #content>
+          <app-uploader [TargetPath]="uploadPath" [AllowedFileTypes]="AllowedFileTypes" [multiple]="false"
+                        (PostUploadEvent)="PostUploadEvent($event);"></app-uploader>
+
+        </ng-template>
+      </ejs-dialog>
+      <ejs-grid [dataSource]='gridData'  [editSettings]='editSettings'
+                [allowSelection]='true' allowSorting='true' allowFiltering='true' [filterSettings]='filterSettings' allowTextWrap="true"
+                allowPaging="true" [gridLines]='lines' height='200' width="100%" allowResizing='true'>
+        <e-columns>
+          <e-column field='' headerText='Action' [filter]='filterSettings' width='100' textAlign="Left">
+            <ng-template #template let-data>
+              <a *ngIf="(data.Status=='ValidatedLobbyData' || data.Status=='ValidatedLobbyDetails') else notValid"
+                 (click)="fnImportData(data.Id)">
+                <img src="./assets/flex-images/outline_email_black_24dp.png" alt="ToolTip" title="Import" />
+              </a>
+              <ng-template #notValid>
+                <a (click)="fnDownloadErrors(data.Id)">
+                  <img src="./assets/flex-images/Duplicate_2.png" alt="ToolTip" title="Download Errors" />
+                </a>
+              </ng-template>
+              <a (click)="fnDownloadFile(data.FileName)">
+                <img src="./assets/flex-images/DownloadAttachment_6.png" alt="ToolTip" title="Download File" />
+              </a>
+            </ng-template>
+          </e-column>
+          <e-column field='FileName' headerText='FileName' width="150"></e-column>
+          <e-column field='Status' headerText='Status' width="150"></e-column>
+          <e-column field='GroupName' headerText='Group ' width="150"></e-column>
+          <e-column field='CompanyName' headerText='Company' width="150"></e-column>
+          <e-column field='ProjectName' headerText='Project' width="150"></e-column>
+          <e-column field='EntityName' headerText='Entity' width="150"></e-column>
+        </e-columns>
+      </ejs-grid>
+      <br />
+      <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="goToPrevious()">Back</button>
+
+    </div>
+  </div>
+</div>

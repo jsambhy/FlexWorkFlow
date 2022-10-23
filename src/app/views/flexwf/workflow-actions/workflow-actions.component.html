@@ -1,0 +1,75 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirm dialogue pop up-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons' [visible]="hidden" showCloseIcon="true" [content]='confirmcontent' class="dialogueClass_35" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+
+<!--Manage Actions Pop up-->
+<ejs-dialog class="dialogueClass_35" #WFActionsDialogue (close)="dialogClose()" allowResizing='true' showCloseIcon="true" isModal="true" allowDragging='true' [visible]="Acvisible" enableResize="true">
+  <!--[visible]="Acvisible"-->
+  <ng-template #header>
+    Manage Actions for Workflow '{{ configuringWFLabel }}'
+  </ng-template>
+  <ng-template #content>
+    <p class="notes-flex">Rename/Remove actions from this workflow.</p>
+    <div class="margin_top_10">
+      <ejs-grid #WFActionsgrid id='WFActionsgrid' [dataSource]='WFActionsdata' [toolbar]='toolbar' allowResizing='true'
+                [filterSettings]='filterSettings' [allowSelection]='true' allowSorting='true' allowFiltering='true'
+                allowTextWrap="true" (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                [gridLines]="lines" [contextMenuItems]="contextMenuItems" (recordDoubleClick)="recordDoubleClick($event)">
+        <e-columns>
+          <e-column field='Label' headerText='Action'></e-column>
+          <e-column headerText='Icon'>
+            <ng-template #template let-WFActionsdata>
+              <div class="image">
+                <img src="./assets/flex-images/{{WFActionsdata.Icon}}.png" alt="{{WFActionsdata.Icon}}" />
+              </div>
+            </ng-template>
+          </e-column>
+          <e-column field='Counts' headerText='# of times used'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </ng-template>
+</ejs-dialog>
+
+
+<!--WFActions Dialogue called while editing-->
+<ejs-dialog #WFActionEditDialog id="WFActionEditDialog" header='Edit' class="dialogueClass_35" showCloseIcon='true' isModal="true" allowDragging='true' [(visible)]="visible" enableResize="true">
+  <!--[(visible)]="visible"-->
+  <ng-template #content>
+    <form [formGroup]="WFActionEditForm">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div [ngClass]="{'e-success': f.ActionName.valid}">
+          <ejs-textbox #label placeholder="Label" (blur)="focusOut($event)" floatLabelType="Auto"
+                       formControlName="ActionName" title="Action Name"
+                       [ngClass]="{ 'is-invalid': submitted && f.ActionName.errors }"></ejs-textbox>
+        </div>
+        <div *ngIf="f.ActionName.touched && f.ActionName.errors" class="e-error">
+          <div *ngIf="f.ActionName.errors.required">Label is required</div>
+          <div *ngIf="f.ActionName.errors.maxlength">Label cannot be max than 255 characters</div>
+        </div>
+        <div>&nbsp;</div>
+        <div [ngClass]="{'e-success': f.ActionIcon.valid}">
+          <ejs-combobox #com id="com" [cssClass]="cssClass" class="content" placeholder="Icons" [dataSource]='ActionIconData' [fields]='iconFields' formControlName="ActionIcon" (change)="change($event)" title="Select Action Icon" [ngClass]="{ 'is-invalid': submitted && f.ActionIcon.errors }"></ejs-combobox>
+        </div>
+        <div *ngIf="f.ActionIcon.touched && f.ActionIcon.errors" class="e-error">
+          <div *ngIf="f.ActionIcon.errors.required">Icon is required</div>
+        </div>
+        <div>&nbsp;</div>
+        <div *ngIf="showIconImage">Selected Icon Image</div>
+        <div id="icon-image3"></div>
+      </div>
+    </form>
+    <div>&nbsp;</div>
+    <div class="margin_top_30">
+      <button ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+    </div>
+  </ng-template>
+</ejs-dialog>
+
+

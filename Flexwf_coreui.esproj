@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.45-alpha">
+  <PropertyGroup Label="Globals">
+    <SccProjectName>%24/FlexWF/FlexWF_Solution/Flexwf_coreui</SccProjectName>
+    <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
+    <SccAuxPath>https://dev.azure.com/megacubeaustralia</SccAuxPath>
+    <SccLocalPath>.</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupCommand>npm start</StartupCommand>
+    <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
+    <!-- Command to run on project build -->
+    <BuildCommand>
+    </BuildCommand>
+    <!-- Command to create an optimized build of the project that's ready for publishing -->
+    <ProductionBuildCommand>npm run build</ProductionBuildCommand>
+    <!-- Folder where production build objects will be placed -->
+    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\Flexwf_coreui</BuildOutputFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include=".vscode\extensions.json" />
+    <None Include=".vscode\launch.json" />
+    <None Include=".vscode\settings.json" />
+    <None Include=".vscode\tasks.json" />
+    <None Include=".vs\FlexWF_CoreUI\config\applicationhost.config" />
+    <None Include=".vs\slnx.sqlite" />
+    <None Include=".vs\VSWorkspaceState.json" />
+  </ItemGroup>
+</Project>

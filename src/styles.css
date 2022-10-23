@@ -1,0 +1,506 @@
+
+/*this works for diagram please do not comment it out*/
+@import '../node_modules/@syncfusion/ej2-angular-diagrams/styles/material.css';
+/***************************commented on 8th april 2020 by Rakhi (end)*********************************************/
+
+@import "./assets/ej2/material/material.css";
+
+.e-custom-icons.e-action-Icon-tabs {
+  background-image: url(/assets/flex-images/manage_tabs.png);
+  background-repeat: no-repeat;
+}
+
+
+.e-custom-icons.e-action-Icon-sections {
+  background-image: url(/assets/flex-images/manage_sections.png);
+  background-repeat: no-repeat;
+}
+.e-custom-icons.e-action-Icon-fields {
+  background-image: url(/assets/flex-images/manage_fields.png);
+  background-repeat: no-repeat;
+}
+.e-custom-icons.e-action-Icon-wysiwyg {
+  background-image: url(/assets/flex-images/wysiwyg.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-constraints {
+  background-image: url(/assets/flex-images/outline_rule_black_24dp.png);
+  background-repeat: no-repeat;
+}
+.e-custom-icons.e-branch-Icon {
+  background-image: url(/assets/flex-images/BranchIcon.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-review {
+  background-image: url(/assets/flex-images/Review_Icon.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-sendtorequester {
+  background-image: url(/assets/flex-images/SendToRequester_Icon.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-edit {
+  background-image: url(/assets/flex-images/Edit_Icon.png);
+  background-repeat: no-repeat;
+ 
+}
+
+.e-custom-icons.e-action-Icon-pivot {
+  background-image: url(/assets/flex-images/Edit_3.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-drag {
+  background-image: url(/assets/flex-images/drag_Icon.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-withdraw {
+  background-image: url(/assets/flex-images/withdraw_Icon.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-delete {
+  background-image: url(/assets/flex-images/Delete_Icon.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-cancel {
+  background-image: url(/assets/flex-images/Cancel_Icon.png);
+  background-repeat: no-repeat;
+}
+
+
+.e-custom-icons.e-action-Icon-close-black {
+  background-image: url(/assets/flex-images/close_black_Icon.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-create {
+  background-image: url(/assets/flex-images/Create_Icon.png);
+  background-repeat: no-repeat;
+}
+
+/****************************************************************************/
+
+.e-custom-icons.e-action-Icon-attach1 {
+  background-image: url(/assets/flex-images/Attach_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-attach2 {
+  background-image: url(/assets/flex-images/Attach_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-create1 {
+  background-image: url(/assets/flex-images/Create_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-create2 {
+  background-image: url(/assets/flex-images/Create_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-create3 {
+  background-image: url(/assets/flex-images/Create_3.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-create4 {
+  background-image: url(/assets/flex-images/Create_4.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-create5 {
+  background-image: url(/assets/flex-images/Create_5.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-delete1 {
+  background-image: url(/assets/flex-images/Delete_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-delete2 {
+  background-image: url(/assets/flex-images/Delete_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-delete3 {
+  background-image: url(/assets/flex-images/outline_delete_black_24dp.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-delete4 {
+  background-image: url(/assets/flex-images/Delete_4.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-downloadattachement1 {
+  background-image: url(/assets/flex-images/DownloadAttachment_1_Icon.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-downloadattachement2 {
+  background-image: url(/assets/flex-images/DownloadAttachment_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-downloadattachement3 {
+  background-image: url(/assets/flex-images/DownloadAttachment_3.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-downloadattachement4 {
+  background-image: url(/assets/flex-images/DownloadAttachment_4.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-downloadattachement5 {
+  background-image: url(/assets/flex-images/DownloadAttachment_5.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-downloadattachement6 {
+  background-image: url(/assets/flex-images/DownloadAttachment_6.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-duplicate1 {
+  background-image: url(/assets/flex-images/Duplicate_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-duplicate2 {
+  background-image: url(/assets/flex-images/Duplicate_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-duplicate3 {
+  background-image: url(/assets/flex-images/Duplicate_3.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-duplicate4 {
+  background-image: url(/assets/flex-images/Duplicate_4.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-duplicate5 {
+  background-image: url(/assets/flex-images/Duplicate_5.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-duplicate6 {
+  background-image: url(/assets/flex-images/Duplicate_6.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-edit1 {
+  background-image: url(/assets/flex-images/Edit_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-edit2 {
+  background-image: url(/assets/flex-images/Edit_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next1 {
+  background-image: url(/assets/flex-images/Next_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next2 {
+  background-image: url(/assets/flex-images/Next_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next3 {
+  background-image: url(/assets/flex-images/Next_3.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next4 {
+  background-image: url(/assets/flex-images/Next_4.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next5 {
+  background-image: url(/assets/flex-images/Next_5.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next6 {
+  background-image: url(/assets/flex-images/Next_6.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next7 {
+  background-image: url(/assets/flex-images/Next_7.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next8 {
+  background-image: url(/assets/flex-images/Next_8.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next9 {
+  background-image: url(/assets/flex-images/Next_9.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next10 {
+  background-image: url(/assets/flex-images/Next_10.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next11 {
+  background-image: url(/assets/flex-images/Next_11.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next12 {
+  background-image: url(/assets/flex-images/Next_12.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-next13{
+  background-image: url(/assets/flex-images/Next_13.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-previous1 {
+  background-image: url(/assets/flex-images/Previous_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-previous2 {
+  background-image: url(/assets/flex-images/Previous_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-previous3 {
+  background-image: url(/assets/flex-images/Previous_3.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-review1 {
+  background-image: url(/assets/flex-images/Review_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-review2 {
+  background-image: url(/assets/flex-images/Review_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-review3 {
+  background-image: url(/assets/flex-images/Review_3.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-review4 {
+  background-image: url(/assets/flex-images/Review_4.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-sendtorequester1 {
+  background-image: url(/assets/flex-images/SendToRequester_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-sendtorequester2 {
+  background-image: url(/assets/flex-images/SendToRequester_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-sendtorequester3 {
+  background-image: url(/assets/flex-images/SendToRequester_3.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-withdraw1 {
+  background-image: url(/assets/flex-images/Withdraw_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-withdraw2 {
+  background-image: url(/assets/flex-images/Withdraw_2.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-withdraw3 {
+  background-image: url(/assets/flex-images/Withdraw_3.png);
+  background-repeat: no-repeat;
+}
+
+
+.e-custom-icons.e-action-Icon-workflowdesigner {
+  background-image: url(/assets/flex-images/outline_widgets_black_24dp.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-datafields {
+  background-image: url(/assets/flex-images/outline_view_agenda_black_24dp.png);
+  background-repeat: no-repeat;
+}
+
+
+.e-custom-icons.e-action-Icon-editpencil {
+  background-image: url(/assets/flex-images/outline_create_black_24dp.png);
+  background-repeat: no-repeat;
+} 
+.e-custom-icons.e-action-Icon-add {
+  background-image: url(/assets/flex-images/outline_add_box_black_24dp.png);
+  background-repeat: no-repeat;
+}
+.e-custom-icons.e-action-Icon-clone {
+  background-image: url(/assets/flex-images/outline_file_copy_black_24dp.png);
+  background-repeat: no-repeat;
+}
+.e-custom-icons.e-action-Icon-condition_calc {
+  background-image: url(/assets/flex-images/Condition_Calc.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-calculations {
+  background-image: url(/assets/flex-images/outline_functions_black_24dp.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-recipients {
+  background-image: url(/assets/flex-images/outline_group_black_24dp.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-make_active {
+  background-image: url(/assets/flex-images/MakeActive_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-SubProcessManage {
+  background-image: url(/assets/flex-images/SubProcessManage_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-SubProcessProgress {
+  background-image: url(/assets/flex-images/SubProcessProgress_1.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-tags {
+  background-image: url(/assets/flex-images/outline_sell_black_24dp.png);
+  background-repeat: no-repeat;
+}
+.e-custom-icons.e-action-Icon-validation {
+  background-image: url(/assets/flex-images/baseline_assignment_turned_in_black_24dp.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-Filter {
+  background-image: url(/assets/flex-images/Edit_4.png);
+  background-repeat: no-repeat;
+}
+
+.e-custom-icons.e-action-Icon-refresh {
+  background-image: url(/assets/flex-images/Refresh.png);
+  background-repeat: no-repeat;
+}
+
+
+
+.BtnTextAllign {
+  text-align: left;
+}
+/*below class will be applicable on all the popups header*/
+.e-dialog.e-draggable .e-dlg-header-content {
+  margin-bottom: 5px; 
+  border-bottom: thin solid;
+  border-bottom-color: lightgray;
+  padding: 18px;
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+/*Confirm pop up header class */
+.e-dialog .e-dlg-header-content {
+  margin-bottom: 5px;
+  border-bottom: thin solid;
+  border-bottom-color: lightgray;
+  padding: 18px;
+  padding-bottom: 2px;
+  padding-top: 2px;
+  
+}
+
+/*to change the color of header in pop ups*/
+.e-dialog .e-dlg-header {
+  color: #ff4081;
+}
+
+/*It will apply on all notes*/
+.notes-flex {
+  font-size: small;
+  color: #20A8D8;
+}
+
+/*Toast position class*/
+.toastTopPosition {
+  padding-top:50px;
+}
+
+/*Dialogue width classes*/
+.dialogueClass_35 {
+  max-height: 100% !important;
+  max-width: 35%;
+  
+}
+
+.dialogueClass_50 {
+  max-height: 100% !important;
+  max-width: 50%;
+ 
+}
+
+.dialogueClass_70 {
+  max-height: 100% !important;
+  max-width: 70%;
+ 
+}
+
+.dialogueClass_90 {
+  /*max-height: 90% !important;
+  max-width: 90%;*/
+  max-height: 100% !important;
+  max-width: 90%;
+  height:50% /*added by NS*/
+}
+
+
+.header-text {
+  color: #ff4081;
+}
+
+
+.carousel.slide:focus {
+  outline: none;
+}
+
+ol.carousel-indicators li {
+  background: #000 !important;
+  /* border: none !important; */
+  border-color: #fff;
+}
+
+.info-img {
+  height: 12px;
+}
+
+

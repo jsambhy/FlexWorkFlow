@@ -1,0 +1,111 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<!--Confirmation Dialogue called while clonning or deleting step columns-->
+<ejs-dialog #confirmDialog [visible]="hidden" [buttons]='confirmDlgButtons' showCloseIcon="true" [content]='confirmcontent' class="dialogueClass_35" isModal="true">
+  <ng-template #header>
+    Please Confirm
+  </ng-template>
+</ejs-dialog>
+<!--Card group for the page on the menu access validation-->
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Announcements</h4>
+      <div class="row">
+        <span class="notes-flex col-10">
+          Manage announcement that can be published to portal or pushed to user's Email/Phone from here
+        </span>
+      </div>
+      <div>&nbsp;</div>
+      <ejs-grid #Announcementsgrid id='Announcementsgrid' [enableHover]='true' [filterSettings]='filterSettings' [dataSource]='GridDataSource'
+                [toolbar]='toolbar' [allowSelection]='true' allowSorting='true' allowFiltering='true' allowTextWrap="true"
+                (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true' gridLines="Both" (recordDoubleClick)="recordDoubleClick($event)">
+        <e-columns>
+          <e-column field='Type' headerText='Type'></e-column>
+          <e-column field='Name' headerText='Name'></e-column>
+          <e-column field='Body' headerText='Body'></e-column>
+          <e-column field='Subject' headerText='Subject'></e-column>
+        </e-columns>
+      </ejs-grid>
+
+
+      <!-- -------------------------------------------Pop up for creating and editing announcements------------------------------------------------------------->
+      <div *ngIf="ShowPopupcreate">
+        <ejs-dialog showCloseIcon='true' [header]="Header" class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="ShowPopupcreate" enableResize="true">
+          <ng-template #content>
+            <form [formGroup]="announcementForm">
+              <div>
+                <div [ngClass]="{'e-success': f.Name.valid}">
+                  <ejs-textbox placeholder="Name*" floatLabelType="Auto" formControlName="Name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></ejs-textbox>
+                </div>
+                <div *ngIf="f.Name.touched && f.Name.errors" class="e-error">
+                  <div *ngIf="f.Name.errors.required">Name is required</div>
+                  <div *ngIf="f.Name.errors.maxlength">Name cannot be max than 255 characters</div>
+                </div>
+                <div>&nbsp;</div>
+
+                <ejs-textbox [enabled]="false" placeholder="Type" floatLabelType="Auto" formControlName="Type" value="Information"></ejs-textbox>
+                <div>&nbsp;</div>
+
+                <div [ngClass]="{'e-success': f.AnnouncementTypeValue.valid}">
+                  <ejs-multiselect #announcementTypeDD [dataSource]="announcementTypeSource" [fields]="announcementTypeDataFields" floatLabelType='Always'
+                                   placeholder='Select Announcement Method(s)*' (change)="OnChange($event)"
+                                   [allowFiltering]="true" formControlName="AnnouncementTypeValue" [value]="selectedValues">
+                  </ejs-multiselect>
+                </div>
+                <div *ngIf="f.AnnouncementTypeValue.touched && f.AnnouncementTypeValue.errors" class="e-error">
+                  <div *ngIf="f.AnnouncementTypeValue.errors.required">Announcement Methods is required</div>
+
+                </div>
+                <div>&nbsp;</div>
+           
+                  <div [ngClass]="{'e-success': f.Range.valid}">
+                    <ejs-daterangepicker id="date" #date (created)="onCreate($event)" placeholder='Select a range to show announcement*' format='yyyy-MM-dd' [ngClass]="{ 'is-invalid': submitted && f.Range.errors }" formControlName="Range" [value]="value" openOnFocus="true">
+                      <e-presets>
+                        <e-preset label="This Week" [start]='weekStart' [end]='weekEnd'></e-preset>
+                        <e-preset label="This Month" [start]='monthStart' [end]='monthEnd'></e-preset>
+                        <e-preset label="Last Month" [start]='lastStart' [end]='lastEnd'></e-preset>
+                        <e-preset label="Last Year" [start]='yearStart' [end]='yearEnd'></e-preset>
+                      </e-presets>
+                    </ejs-daterangepicker>
+                  </div>
+                  <div *ngIf="f.Range.touched && f.Range.errors" class="e-error">
+                    <div *ngIf="f.Range.errors.required">Range is required</div>
+                  </div>
+
+               
+
+                <div>&nbsp;</div>
+                
+                  Labels:
+                  <div [ngClass]="{'e-success': f.Subject.valid}">
+                    <ejs-textbox *ngIf="ShowSubject" placeholder="Subject (Email Only)" floatLabelType="Auto" [ngClass]="{ 'is-invalid': submitted && f.Body.errors }" formControlName="Subject"></ejs-textbox> <br />
+                  </div>
+                  <div *ngIf="f.Subject.touched && f.Subject.errors" class="e-error">
+                    <div *ngIf="f.Subject.errors.maxlength">Subject cannot be max than 100 characters</div>
+                  </div>
+                <div [ngClass]="{'e-success': f.Body.valid}">
+                  <ejs-textbox #Body [multiline]='true' id="Body" placeholder="Body (Portal, Email, SMS, Mobile App)*" floatLabelType="Auto" formControlName="Body"
+                               [ngClass]="{ 'is-invalid': submitted && f.Body.errors }"></ejs-textbox>
+                </div>
+                <div *ngIf="f.Body.touched && f.Body.errors" class="e-error">
+                  <div *ngIf="f.Body.errors.required">Body is required</div>
+                </div>
+              </div>
+              <div>&nbsp;</div>
+              <ejs-checkbox #checkBoxmovetotop label="Move to top" labelPosition="Before" formControlName="MoveToTop" checked="false"></ejs-checkbox>`
+
+              <div>&nbsp;</div>
+
+              <div>
+                <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>&nbsp;
+                <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+              </div>
+            </form>
+          </ng-template>
+        </ejs-dialog>
+      </div>
+
+    </div>
+  </div>
+</div>

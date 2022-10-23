@@ -1,0 +1,7 @@
+p {
+  color: blue;
+}
+
+.e-toolbar .e-tbar-btn .e-tbar-btn-text {
+  display: none !important;
+}

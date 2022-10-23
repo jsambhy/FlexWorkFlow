@@ -1,0 +1,344 @@
+<ejs-toast #toasttype id='toasttype' [position]="position"
+           content='test' [showCloseButton]="true"></ejs-toast>
+
+<div class="app-body front_body">
+    <div class="main align-items-center">
+    <header class="site-header">
+      <div class="top-head">
+        <div class="container">
+          <nav class="navbar navbar-expand-lg ">
+              <a class="navbar-brand" href="http://megacube.com.au/" target="_blank"><img src="assets/front/logo.png" class="logo-img"></a>
+    
+    <div class="ml-auto">
+      <a class="contact-link" (click)="ContactUs();" style="color:white">Contact Us</a>
+      <button  (click)="LoginPage();" class="btn theme-btn ml-3">Sign In</button>
+    </div>
+  </nav>
+        </div>
+      </div>
+     
+    </header>
+  
+  <section class="section">
+    <div class="lower-section">
+    <div class="container">
+    <div class="row py-5">
+      <div class="col-md-7 banner-col">
+        <div class="banner-text-div">
+          <div class="automation-head">No Code Automation</div>
+          <ul class="banner-list mt-3">
+            <li>Minimalistic, Effective. Rich functionality using light weight setups.</li>
+             <li>Governance at its simplest. Audit anything and everything.</li>
+             <li>Rapid design, real-time testing.</li>
+             <li>Ad-hoc reporting and analytics.</li>
+             <li>No IT. We host, we support.</li>
+             <li>Pay per use. No user license fee.</li>
+          </ul>
+          <!--<button class="btn video-btn mt-3"><i class="fa fa-play mr-2"></i> Watch Video</button>-->
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="banner-form-div">
+          <div class="form-head">1.2.3...Start</div>
+          <div class="form-text">Quick Signup and start using instantly. No credit card required</div>
+          <!--<div class="require-text mt-2"><span>*</span>Marked fields are required</div>-->
+
+          <!--<form class="banner-form mt-2" [formGroup]="SignUpForm">
+            <div class="row">
+
+              <div class="col-lg-6">
+                <div class="form-group" [ngClass]="{'e-success': g.FirstName.valid}">
+                  <ejs-textbox placeholder="FirstName*" floatLabelType="auto" required
+                               formControlName="FirstName" [ngClass]="{ 'is-invalid': submitted &&  g.FirstName.errors }"></ejs-textbox>-->
+                  <!--<input formControlName="First" type="text" class="form-control" id="" aria-describedby="emailHelp" placeholder="First name*">-->
+                <!--</div>
+                <div *ngIf="g.FirstName.touched && g.FirstName.errors" class="e-error">
+                  <div *ngIf="g.FirstName.errors.required">Name is required</div>
+                  <div *ngIf="g.FirstName.errors.maxlength">Name cannot be max than 255 characters</div>
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <ejs-textbox placeholder="LastName" floatLabelType="auto"
+                               formControlName="LastName"></ejs-textbox>-->
+                  <!--<input  formControlName="Last" type="text" class="form-control" id="" aria-describedby="emailHelp" placeholder="Last name*">-->
+                <!--</div>
+              </div>
+            </div>
+
+            <div class="row" style="padding-top:3px;">
+
+              <div class="col-md-6">
+                <div class="form-group" [ngClass]="{'e-success': g.Country.valid}">
+
+                  <ejs-dropdownlist [dataSource]="CountryList" [fields]="countryDropdownFields" floatLabelType="auto" required
+                                    placeholder='Select Country*' [allowFiltering]="true" formControlName="Country" (change)="CountryChange($event);"
+                                    [ngClass]="{ 'is-invalid': submitted &&  g.Country.errors }">
+                  </ejs-dropdownlist>
+
+
+                </div>
+                <div *ngIf="g.Country.touched && g.Country.errors" class="e-error">
+                  <div *ngIf="g.Country.errors.required">Country is required</div>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <ejs-textbox #prefix id="prefix" placeholder="Prefix" floatLabelType="auto" formControlName="Prefix" disabled="true"></ejs-textbox>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <ejs-textbox placeholder="PhoneNumber" floatLabelType="auto" formControlName="PhoneNumber"></ejs-textbox>
+                              
+                </div>-->
+                <!--<div *ngIf="g.PhoneNumber.touched && g.PhoneNumber.errors" class="e-error">
+                  <div *ngIf="g.PhoneNumber.errors.pattern">Invalid Phone Number</div>
+                </div>-->
+              <!--</div>
+            </div>
+            <div class="row" style="padding-top:3px;">
+              <div class="col-md-12">
+                <div class="form-group" [ngClass]="{'e-success': g.LoginEmail.valid}">
+                  <ejs-textbox placeholder="LoginEmail*" floatLabelType="auto" required
+                               formControlName="LoginEmail" [ngClass]="{ 'is-invalid': submitted &&  g.LoginEmail.errors }"></ejs-textbox>-->
+                  <!--<input formControlName="Email" type="email" class="form-control" id="" aria-describedby="emailHelp" placeholder="Email*">-->
+                <!--</div>
+                <div *ngIf="g.LoginEmail.touched && g.LoginEmail.errors" class="e-error">
+                  <div *ngIf="g.LoginEmail.errors.required">Login Email is required</div>
+                  <div *ngIf="g.LoginEmail.errors.email">Provide a valid Login Email address</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" style="padding-top:3px;">
+              <div class="col-md-12">
+                <div class="form-group" [ngClass]="{'e-success': g.Company.valid}">
+                  <ejs-textbox placeholder="Company*" floatLabelType="auto" required
+                               formControlName="Company" [ngClass]="{ 'is-invalid': submitted &&  g.Company.errors }"></ejs-textbox>-->
+                  <!--<input formControlName="Company" type="text" class="form-control" id="" aria-describedby="emailHelp" placeholder="Company*">-->
+                <!--</div>
+                <div *ngIf="g.Company.touched && g.Company.errors" class="e-error">
+                  <div *ngIf="g.Company.errors.required">Company is required</div>
+                </div>
+              </div>
+            </div>-->
+
+
+              <!--<div class="row">
+                <div class="col-lg-7">
+                  <button class="btn theme-btn mb-2" type="button" (click)="signUpUser();">Try Now For Free</button>
+                </div>
+                <div class="col-lg-5">
+                  <button class="btn theme-btn demo-btn mb-2" type="button" (click)="RequestDemo();">Get a Demo</button>
+                </div>
+              </div>-->
+
+
+              <!--<div class="col-lg-12">
+      <div class="bg-danger p-1" *ngIf="!form.valid && submit_initialized">Please fill required Fields in correct format.</div>
+    </div>-->
+
+
+          <!--</form>-->
+
+        
+
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="staff-div">
+    <div class="container">
+      <div class="text-center empower-head">Empower Staff with Enterprise Grade Features</div>
+      <div class="text-center empower-text mt-2">Make your business run like a well-oiled machine. Let our cloud-based process software automate everyone's tasks and responsibilities</div>
+      <div class="responsible-div mt-5">
+      <div class="row visual-row">
+        <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/visual.png" class="visual-img">
+          <div class="visual-head">Visual Process Diagrams </div>
+             <div class="visual-text mt-2">Easy to draw with good old drag and drop convenience. Test your creation in real-time and deploy into production instantly </div>
+        </div>
+        </div>
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/process.png" class="visual-img">
+          <div class="visual-head">Use readymade processes </div>
+             <div class="visual-text mt-2">Copy our best-practices out-of-the-box process and customise as per your organisation. </div>
+        </div>
+        </div>
+          <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/reward.png" class="visual-img">
+          <div class="visual-head">Share and get rewarded </div>
+             <div class="visual-text mt-2">You can place your designed process on shelf and get rewarded everytime someone else uses it as a template.  </div>
+        </div>
+        </div>
+      </div>
+        <div class="row visual-row semi-visual-row">
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/task.png" class="visual-img">
+          <div class="visual-head">Automate tasks </div>
+             <div class="visual-text mt-2">Configure processing that needs to be done on each action. For example, adjust leave balance upon leave approval.</div>
+        </div>
+        </div>
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/assign.png" class="visual-img">
+          <div class="visual-head">Auto-assign tasks </div>
+             <div class="visual-text mt-2">Establish allocation logic and watch transactions get assigned to respective team member automatically.</div>
+        </div>
+        </div>
+          <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/email.png" class="visual-img">
+          <div class="visual-head">Custom email templates</div>
+          <div class="visual-text mt-2">Choose your own subject/body for the notifications. Dynamic tokens available to create emails with real-time data, relevant to the recipient.</div>
+        </div>
+        </div>
+      </div>
+      <div class="row visual-row semi-visual-row">
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/search.png" class="visual-img">
+          <div class="visual-head">Choose level of Audit </div>
+             <div class="visual-text mt-2">You are in control on what field you want to get audited. Auditors can generate their own reports as a self-service feature. </div>
+        </div>
+        </div>
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/lingual.png" class="visual-img">
+          <div class="visual-head">Multi-lingual </div>
+             <div class="visual-text mt-2">Create Forms, reports, processes, emails in your local language.</div>
+        </div>
+        </div>
+          <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/tempelate.png" class="visual-img">
+          <div class="visual-head">Quick Forms </div>
+          <div class="visual-text mt-2">Spell your data requirements and system will automatically spin a data entry form to meet your needs.</div>
+        </div>
+        </div>
+      </div>
+        <div class="row visual-row semi-visual-row">
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/report.png" class="visual-img">
+          <div class="visual-head">Ad-hoc reporting </div>
+             <div class="visual-text mt-2">Design reports your way. Choose fields, grouping, page breaks etc along with document type (doc, pdf, xls etc). Save on desktop or email as an attachment. You can even schedule them. </div>
+        </div>
+        </div>
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/dasboard.png" class="visual-img">
+          <div class="visual-head">Analytical dashboards  </div>
+             <div class="visual-text mt-2">Establish KPIs and monitor them via graphs (bar, pie etc) </div>
+        </div>
+        </div>
+          <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/shield.png" class="visual-img">
+          <div class="visual-head">Security </div>
+             <div class="visual-text mt-2">All communication between you and cloud is encrypted. All data is encrypted within the cloud.  </div>
+        </div>
+        </div>
+      </div>
+         <div class="row visual-row semi-visual-row">
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/visible.png" class="visual-img">
+          <div class="visual-head">Field level visibility </div>
+             <div class="visual-text mt-2">You can control who can see which field consistently across the application (forms, reports, workflows, analytics etc) from single control panel. </div>
+        </div>
+        </div>
+         <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/integrate.png" class="visual-img">
+          <div class="visual-head">Integrate with legacy systems  </div>
+             <div class="visual-text mt-2">You can integrate the system with your current on-premise or cloud applications to avoid duplicate data entry and truly integrate FlexWF into your environment. </div>
+        </div>
+        </div>
+          <div class="col-md-4">
+          <div class="lower-responsible">
+          <img src="assets/front/database.png" class="visual-img">
+          <div class="visual-head">BYO Database</div>
+             <div class="visual-text mt-2">In multi-tenancy, your company data is not visible to any other company. But even then If you want to keep your organisation data separate, it can be hosted on a separate database. </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="container">
+    <div class="text-center empower-head mt-5">Customer Reviews</div>
+
+    <div class="owl-carousel owl-theme">
+      <carousel>
+        <slide>
+          <div class="item">
+            <div class="review-div">
+              <div class="review-line">
+                <img src="assets/front/quote.png" class="quote-img">
+                <div class="review-text">What sets FlexWF apart is that it gives business users the power to quickly create apps with deep functionality such as custom workflows, integration, and flexible data capture features without any programming.</div>
+              </div>
+              <div class="review-user">
+
+                <div class="company-name">Vodafone Group</div>
+                <div class="company-date">28/08/2020</div>
+                <img src="assets/front/vodafone.png" class="brand-img">
+              </div>
+            </div>
+          </div>
+        </slide>
+        <slide>
+          <div class="item">
+            <div class="review-div">
+              <div class="review-line">
+                <img src="assets/front/quote.png" class="quote-img">
+                <div class="review-text">What sets FlexWF apart is that it gives business users the power to quickly create apps with deep functionality such as custom workflows, integration, and flexible data capture features without any programming.</div>
+              </div>
+              <div class="review-user">
+
+                <div class="company-name">Vodafone Group</div>
+                <div class="company-date">28/08/2020</div>
+                <img src="assets/front/vodafone.png" class="brand-img">
+              </div>
+            </div>
+          </div>
+        </slide>
+      </carousel>
+    </div>
+
+  </div>
+  <div class="sign-up-div">
+    <div class="centered">
+      <div class="sign-head">Sign up</div>
+      <div class="sign-text text-center mt-2">Quick Signup and start using instantly. No credit card required</div>
+      <!--<button class="btn theme-btn mt-4">Try Now For Free</button>-->
+      <a href="#">Try Now For Free</a>
+      <div class="contact-text mt-3"><a class="contact-link" (click)="ContactUs();">Contact us</a> for more information</div>
+    </div>
+  </div>
+  
+  </section>
+  
+  
+    <footer class="site-footer py-4">
+
+        <div class="bottom-right-floating-icon">
+            <a href="https://api.whatsapp.com/send?phone=61450180280" target="_blank" title="click here to chat on whats up"><img src="assets/front/whatsapp.jpg" /></a>
+        </div>
+  
+      <div class="container">
+        <div class="copy-text">Copyrights <i class="fa fa-copyright"></i> 2020 FlexWF, All rights Reserved </div>
+      </div>
+    </footer>
+  </div>
+  </div>

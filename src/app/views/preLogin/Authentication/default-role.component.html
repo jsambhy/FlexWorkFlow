@@ -1,0 +1,16 @@
+
+<ejs-toast #toasttype id='toasttype' [position]="position"
+           content='test' [showCloseButton]="true"></ejs-toast>
+
+<h4>Default Role</h4>
+  <div class="row">
+    
+    <div class="col-lg-5 col-md-5 col-sm-5">
+      <ejs-dropdownlist #role1 [dataSource]="rolesList" [fields]="rolesDropdownFields"
+                        [value]='SelectedRole' [allowFiltering]="true">
+      </ejs-dropdownlist>
+    </div>
+
+  </div>
+  <button ejs-button class = "e-control e-btn e-primary" (click)="updateDefaultRole(role1.value);">Update</button>
+

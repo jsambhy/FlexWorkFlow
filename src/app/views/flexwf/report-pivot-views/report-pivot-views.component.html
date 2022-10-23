@@ -1,0 +1,84 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons'  showCloseIcon="true"
+            [content]='confirmcontent' header="Please Confirm" class="dialogueClass_35" isModal="true"
+            enableResize="true">
+</ejs-dialog>
+
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Pivot Views On Reports</h4>
+      <ejs-grid #ReportPivotGrid id='ReportPivotGrid' [toolbar]='toolbar' [dataSource]="PivotViewOnReportData"
+                (toolbarClick)='toolbarClick($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+                gridLines='Both'  >
+        <e-columns>
+          <e-column field='DataSourceReportName' headerText='Report Name'></e-column>
+          <e-column field='PivotViewName' headerText='Pivot View Name'></e-column>
+          <e-column field='ChartType' headerText='Display Type'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </div>
+</div>
+
+
+<!----------------------------Create popup------------------------------------->
+<div *ngIf="ShowCreatePopUp">
+  <ejs-dialog #PivotOnReportDialog showCloseIcon='true' header="Map Pivot Views On Reports" class="dialogueClass_70" isModal="true" allowDragging='true' [(visible)]="ShowCreatePopUp" enableResize="true">
+    <ng-template #content>
+      <form [formGroup]="PivotOnReportForm">
+        <br />
+        <div [ngClass]="{'e-success': f.DataSourceReportName.valid}">
+          <ejs-dropdownlist [dataSource]="ReportData" [fields]="DataSourceReportFields"
+                            [allowFiltering]="true" floatLabelType='Auto' placeholder='Select Report*'
+                            (change)='onReportChange($event)' formControlName="DataSourceReportName">
+
+          </ejs-dropdownlist>
+        </div>
+        <div *ngIf="f.DataSourceReportName.touched && f.DataSourceReportName.errors" class="e-error">
+          <div *ngIf="f.DataSourceReportName.errors.required">Report Name is required</div>
+        </div>
+
+        <div>&nbsp;</div>
+        <div [ngClass]="{'e-success': f.PivotViewName.valid}">
+          <ejs-dropdownlist [dataSource]="PivotViewData" [fields]="PivotFields" floatLabelType='Auto'
+                            placeholder='Select Pivot View*' formControlName="PivotViewName"
+                            [allowFiltering]="true" (change)='onChangeSelecter($event)'>
+          </ejs-dropdownlist>
+        </div>
+        <div *ngIf="f.PivotViewName.touched && f.PivotViewName.errors" class="e-error">
+          <div *ngIf="f.PivotViewName.errors.required">Pivot View Name is required</div>
+        </div>
+
+        <div [ngClass]="{'e-success': f.ChartTypeName.valid}">
+          <ejs-dropdownlist [dataSource]="ChartTypeData" [fields]="ChartTypeFields" floatLabelType='Auto'
+                            placeholder='Select Chart Type*' formControlName="ChartTypeName"
+                            [allowFiltering]="true" (change)='onChangeSelecter($event)'>
+          </ejs-dropdownlist>
+        </div>
+        <div *ngIf="f.ChartTypeName.touched && f.ChartTypeName.errors" class="e-error">
+          <div *ngIf="f.ChartTypeName.errors.required">Pivot View Name is required</div>
+        </div>
+        <div>&nbsp;</div>
+
+        <div>
+          <ejs-numerictextbox placeholder="Ordinal" floatLabelType="Always" formControlName="Ordinal" decimals="0">
+
+          </ejs-numerictextbox>
+
+        </div>
+
+        <div *ngIf="ShowCreateBtn">
+          <button ejs-button class="e-control e-btn e-primary" (click)="Save()">Save</button>
+        </div>
+        <div *ngIf="ShowUpdateBtn">
+          <button ejs-button class="e-control e-btn e-primary" (click)="Update()">Save</button>
+        </div>
+      </form>
+
+    </ng-template>
+  </ejs-dialog>
+</div>

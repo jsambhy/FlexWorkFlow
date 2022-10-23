@@ -1,0 +1,136 @@
+<ejs-toast #toasttype id='toasttype' [position]="position" (created)="onCreate()" (close)="onclose($event)"
+(beforeOpen)="onBeforeOpen()" content='test' [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<div *ngIf="showBranch">
+<ejs-dialog showCloseIcon='true' class="dialogueClass_70"  isModal="true" allowDragging='true'  enableResize="true">
+  <ng-template #header>
+    Branching condition from Step '{{sourcenodetext}}' to Step '{{destinationnodetext}}''
+  </ng-template>
+  <ng-template #content>
+    <div class="notes-flex">
+      <div>Workflow: {{configuringWFLabel}} </div>
+      <div>Action '{{actionNameforBranching}}' on step '{{sourcenodetext}}' leads to multiple steps, creating branches.</div>
+      <div>Under what condition will the system choose this branch to land on Step '{{destinationnodetext}}'?</div>
+    </div>
+    <div class="col-lg-12">
+      <div class="col-lg-6" style="float:left">
+        <div>
+          <ejs-dropdownlist #entity id="entity" [dataSource]="choosecolumn" [fields]="choosecolumnfields"
+                            (change)="entityChange($event)" placeholder='Data Field'></ejs-dropdownlist>
+        </div>
+        <div>
+          <ejs-dropdownlist #operatorobj id="operatorobj" [dataSource]="operators" (change)="operatorChange($event)" placeholder="Operator" [enabled]="false"></ejs-dropdownlist>
+
+        </div>
+        <div>
+          <div>&nbsp;</div>
+          <div *ngIf="showTextBox">
+            <ejs-textbox #Tobj id="Tobj" placeholder="Value" cssClass="e-outline" floatLabelType="Auto" [enabled]="enabled"></ejs-textbox>
+          </div>
+          <div *ngIf="showNumTextBox">
+            <ejs-textbox #NTobj id="NTobj" typeof="number" placeholder="Value" cssClass="e-outline" floatLabelType="Auto" [enabled]="enabled"></ejs-textbox>
+          </div>
+          <div *ngIf="showMultiLineTextBox">
+            <ejs-textbox #MLobj id="MLobj" [multiline]='true' placeholder="Value" cssClass="e-outline" [enabled]="enabled" floatLabelType="Auto"></ejs-textbox>
+          </div>
+          <div *ngIf="showDatePicker">
+            <ejs-datepicker #Dobj id="Dobj" [enabled]="enabled"></ejs-datepicker>`
+
+          </div>
+          <div *ngIf="showDateTimePicker">
+            <ejs-datetimepicker #DTobj id="DTobj" [enabled]="enabled" DateTimeFormat="d/M/yy h:mm tt"></ejs-datetimepicker>`
+          </div>
+          <div *ngIf="showBitDropDown">
+            <ejs-dropdownlist #bitObj id="bitObj" [enabled]="enabled" [dataSource]="BitValues" (change)="change($event)" placeholder="Choose TRUE/FALSE"></ejs-dropdownlist>
+          </div>
+          <div>&nbsp;</div>
+          <div>
+            <flex-button #addconditionobj id="addconditionobj" buttonType="e-primary" buttonText="Add Condition" (click)="fnAddCondition()"></flex-button>
+          </div>
+        </div>
+      </div>
+
+      <form [formGroup]="Branchconditioncreateform">
+        <div class="col-lg-6" style="float:right">
+          
+
+
+          <div [ngClass]="{'e-success': f.actionlabel.valid}">
+
+            <ejs-textbox #ResultMLobj id="ResultMLobj" [multiline]='true' placeholder="Resultant Query"
+                         cssClass="e-outline" [enabled]="enabled" floatLabelType="Auto"
+                         formControlName="actionlabel" [ngClass]="{ 'is-invalid': submitted && f.actionlabel.errors }"></ejs-textbox>
+
+            
+          </div>
+          <div *ngIf="f.actionlabel.touched && f.actionlabel.errors" class="e-error">
+            <div *ngIf="f.actionlabel.errors.required">Query is required</div>            
+          </div>
+
+
+
+          <div>
+
+            <ejs-textbox #ResultTechobj id="ResultTechobj" [multiline]='true' placeholder="Technical Query" cssClass="e-outline" [enabled]="false" floatLabelType="Auto"></ejs-textbox>
+
+          </div>
+          <div *ngIf="showAndOr">
+            <ejs-dropdownlist #AndOrobj id="AndOrobj" [dataSource]='AndOrdata' placeholder='ADD/OR' (change)="AndOrchange($event)">
+            </ejs-dropdownlist>
+          </div>
+          <div>&nbsp;</div>
+          <!--<flex-button buttonType="e-primary" buttonText="Append Condition" (click)="AppendCondition()"></flex-button>&nbsp;-->
+          <flex-button buttonType="e-primary" buttonText="Reset" (click)="Reset()"></flex-button>&nbsp;
+          <flex-button buttonType="e-primary" buttonText="Validate" (click)="Validate()"></flex-button>&nbsp;
+          <flex-button buttonType="e-primary" buttonText="Save" (click)="ValidateAndSave()"></flex-button>
+
+        </div>
+        </form>
+    </div>
+
+    <!--<div class="col-lg-12">
+
+      <ejs-textbox #ResultTechobj id="ResultTechobj" [multiline]='true' placeholder="Value" cssClass="e-outline" [enabled]="enabled" floatLabelType="Auto"></ejs-textbox>
+
+    </div>-->
+  </ng-template>
+  <!--<ng-template #footerTemplate>
+    <flex-button buttonType="e-primary" buttonText="Save" (click)="onFormSubmit()"></flex-button>
+  </ng-template>-->
+</ejs-dialog>
+</div>
+
+<div *ngIf="ShowManageBranchCondition">
+  <ejs-dialog class="dialogueClass_90" #ManageBranchConditionDialogue [animationSettings]='animationSettings'
+              showCloseIcon="true" isModal="true" allowDragging='true' [header]="ManageBranchconditionHeader" enableResize="true">
+    <!--<ng-template #header>
+      Manage Branch Condition for Workflow '{{configuringWFLabel}}'
+    </ng-template>-->
+    <ng-template #content>
+      <p class="notes-flex">If same action leads to multiple steps, then define conditions under which the transaction will land on a particiular step.</p>
+      <div style="margin-top:10px">
+        
+        <ejs-grid #ManageBranchgrid [dataSource]='Branchmodeldata'
+                  [toolbar]='toolbar' [editSettings]='editSettings'
+                  rowHeight='38' [allowSelection]='true'
+                  allowSorting='true' [enableHover]='false'
+                  [filterSettings]='filterSettings'
+                  allowFiltering='true' allowTextWrap="true"
+                  (toolbarClick)='toolbarClick($event)'
+                  [allowExcelExport]='true' [allowPdfExport]='true' [allowGrouping]="true" [groupSettings]="groupOptions"
+                  [gridLines]="lines" [contextMenuItems]="contextMenuItems" (rowSelected)='rowSelected($event)'
+                  [selectionSettings]="selectionOptions" (recordDoubleClick)="recordDoubleClick($event)">
+          <e-columns>
+
+            <e-column field='StepName' headerText='From Step' [filter]='filterSettings'></e-column>
+            <e-column field='NextStepName' headerText='To Step' [filter]='filterSettings'></e-column>
+            <e-column field='ActionLabel' headerText='Action' [filter]='filterSettings'></e-column>
+            <e-column field='BranchCondition' headerText='Branch Condition' [filter]='filterSettings'></e-column>
+
+          </e-columns>
+        </ejs-grid>
+      </div>
+    </ng-template>
+    
+  </ejs-dialog>
+</div>
+

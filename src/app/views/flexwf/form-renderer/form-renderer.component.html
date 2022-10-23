@@ -1,0 +1,104 @@
+<!--toast definition-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">{{FormHeader}} </h4>
+      <!--headerPlacement="Left"-->
+       
+        <ejs-tab #FormTabs id="tab_default" (selected)='onTabSelect($event)' headerPlacement="Top">
+          <e-tabitems>
+            <!--dynamic Form tags-->
+            <e-tabitem [header]='headerText[0]'>
+              <ng-template #content>
+                <div class="mx-auto div-margin">
+                  <app-common-form-renderer *ngIf="ShowCommonRenderer" [EntityType]="EntityType" [EntityId]="EntityId" [FormMode]="FormMode" [Source]="Source" [SourceId]="SourceId"
+                                            [ProjectId]="ProjectId" [Status]="Status" [FormId]="FormId"
+                                            [TransactionId]="TransactionId" [StepId]="StepId" [SelectedTagIds]="SelectedTagIds" [TaggingEnabled]="showTagAuditGrid"
+                                            [DatafieldId]="DatafieldId" [DatafieldValue]="DatafieldValue" [FormComments]="FormComments"></app-common-form-renderer>
+                </div>
+              </ng-template>
+            </e-tabitem>
+            <!--Tag grid tab-->
+            <e-tabitem [header]='headerText[1]' *ngIf="showTagAuditGrid">
+              <ng-template #content>
+                <div>
+                  <ejs-grid #TagGrid id='TagGrid' [dataSource]='TagData' rowHeight='38' [allowSelection]='true'
+                            allowFiltering='true' [filterSettings]='filterSettings' (created)="created($event)"
+                            height='200' gridLines="Both" [selectionSettings]='selectionOptions' (dataBound)='dataBound($event)'
+                            (rowSelected)='rowTagSelected($event)' (rowDeselected)='rowTagDeselected($event)'>
+                    <e-columns>
+                      <e-column type='checkbox' width='50'></e-column>
+                      <e-column field='TagCategory' headerText='Tag Category' width='230'></e-column>
+                      <e-column field='TagName' headerText='Tag Name' width='230'></e-column>
+                    </e-columns>
+                  </ejs-grid>
+                </div>
+              </ng-template>
+            </e-tabitem>
+            <!--Comments tab-->
+            <e-tabitem [header]='headerText[2]'>
+              <ng-template #content>
+                <div class="card-group div-margin">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="multiline-row ">
+                        <div class="e-float-input e-input-group">
+                          <!-- Focus and FocusOut Event binding Floating input label -->
+                          <textarea id="FormComments" name="FormComments" [value]="FormComments" (blur)="focusOut($event.target)" rows="3" cols="50"></textarea>
+                          <span class="e-float-line"></span>
+                          <label class="e-float-text">Comments</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </e-tabitem>
+            <!--Supporting Documents tab-->
+            <e-tabitem [header]='headerText[3]'>
+              <ng-template #content>
+                <div class="mx-auto div-margin">
+                  <!--Supporting Document Component for showing Supporting Document Grid-->
+                  <app-supporting-doc [EntityType]="underlyingTableName" [EntityId]="TransactionId"
+                                      [TargetPath]="TargetPath" [StepId]="StepId"></app-supporting-doc>
+                </div>
+              </ng-template>
+            </e-tabitem>
+            <!--History Tab-->
+            <e-tabitem [header]='headerText[4]'>
+              <ng-template #content>
+                <ejs-grid #AuditGrid id='AuditGrid' [dataSource]='AuditData' rowHeight='38' [allowSelection]='true'
+                          height='200' gridLines="Both" allowFiltering='true' [filterSettings]='filterSettings' allowResizing='true'>
+                  <e-columns>
+                    <e-column field='ActionDateTime' headerText='DateTime' width='200'></e-column>
+                    <e-column field='LoginEmail' headerText='User' width='200'></e-column>
+                    <e-column field='Action' headerText='Action' width='150'></e-column>
+                    <e-column field='RoleName' headerText='Role' width='150'></e-column>
+                    <e-column field='StepName' headerText='Landing Step Name' width='150'></e-column>
+                    <e-column field='Comments' headerText='Comments' width='250'></e-column>
+                  </e-columns>
+                </ejs-grid>
+              </ng-template>
+            </e-tabitem>
+          </e-tabitems>
+        </ejs-tab>
+        
+        <div>
+          <!--<div class="col-1">
+        <button *ngIf="showSubmit" type="submit" ejs-button buttonType="e-primary" class="e-control e-btn e-primary"
+                (click)="FnSubmit($event)">
+          Save
+        </button>
+      </div>-->
+          <!--<div class="col-1">
+        <button type="button" ejs-button buttonType="e-primary" class="e-control e-btn e-primary" (click)="goToPrevious()">Back</button>
+      </div>-->
+        </div>
+    </div>
+  </div>
+</div>
+
+
