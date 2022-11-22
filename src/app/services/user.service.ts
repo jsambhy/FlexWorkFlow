@@ -73,5 +73,8 @@ export class UserService {
       + filename + "&ProjectId=" + ProjectId + "&LoggedInUserId=" + LoggedInUserId + "&LoggedInRoleId=" + LoggedInRoleId);
   }
 
-  
+  GetUsersByScope(ScopeType: string, ScopeId: number) {
+    return this.httpClient.get(this.basrUrl + "/LUser/GetUsersByScope?ScopeId=" + ScopeId + "&ScopeType=" + ScopeType);
+  }
+ 
 }

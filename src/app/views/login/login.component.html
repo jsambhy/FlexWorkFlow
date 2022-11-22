@@ -1,15 +1,24 @@
 <!--toast definition-->
-<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>    
+<!--Spinner-->
+<!-- <div class="loader" *ngIf="submitted"><img src="assets/img/loader.gif" alt="loader.gif"></div> -->
+<!-- <app-spinner></app-spinner> -->
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" > Please wait... </p></ngx-spinner>
+
 
 <div class="app-body">
   <main class="main d-flex align-items-center">
     <div class="container">
       <div class="row">
-        <div class="col-md-8 mx-auto">
+        <div class="col-md-8 mx-auto" style="margin-top: 50px">
+          <div style="text-align: center; margin-bottom:50px">
+            <img src="assets/front/logo.png" alt="logo.png">
+          </div>
           <div class="card-group">
             <div class="card p-4">
               <div class="card-body">
                 <!--<form>-->
+                  
                   <h1>Login</h1>
                   <p class="text-muted">Sign In to your account</p>
                   <div class="input-group mb-3">
@@ -25,12 +34,13 @@
                     </div>
                     <input #password type="password" id="Password" class="form-control" placeholder="Password"  autocomplete="current-password" required>
                   </div>
+                  <!-- <mat-progress-bar mode="indeterminate"></mat-progress-bar> -->
                   <div class="row">
-                    <div class="col-3">
-                      <button ejs-button class="e-control e-btn e-primary" (click)="login(Email.value,password.value)">Login</button>&nbsp;&nbsp;
+                    <div class="col-12">
+                      <button style="width: 100%;" ejs-button class="e-control e-btn e-primary" (click)="login(Email.value,password.value)">Login</button>&nbsp;&nbsp;
                       <!--<button type="button" (click)="OnLogin(mobile.value,password.value)" class="btn btn-primary px-4">Login</button>-->
                     </div>
-                    <div class="col-7 ">
+                    <div class="col-12 ">
                       <!--<button type="button" class="btn btn-link px-0">Forgot password?</button>-->
                       <button class="btn btn-link text-muted"  (click)="forgotPassword(Email.value)">Forgot Password?</button>&nbsp;&nbsp;
                     </div>

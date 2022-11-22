@@ -75,7 +75,9 @@ export class FlexWorkflowsService {
   GetWFById(Id: number): Observable<any> {
     return this.httpClient.get<flexworkflowmodel>(this.basrUrl + "/FlexWorkflows/GetById?Id=" + Id);
   }
-
+  GetWFScopeById(Id: number): Observable<any> {
+    return this.httpClient.get<flexworkflowmodel>(this.basrUrl + "/FlexWorkflows/GetWFScopeById?Id=" + Id);
+  }
   GetSelectedTagsByEntity(EntityType,EntityId: number): Observable<any> {
     return this.httpClient.get<flexworkflowmodel>(this.basrUrl + "/FlexWorkflows/GetSelectedTagsByFlexTableId?EntityType="
       + EntityType + "&EntityId=" + EntityId);

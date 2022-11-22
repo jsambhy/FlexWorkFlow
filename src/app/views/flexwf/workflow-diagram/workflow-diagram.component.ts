@@ -597,7 +597,7 @@ export class WorkflowDiagramComponent {
       }
     }
     if (this.IsNodeOrConnectorDelete == "connectordelete") {
-      this.data.DeleteLinkdata(this.selectedconnectorid).subscribe(
+      this.data.DeleteLinkdata(this.connectorId).subscribe(
         (data: string) => {
           //this.toasts[1].content = data;
           //this.toastObj.show(this.toasts[1]);

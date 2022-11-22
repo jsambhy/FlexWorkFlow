@@ -10,7 +10,8 @@ import { environment } from '../../../environments/environment';
 import { Ajax } from '@syncfusion/ej2-base';
 import { IAMService } from '../../services/iam';
 import { Auth } from 'aws-amplify';
-
+import { LoaderService } from '../../loader.service';
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-login',
   templateUrl: 'login.component.html',
@@ -40,13 +41,17 @@ export class LoginComponent {
   ];
   public position: ToastPositionModel = { X: 'Center'};
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(
+    private spinner: NgxSpinnerService,
+    private formBuilder: FormBuilder,
     private router: Router,
     private _AccountService: AccountService,
     private _iam: IAMService) {
   }
 
   ngOnInit() {
+
+    
    
     this.loginForm = this.formBuilder.group({
       Email: ['', [Validators.required, Validators.email]],
@@ -69,6 +74,7 @@ export class LoginComponent {
   login(UserName, Password) {
     // 
     this.submitted = true;
+    this.spinner.show();
     // stop here if form is invalid  
     //if (this.loginForm.invalid) {
     //  return;
@@ -127,11 +133,13 @@ export class LoginComponent {
             }
 
           }
-
-          this.FetchUserDetails(UserName, LoginUserNameType);           
+          this.spinner.hide();
+          this.FetchUserDetails(UserName, LoginUserNameType);
         })
           .catch(err => {
-            console.log(err)
+            console.log(err);
+            //this.submitted = false;
+            this.spinner.hide();
             this.toastObj.timeOut = 3000;
             this.toasts[2].content = err.message;
             this.toastObj.show(this.toasts[2]);

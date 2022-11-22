@@ -36,6 +36,8 @@ import { AnnouncementComponent } from './announcement/announcement.component';
 import { SchedulerComponent } from './scheduler/scheduler.component';
 import { ParentComponent } from './Testing/parent/parent.component';
 import { ChildComponent } from './Testing/Child/child.component';
+import { RepresentativesComponent } from './representatives/representatives.component';
+import { HierarchyComponent } from './hierarchy/hierarchy.component';
 
 /*import { Dummy_pivotComponent } from '../dashboard/dummy_pivot/dummy_pivot.component';*/
 
@@ -327,11 +329,24 @@ const routes: Routes = [
           title: 'Validations Rules'
         }
       },
-      {
-        path: 'announcements',
+      {        path: 'announcements',
         component: AnnouncementComponent,
         data: {
           title: 'Announcements'
+        }
+      },
+      {
+        path: 'representatives',
+        component: RepresentativesComponent,
+        data: {
+          title: 'Representatives'
+        }
+      },
+      {
+        path: 'hierarchy',
+        component: HierarchyComponent,
+        data: {
+          title: 'hierarchy'
         }
       },
       //{

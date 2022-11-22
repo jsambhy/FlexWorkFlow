@@ -21,10 +21,10 @@ export class StepActionsParticipantsService {
   GetColumnForMenuRoles(LoggedInScopeEntityType: string, LoggedInScopeEntityId: number): Observable<any> {
     return this.httpClient.get(this.basrUrl + "/MMenuRoles/GetColumnForParticipantRoles?LoggedInScopeEntityType=" + LoggedInScopeEntityType + "&LoggedInScopeEntityId=" + LoggedInScopeEntityId);
   }
-
-  GetDataForActionRoleMapping(LoggedInScopeEntityType: string, LoggedInScopeEntityId: number, StepId: number): Observable<any> {
-    return this.httpClient.get(this.basrUrl + "/FlexWFStepActionsParticipants/GetDataForActionRoleMapping?LoggedInScopeEntityType=" + LoggedInScopeEntityType + "&LoggedInScopeEntityId=" + LoggedInScopeEntityId + "&StepId=" + StepId);
-  }
+  //not in use
+  //GetDataForActionRoleMapping(LoggedInScopeEntityType: string, LoggedInScopeEntityId: number, StepId: number): Observable<any> {
+  //  return this.httpClient.get(this.basrUrl + "/FlexWFStepActionsParticipants/GetDataForActionRoleMapping?LoggedInScopeEntityType=" + LoggedInScopeEntityType + "&LoggedInScopeEntityId=" + LoggedInScopeEntityId + "&StepId=" + StepId);
+  //}
 
   GetDataForActionParticipantMapping(modeldata: stepparticipantsmodel): Observable<any> {
     return this.httpClient.post<any>(this.basrUrl + "/FlexWFStepActionsParticipants/GetDataForActionParticipantMapping", modeldata, { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
@@ -40,6 +40,10 @@ export class StepActionsParticipantsService {
 
   GetParticipants(modeldata: stepparticipantsmodel): Observable<any> {
     return this.httpClient.post<any>(this.basrUrl + "/FlexWFStepActionsParticipants/GetParticipantsList", modeldata, { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
+  }
+
+  GetAssignedParticipants(modeldata: stepparticipantsmodel): Observable<any> {
+    return this.httpClient.post<any>(this.basrUrl + "/FlexWFStepActionsParticipants/GetAssignedParticipants", modeldata, { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
   }
 
   GetColumnsForMatrixForDiferentParticipantTypes(modeldata: stepparticipantsmodel): Observable<any> {

@@ -100,16 +100,46 @@ import { SchedulerComponent } from './scheduler/scheduler.component';
 import { CustomReportParametersComponent } from './custom-report-parameters/custom-report-parameters.component';
 import { ParentComponent } from './Testing/parent/parent.component';
 import { ChildComponent } from './Testing/Child/child.component';
-
+import { RepresentativesComponent } from './representatives/representatives.component';
+import { RepresentativeService } from '../../services/representative.service';
+import { HierarchyComponent } from './hierarchy/hierarchy.component';
 
 
 @NgModule({
-  providers: [UserService, AccountService, MenuRoleService, ProjectService, FormRendererService, RworkFlowsService,
-    FormDesignerService, GenericGridService, WorkflowdesignerService, EmailTemplateService, FlexWorkflowsService,
-    BranchService, StepActionsService, StepColumnsService, WFValidationService, RolesService, EntityConfigurationService
-    , MasterDataService, SupportingDocumentService, CustomValidatorsService, SubProcessService, ReportService, TagsService, ValidationsService, AnnouncementsService,
-    CategoryService, LegendService, TooltipService, DataLabelService, LineSeriesService, GKeyValueService, DatePipe
-
+  providers: [
+    UserService,
+    AccountService,
+    MenuRoleService,
+    ProjectService,
+    FormRendererService,
+    RworkFlowsService,
+    FormDesignerService,
+    GenericGridService,
+    WorkflowdesignerService,
+    EmailTemplateService,
+    FlexWorkflowsService,
+    BranchService,
+    StepActionsService,
+    StepColumnsService,
+    WFValidationService,
+    RolesService,
+    EntityConfigurationService,
+    MasterDataService,
+    SupportingDocumentService,
+    CustomValidatorsService,
+    SubProcessService,
+    ReportService,
+    TagsService,
+    ValidationsService,
+    AnnouncementsService,
+    CategoryService,
+    LegendService,
+    TooltipService,
+    DataLabelService,
+    LineSeriesService,
+    GKeyValueService,
+    DatePipe,
+    RepresentativeService    
   ],
   imports: [
     NgxSpinnerModule , 
@@ -135,7 +165,7 @@ import { ChildComponent } from './Testing/Child/child.component';
     , FormdesignerComponent, EntityFormsComponent, WorkflowParticipantsComponent, MappingDFsComponent, SubProcessesComponent,
     ReportsComponent, ViewReportComponent, CreateCognitoUserComponent, UserUploadComponent, TagsComponent,
     TagCategoryComponent, ValidationsComponent, ValidationRulesComponent, AnnouncementComponent,
-    ReportPivotViewsComponent, SchedulerComponent, CustomReportParametersComponent, ParentComponent, ChildComponent]
+    ReportPivotViewsComponent, SchedulerComponent, CustomReportParametersComponent, ParentComponent, ChildComponent, RepresentativesComponent, HierarchyComponent]
   
 })
 export class FlexWFModule { }

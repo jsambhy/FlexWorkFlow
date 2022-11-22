@@ -3,7 +3,7 @@ import { FreezeService, GridComponent, GridLine, ToolbarItems } from '@syncfusio
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastComponent, ToastPositionModel } from '@syncfusion/ej2-angular-notifications';
 import { DialogComponent } from '@syncfusion/ej2-angular-popups';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { StepActionsParticipantsService } from '../../../services/step-actions-participants.service';
 import { StepColumnsService } from '../../../services/step-columns.service';
 import { WorkflowdesignerService } from '../../../services/workflowdesigner.service';
@@ -13,6 +13,8 @@ import { StepActionsService } from '../../../services/step-actions.service';
 import { MultiSelectComponent } from '@syncfusion/ej2-angular-dropdowns';
 import { StepParticipantsService } from '../../../services/step-participants.service';
 import { RadioButtonComponent, RadioButton } from '@syncfusion/ej2-angular-buttons';
+import { DropDownList } from '@syncfusion/ej2-dropdowns';
+import { FlexWorkflowsService } from '../../../services/flex-workflows.service';
 @Component({
   selector: 'app-step-actions-participants',
   templateUrl: './step-actions-participants.component.html',
@@ -21,10 +23,10 @@ import { RadioButtonComponent, RadioButton } from '@syncfusion/ej2-angular-butto
 })
 /** step-actions-participants component*/
 export class StepActionsParticipantsComponent {
-  constructor(private router: Router, private _workflowservice: WorkflowdesignerService,
+  constructor(private router: Router, private _workflowservice: WorkflowdesignerService, private route: ActivatedRoute,
+    private _FlexWFservice: FlexWorkflowsService,
     private _service: StepActionsParticipantsService,
     private _colservice: StepColumnsService,
-    private _participantservice: StepParticipantsService,
     private _StepActionsService: StepActionsService) {
     this.AssignActionForm = new FormGroup({
       stepdrpcontrol: new FormControl('', [Validators.required]),
@@ -34,14 +36,14 @@ export class StepActionsParticipantsComponent {
       LevelValue: new FormControl(''),
       PositionTypedrpcontrol: new FormControl('')
     });
-  }
-  // getting parent from component message
+  } 
   @Input() configuringstepid: number;
   @Input() configuringWFId: number;
   @Input() configuringFlexTableId: number;
   @Input() configuringWFLabel: string;
   @Input() configuringstepname: string;
   @Input() level: string;
+  AssignedParticipantsDataSrc: any = [];
 
   @ViewChild('toasttype', { static: false }) private toastObj: ToastComponent;
   @ViewChild('grid', { static: false }) public grid: GridComponent;
@@ -55,6 +57,7 @@ export class StepActionsParticipantsComponent {
   public ActionWidth: number = 120;
   public RoleWidth: number = 80;
   public GridHeight: number = 150;
+
   public toasts: { [key: string]: Object }[] = [
     { title: 'Warning!', content: 'There was a problem with your network connection.', cssClass: 'e-toast-warning', icon: 'e-warning toast-icons' },
     { title: 'Success!', content: 'Your message has been sent successfully.', cssClass: 'e-toast-success', icon: 'e-success toast-icons' },
@@ -66,7 +69,7 @@ export class StepActionsParticipantsComponent {
   public position: ToastPositionModel = { X: 'Center' };
   public stepparticipantmodeldata: stepparticipantsmodel[];
   participantmodel: stepparticipantsmodel = new stepparticipantsmodel();//declaring and initializing the variable to use further  
-  public ShowMatrixpopup: boolean = false;
+  public ShowMatrixpopup: boolean = false; result: string;
   public lines: GridLine;
   public toolbar: ToolbarItems[] | object;
   public editSettings: Object;
@@ -91,15 +94,23 @@ export class StepActionsParticipantsComponent {
   showmanagenotifications: boolean;
   public selectedStepId: number;
   public selectedStepLabel: string;
-  public dvLinksOnGrid: boolean; public showHierarchyTypeDropdown: boolean = false;
+  public dvLinksOnGrid: boolean; public showHierarchyTypeDropdown: boolean = false; showHierarchyCategorization: boolean = false;
   public selectedMatrixdata: Object[] = [];//array in which all the selected items will get pushed(rollname,stepid,stepactionid..etc)
   public ShowActionVisibility: boolean = false;
   public showLevelTxtbox: boolean = false;
-  public showPositionTypeDD = false;
-  get f1() { return this.AssignActionForm.controls; }
+  dropDownListObject: DropDownList;
   isDialog: boolean;
   LoggedInScopeEntityId: number;
   LoggedInScopeEntityType: string;
+  WFScopeEntityType: string;
+  WFScopeEntityId: number;
+  SelectedStepActionId: number;
+  LoggedInRoleId: number = +sessionStorage.getItem("LoggedInRoleId");
+  LoggedInUserId: number = +sessionStorage.getItem("LoggedInUserId");
+  selectedValues = [];
+
+  get f1() { return this.AssignActionForm.controls; }
+  
   @ViewChild('participantcontrol', { static: false })
   public participantcontrol: MultiSelectComponent;
 
@@ -123,6 +134,8 @@ export class StepActionsParticipantsComponent {
   }
 
   ngOnInit() {
+    
+
     this.ShowMatrixpopup = true;
     this.returnUrl = '/roles';
     this.sessionprojectid = sessionStorage.getItem("ProjectId");
@@ -130,19 +143,20 @@ export class StepActionsParticipantsComponent {
     this.LoggedInScopeEntityType = sessionStorage.getItem("LoggedInScopeEntityType");
     this.projectId = +this.sessionprojectid; // conversion from string to int   
     this.lines = 'Both';
+    this.dvLinksOnGrid = false;
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
     if (this.level == "steplevel") {
       this.showStepLabel = true;
       this.showStepDropdown = false;
-      this.dvLinksOnGrid = true;
-      this.manageactiononParticipant = true;
+      //this.dvLinksOnGrid = true;
+      this.manageactiononParticipant = true;      
     }
 
     if (this.level == "workflowlevel") {
       this.showStepLabel = false;
       this.showgrid = false;
       this.manageactiononParticipant = false;
-      this.dvLinksOnGrid = false;
+      //this.dvLinksOnGrid = false;
       this._colservice.getAllSteps(this.configuringWFId, this.configuringWFLabel)
         .subscribe(
           data => {
@@ -150,26 +164,69 @@ export class StepActionsParticipantsComponent {
           }
         );
       this.showStepDropdown = true;
-    }
+    }   
   }
-  SelectedStepActionId: number;
+  ngAfterViewInit() {
+    //with the below code, I am fetching wfid from url to get the scope of it
+    this.route.params.subscribe((params: Params) => {
+      let WFid = parseInt(params['Id']);
+      this._FlexWFservice.GetWFScopeById(WFid)
+        .subscribe(
+          (data) => {           
+            this.WFScopeEntityType = data.ScopeEntityType;
+            this.WFScopeEntityId = data.ScopeEntityId;
+
+            if (this.WFScopeEntityType != null || this.WFScopeEntityType != "") {
+              if ((this.WFScopeEntityType == 'GCompanies') || (this.WFScopeEntityType == 'GProjects')) {
+                this.ddData = [{ Id: 'User', Type: 'User' },
+                { Id: 'Role', Type: 'Role' },
+                { Id: 'Hierarchy', Type: 'Hierarchy' },
+                { Id: 'Team', Type: 'Team' },
+                { Id: 'Position', Type: 'Position' }, { Id: 'Reps', Type: 'Reps' }]
+              }
+              else {
+                this.ddData = [{ Id: 'User', Type: 'User' },
+                { Id: 'Role', Type: 'Role' },
+                { Id: 'Hierarchy', Type: 'Hierarchy' },
+                { Id: 'Team', Type: 'Team' }];
+              }
+            }
+          }
+        );
+    });
+  }
   rowSelected(para) {
     this.SelectedActionName = para.data.ActionName;
     this.SelectedStepActionId = para.data.StepActionId;
+    
   }
-  LoggedInRoleId: number = +sessionStorage.getItem("LoggedInRoleId");
-  LoggedInUserId: number = +sessionStorage.getItem("LoggedInUserId");
+
+
+  public onChange(args) {
+   // alert("change event");
+    this.fnshowMatrixdata();
+  }
 
   //this event will be called when checkbox in matrix will get checked/unchecked
-  ItemcheckedEvent(Label, e): void {
+  ItemcheckedEvent(Label, e): void {   
     const selectedRecords = this.grid.getSelectedRecords();
     if (selectedRecords.length == 0) {
     }
     else {
       this.MatrixStepActionId = selectedRecords[0]['StepActionId'];
-
     }
-    this.selectedMatrixdata.push({ StepActionId: this.MatrixStepActionId, ColumnName: Label, NewResponse: e.checked, ScopeEntityType: this.LoggedInScopeEntityType, ScopeEntityId: this.LoggedInScopeEntityId, StepId: this.selectedStepId, LoggedInRoleId: this.LoggedInRoleId, LoggedInUserId: this.LoggedInUserId, ParticipantType: this.selectedParticipantType, HierarchyTypeId: this.AssignActionForm.get('HierarchyTypedrpcontrol').value });
+    this.selectedMatrixdata.push({
+      StepActionId: this.MatrixStepActionId,
+      ColumnName: Label,
+      NewResponse: e.checked,
+      ScopeEntityType: this.LoggedInScopeEntityType,
+      ScopeEntityId: this.LoggedInScopeEntityId,
+      StepId: this.selectedStepId,
+      LoggedInRoleId: this.LoggedInRoleId,
+      LoggedInUserId: this.LoggedInUserId,
+      ParticipantType: this.selectedParticipantType,
+      HierarchyTypeId: this.AssignActionForm.get('HierarchyTypedrpcontrol').value
+    });
   }
 
   //function called to update the train in case of updation in actions and participants
@@ -190,6 +247,8 @@ export class StepActionsParticipantsComponent {
       (error: any) => console.log(error)
     );
   }
+
+
 
   //method called on the save of the matrix array
   fnSaveMappingdata() {
@@ -215,11 +274,19 @@ export class StepActionsParticipantsComponent {
     }
   }
 
-  //method to get the assigned actions to the participant(matrix data)
-  selectedValues = [];
+  LevelValue: number;
+  HierarchyTypeId: number;
   fnGetDataForMapping(stepid) {
+    
+    if (this.AssignActionForm.get('LevelValue').value == null || this.AssignActionForm.get('LevelValue').value == "" ) {
+      this.LevelValue = 0;
+    }
+    else {
+      this.LevelValue = this.AssignActionForm.get('LevelValue').value;
+    }
+
     this.participantmodel.ParticipantType = this.selectedParticipantType;
-    this.participantmodel.ParameterCarrier = "|EntityType=" + sessionStorage.getItem("LoggedInScopeEntityType") + "|EntityId=" + sessionStorage.getItem("LoggedInScopeEntityId") + "|StepId=" + stepid + "|TypeValues=" + this.AssignActionForm.get('participantcontrol').value + "|WFId=" + this.configuringWFId + "|LevelValue=" + this.AssignActionForm.get('LevelValue').value;
+    this.participantmodel.ParameterCarrier = "|EntityType=" + sessionStorage.getItem("LoggedInScopeEntityType") + "|EntityId=" + sessionStorage.getItem("LoggedInScopeEntityId") + "|StepId=" + stepid + "|TypeValues=" + this.AssignActionForm.get('participantcontrol').value + "|WFId=" + this.configuringWFId + "|HierarchyTypeId=" + this.HierarchyTypeId + "|LevelValue=" + this.LevelValue;
     this._service.GetDataForActionParticipantMapping(this.participantmodel)
       .subscribe(
         data => {
@@ -248,7 +315,7 @@ export class StepActionsParticipantsComponent {
     this.selectedStepId = args.itemData.Id;
     this.manageactiononParticipant = false;
     this.selectedStepLabel = args.itemData.Label;
-    this.dvLinksOnGrid = true;
+   /* this.dvLinksOnGrid = true;*/
     if (!args.itemData.IsMandatory) {
       this.ShowActionVisibility = true;
     }
@@ -258,9 +325,15 @@ export class StepActionsParticipantsComponent {
   }
 
   fnshowMatrixdata() {
+
+    this.dvLinksOnGrid = true;
     this.participantmodel.ParameterCarrier = "|EntityType=" + sessionStorage.getItem("LoggedInScopeEntityType") + "|EntityId=" + sessionStorage.getItem("LoggedInScopeEntityId");
-    if (this.selectedParticipantType == "LRole" || this.selectedParticipantType == "LUser") {
-      this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|TypeValues=" + this.AssignActionForm.get('participantcontrol').value + "|ParticipantType&Category=" + this.selectedParticipantType;
+
+    if (this.selectedParticipantType == "LRoles" || this.selectedParticipantType == "LUsers"
+      || this.selectedParticipantType == "Teams" || this.selectedParticipantType == "Positions" || this.selectedParticipantType == "Reps"
+    )
+    {
+      this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|TypeValues=" + this.AssignActionForm.get('participantcontrol').value + "|ParticipantType&Category=" + this.selectedParticipantType + "|WFScopeType=" + this.WFScopeEntityType + "|WFScopeId=" + this.WFScopeEntityId;
       this._service.GetColumnsForMatrixForDiferentParticipantTypes(this.participantmodel)
         .subscribe(
           data => {
@@ -282,7 +355,7 @@ export class StepActionsParticipantsComponent {
     }
 
     if ((this.selectedParticipantType == "Hierarchy") && (this.radiobutton.getSelectedValue() === "Job Role")) {
-      this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|HierarchyTypeId=" + this.AssignActionForm.get('HierarchyTypedrpcontrol').value + "|ParticipantType&Category=" + "Hierarchy_JobRole";
+      this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|HierarchyTypeId=" + this.AssignActionForm.get('HierarchyTypedrpcontrol').value + "|ParticipantType&Category=" + "Hierarchy_JobRole" + "|TypeValues=" + this.AssignActionForm.get('participantcontrol').value;
       this._service.GetColumnsForMatrixForDiferentParticipantTypes(this.participantmodel)
         .subscribe(
           data => {
@@ -301,8 +374,12 @@ export class StepActionsParticipantsComponent {
 
   //below method is to fill the dropdown of participant list in dropdown in frontend on changing of participant type
   participantTypeChange(args: any): void {
+    //this.participantmodel.StepId = this.selectedStepId;
+    //alert("selectedStepId" + "  " + this.selectedStepId);
+    //alert("configuringstepid" + "  " + this.configuringstepid);
     this.showgrid = false;
     this.showHierarchyTypeDropdown = false;
+    this.showHierarchyCategorization = false;
     this.AssignActionForm.patchValue({
       participantcontrol: null,
       HierarchyTypedrpcontrol: null
@@ -317,9 +394,8 @@ export class StepActionsParticipantsComponent {
     this.participantmodel.ParameterCarrier = "|EntityType=" + sessionStorage.getItem("LoggedInScopeEntityType") + "|EntityId=" + sessionStorage.getItem("LoggedInScopeEntityId");
     if (args.itemData.Type == "Role") {
       this.showHierarchyTypeDropdown = false;
-      this.showmultiselect = true;
-      this.showPositionTypeDD = true;
-      this.selectedParticipantType = "LRole";
+      this.showmultiselect = true;  
+      this.selectedParticipantType = "LRoles";
       this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|ParticipantType&Category=" + this.selectedParticipantType;
       this.configuringstepid = this.selectedStepId;
       this.participantmodel.WorkflowId = this.configuringWFId;
@@ -329,12 +405,19 @@ export class StepActionsParticipantsComponent {
           ParticipantListByRoleType => {
             this.Participants = ParticipantListByRoleType;
           }
+      );
+      this._service.GetAssignedParticipants(this.participantmodel)
+        .subscribe(
+          AssignedParticipantListByRoleType => {
+            this.AssignedParticipantsDataSrc = AssignedParticipantListByRoleType;
+          }
         );
+      
     }
     if (args.itemData.Type == "User") {
       this.showHierarchyTypeDropdown = false;
-      this.showPositionTypeDD = true;
-      this.selectedParticipantType = "LUser";
+      this.participantmodel.StepId = this.selectedStepId;
+      this.selectedParticipantType = "LUsers";
       this.showmultiselect = true;
       this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|ParticipantType&Category=" + this.selectedParticipantType;
       this._service.GetParticipants(this.participantmodel)
@@ -343,13 +426,19 @@ export class StepActionsParticipantsComponent {
             this.Participants = ParticipantListByUserType;
 
           }
+      );
+      this._service.GetAssignedParticipants(this.participantmodel)
+        .subscribe(
+          AssignedParticipantListByRoleType => {
+            this.AssignedParticipantsDataSrc = AssignedParticipantListByRoleType;
+          }
         );
     }
 
-    
+
     if (args.itemData.Type == "Hierarchy") {
       this.showHierarchyTypeDropdown = true;
-      this.showPositionTypeDD = true;
+      this.participantmodel.StepId = this.selectedStepId;
       this.selectedParticipantType = "Hierarchy";
       this.showmultiselect = false;
       this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|ParticipantType&Category=" + this.selectedParticipantType;
@@ -358,22 +447,56 @@ export class StepActionsParticipantsComponent {
           ParticipantListByHierarchyType => {
             this.HTypeSource = ParticipantListByHierarchyType;
           }
-        );
-    }
+      );
 
-    if (args.itemData.Type == "Position") {
-      this.showHierarchyTypeDropdown = true;
-      this.showPositionTypeDD = true;
-      this.selectedParticipantType = "Position";
-      this.showmultiselect = false;
+
+      
+    }
+    if (args.itemData.Type == "Team") {
+      this.participantmodel.StepId = this.selectedStepId;
+      this.showHierarchyTypeDropdown = false;
+      this.selectedParticipantType = "Teams";
+      this.showmultiselect = true;
       this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|ParticipantType&Category=" + this.selectedParticipantType;
       this._service.GetParticipants(this.participantmodel)
         .subscribe(
-          ParticipantListByPositionType => {
-            this.PTypeSource = ParticipantListByPositionType;
+          ParticipantListByTeam => {
+            this.Participants = ParticipantListByTeam;
+
+          }
+      );
+      this._service.GetAssignedParticipants(this.participantmodel)
+        .subscribe(
+          AssignedParticipantListByRoleType => {
+            this.AssignedParticipantsDataSrc = AssignedParticipantListByRoleType;
           }
         );
     }
+    if (args.itemData.Type == "Position" || args.itemData.Type == "Reps") {
+      if (args.itemData.Type == "Position") {
+        this.selectedParticipantType = "Positions";
+      }
+      else {
+        this.selectedParticipantType = "Reps";
+      }
+     
+      this.showmultiselect = true;
+      this.participantmodel.StepId = this.selectedStepId;
+      this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|ParticipantType&Category=" + this.selectedParticipantType + "|WFScopeType=" + this.WFScopeEntityType + "|WFScopeId=" + this.WFScopeEntityId;
+      this._service.GetParticipants(this.participantmodel)
+        .subscribe(
+          ParticipantListData => {
+            this.Participants = ParticipantListData;
+          }
+      );
+      this._service.GetAssignedParticipants(this.participantmodel)
+        .subscribe(
+          AssignedParticipantListByRoleType => {
+            this.AssignedParticipantsDataSrc = AssignedParticipantListByRoleType;
+          }
+        );
+    }
+    
 
 
 
@@ -414,41 +537,58 @@ export class StepActionsParticipantsComponent {
       );
   }
 
-  public onFocusOut(): void {
-    if (this.radiobutton.getSelectedValue() === "Job Role") {
-      this.participantmodel.ParticipantId = this.AssignActionForm.get('HierarchyTypedrpcontrol').value;
+  public HTypeChange(args: any): void {
+    
+    this.showHierarchyCategorization = true;
+    this.showmultiselect = true;
+    this.participantmodel.ParticipantId = args.itemData.Id; //htypeid
+    this.HierarchyTypeId = args.itemData.Id;
       this._service.GetParticipantByHierarchyJobRole(this.participantmodel.ParticipantId)
         .subscribe(
           ParticipantListByHierarchyJobRoleType => {
             this.Participants = ParticipantListByHierarchyJobRoleType;
           }
-        );
-    }
+      );
+
+    this.participantmodel.ParameterCarrier = this.participantmodel.ParameterCarrier + "|ParticipantType&Category=" + this.selectedParticipantType + "|Category=" + "Job Role"
+    this._service.GetAssignedParticipants(this.participantmodel)
+      .subscribe(
+        AssignedParticipantListByRoleType => {
+          this.AssignedParticipantsDataSrc = AssignedParticipantListByRoleType;
+        }
+      );
 
   }
 
-  public PositionTypeChange(): void {
-    this.participantmodel.ParticipantId = this.AssignActionForm.get('PositionTypedrpcontrol').value;
-    this._service.GetParticipantByPositionType(this.participantmodel.ParticipantId)
-    .subscribe(
-      ParticipantListByPositionType => {
-        this.Participants = ParticipantListByPositionType;
-      }
-    );
+  //public onFocusOut(): void {
+  //  if (this.radiobutton.getSelectedValue() === "Job Role") {
+  //    this.participantmodel.ParticipantId = this.AssignActionForm.get('HierarchyTypedrpcontrol').value;
+  //    this._service.GetParticipantByHierarchyJobRole(this.participantmodel.ParticipantId)
+  //      .subscribe(
+  //        ParticipantListByHierarchyJobRoleType => {
+  //          this.Participants = ParticipantListByHierarchyJobRoleType;
+  //        }
+  //      );
+  //  }
+
+  //}
+
+  AssignedPartpopup: boolean = false;
+  fnShowAssignes() {
+    this.AssignedPartpopup = true;
   }
 
   public changeHandler(): void {
     if (this.radiobutton.getSelectedValue() === "Level") {
-      this.selectedHierarchyCategory = "Level";
       this.showLevelTxtbox = true;
       this.showmultiselect = false;
+      this.selectedHierarchyCategory = "Level";
     }
     else {
       this.selectedHierarchyCategory = "Job Role";
       this.showLevelTxtbox = false;
       this.showmultiselect = true;
-
-      this.participantmodel.ParticipantId = this.AssignActionForm.get('HierarchyTypedrpcontrol').value;
+      this.participantmodel.ParticipantId = this.HierarchyTypeId;
       this._service.GetParticipantByHierarchyJobRole(this.participantmodel.ParticipantId)
         .subscribe(
           ParticipantListByHierarchyJobRoleType => {
@@ -456,17 +596,20 @@ export class StepActionsParticipantsComponent {
           }
         );
     }
+    this.participantmodel.ParameterCarrier = "|ParticipantType&Category=" + this.selectedParticipantType + "|Category=" + this.selectedHierarchyCategory
+    this._service.GetAssignedParticipants(this.participantmodel)
+      .subscribe(
+        AssignedParticipantListByRoleType => {
+          this.AssignedParticipantsDataSrc = AssignedParticipantListByRoleType;
+        }
+      );
 
-  }
-  //********************Action Visibility Code**************************************
-
-  public participantTypesData: Object[] = [
+  } 
+  public ddData: Object[] = [
     { Id: 'User', Type: 'User' },
     { Id: 'Role', Type: 'Role' },
-    { Id: 'Hierarchy', Type: 'Hierarchy' },
-    { Id: 'Position', Type: 'Position' },
-    { Id: 'Representative', Type: 'Representative' },    
-    { Id: 'UserGroup', Type: 'UserGroup' }
+    { Id: 'Hierarchy', Type: 'Hierarchy' },   
+    { Id: 'Team', Type: 'Team' }
   ];
   // maps the appropriate column to fields property
   public participantTypeFields: Object = { text: 'Type', value: 'Id' };

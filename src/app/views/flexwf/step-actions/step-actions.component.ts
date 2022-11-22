@@ -97,7 +97,7 @@ export class StepActionsComponent {
     'Copy', 'Edit', 'Delete', 'Save', 'Cancel',
     'PdfExport', 'ExcelExport', 'CsvExport', 'FirstPage', 'PrevPage',
     'LastPage', 'NextPage', 'Group', 'Ungroup'];
-  public showWFActions: boolean = false;
+  public showWFActionsScreen: boolean = false;
   public stepactiondata: stepactionsmodel = new stepactionsmodel();
   public isRefresh: boolean;
   public showIconImage2: boolean = false;
@@ -221,7 +221,7 @@ export class StepActionsComponent {
     this.lines = 'Both';
     this.filterSettings = { type: 'CheckBox' }; // inorder to remove extra filtering from the grid we set it to this type.
     this.toolbar = [{ text: 'Add', tooltipText: 'Add', prefixIcon: 'e-custom-icons e-action-Icon-add', id: 'Add' }, { text: 'Delete', tooltipText: 'Delete', prefixIcon: 'e-custom-icons e-action-Icon-delete3', id: 'Delete' }, { text: 'Clone', tooltipText: 'Clone', prefixIcon: 'e-custom-icons e-action-Icon-clone', id: 'Clone' }, { text: 'Calculation', tooltipText: 'Calculation for Action', prefixIcon: 'e-custom-icons e-action-Icon-calculations', id: 'Calc' }, { text: 'Manage Sub Processes', tooltipText: 'Manage Sub Processes', prefixIcon: 'e-custom-icons e-action-Icon-SubProcessManage', id: 'SubProcesses' }, { text: 'Manage Validations', tooltipText: 'Manage Validations', prefixIcon: 'e-custom-icons e-action-Icon-validation', id: 'validations' }, 'ExcelExport', 'PdfExport', 'CsvExport', 'Search'];
-    this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };  
+    this.editSettings = {  mode: 'Dialog' };  
     if ((this.level == "steplevel") && (this.manageactiononParticipant == false)) {
       this.headerManageAction = "Manage Actions for the Step '" + this.configuringstepname + "'";
       this.headerStepAction = "Add Action to the Step '" + this.configuringstepname + "'";     
@@ -326,6 +326,7 @@ export class StepActionsComponent {
      
     }
     if (args.item.id === 'Delete') {
+      debugger;
       const selectedRecords = this.stepactionsgrid.getSelectedRecords();
       console.log(selectedRecords);
       //ActionId: 5
@@ -583,7 +584,7 @@ export class StepActionsComponent {
           this.getAllActionsDetailsByStepId(this.selectedStepId);
         }
       },
-      (error: any) => alert(error)
+      (error: any) => { console.log(error)}
     );
   }
 
@@ -696,7 +697,7 @@ export class StepActionsComponent {
   //method to open the manage WFAction, when click in note of the pop up given in footer
   public fnOpenManageWFActionsPage() {
     this.level = "workflowlevel";
-    this.showWFActions = true;
+    this.showWFActionsScreen = true;
   }
 }
 

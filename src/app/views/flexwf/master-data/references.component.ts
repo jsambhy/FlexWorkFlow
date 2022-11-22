@@ -18,6 +18,8 @@ import { UserService } from '../../../services/user.service';
 import { FlexWorkflowsService } from '../../../services/flex-workflows.service';
 import { isUndefined } from 'util';
 import { RWorkFlows } from '../../../models/rworkflow-model';
+import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-reference',
   templateUrl: './references.component.html',
@@ -110,7 +112,9 @@ export class ReferencesComponent {
   public roleListForUser: DropdownsComponent;
 
   RefName: string;
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private spinner: NgxSpinnerService,
+    private route: ActivatedRoute,
     private router: Router,
     private _service: MasterDataService,
     private _WFservice: FlexWorkflowsService,
@@ -296,9 +300,10 @@ export class ReferencesComponent {
 
   }
   GetGrid() {
-    
+    this.spinner.show();
     this._service.GetMasterDataByEntity(this.LoggedInScopeEntityType, this.LoggedInScopeEntityId).subscribe(data => {
       this.MasterDataForGrid = data;
+      this.spinner.hide();
     })
   }
   GetById(Id) {

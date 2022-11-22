@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewContainerRef, Inject } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef, Inject, Input } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 
@@ -14,6 +14,10 @@ import { LUser } from '../../../models/UserModel';
 import { UserRoleTag } from '../../../models/UserRoleTagModel';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+
+//import { LoaderService } from '../../../loader.service';
+import { NgxSpinnerService } from "ngx-spinner";
+//import { SpinnerComponent } from '../../../spinner/spinner.component';
 
 @Component({
   selector: 'app-users',
@@ -32,7 +36,7 @@ export class UsersComponent {
   NonProjectUserList: LUser[];
   public toolbar: ToolbarItems[] | object;
   //public editSettings: Object;
-  showPopup: boolean = false;
+  @Input() showPopup: boolean = false;
   //showTagPopup: boolean = false;
   //ShowCreateBtn: boolean = false;;
   //ShowUpdateBtn: boolean = false;
@@ -85,19 +89,19 @@ export class UsersComponent {
   ];
   public position: ToastPositionModel = { X: 'Center' };
 
- 
-
   constructor(
-    private _service: UserService, private router: Router,
-    private AccountService: AccountService, private sanitizer: DomSanitizer,
-    @Inject(ViewContainerRef) private viewContainerRef?: ViewContainerRef) {
-    this.LoggedInScopeEntityId = +sessionStorage.getItem('LoggedInScopeEntityId');
-    this.LoggedInScopeEntityType = sessionStorage.getItem('LoggedInScopeEntityType');
-    this.LoggedInRoleName = sessionStorage.getItem('LoggedInRoleName');
-    this.LoggedInUserId = +sessionStorage.getItem("LoggedInUserId");
-    this.LoggedInRoleId = +sessionStorage.getItem("LoggedInRoleId");
-    this.ProjectId = +sessionStorage.getItem("ProjectId");
-
+      private spinner: NgxSpinnerService,
+      private _service: UserService, private router: Router,
+      private AccountService: AccountService, private sanitizer: DomSanitizer,
+      @Inject(ViewContainerRef) private viewContainerRef?: ViewContainerRef
+    ) 
+    {
+      this.LoggedInScopeEntityId = +sessionStorage.getItem('LoggedInScopeEntityId');
+      this.LoggedInScopeEntityType = sessionStorage.getItem('LoggedInScopeEntityType');
+      this.LoggedInRoleName = sessionStorage.getItem('LoggedInRoleName');
+      this.LoggedInUserId = +sessionStorage.getItem("LoggedInUserId");
+      this.LoggedInRoleId = +sessionStorage.getItem("LoggedInRoleId");
+      this.ProjectId = +sessionStorage.getItem("ProjectId");
   }
 
 
@@ -127,7 +131,7 @@ export class UsersComponent {
       this.ShowUserGrid = true;
     }
 
-    
+    this.spinner.show();
     this._service.ManageUsersByEntity(this.LoggedInScopeEntityType, this.LoggedInScopeEntityId, 'Get', 0)
       .subscribe(
         data => {
@@ -156,7 +160,7 @@ export class UsersComponent {
               { field: 'LastName', headerText: 'Last Name', width: 150, height: 200  }
             ],
           };
-
+          this.spinner.hide();
 
         }
       );
@@ -190,7 +194,7 @@ export class UsersComponent {
     this.confirmDialog.hide();
    
       //On delete button, we will update the status of User from Active to Terminated
-
+    this.spinner.show();
     this._service.ManageUsersByEntity(this.LoggedInScopeEntityType, this.LoggedInScopeEntityId, 'Delete', this.SelectedRowId)
       .subscribe(
         data => {
@@ -198,6 +202,7 @@ export class UsersComponent {
           this.toasts[1].content = "User Terminated Successfully";
           this.toastObj.show(this.toasts[1]);
           this.showPopup = false;
+          this.spinner.hide();
           setTimeout(() => { window.location.reload(); }, 2000);
         }
     );
@@ -284,10 +289,11 @@ export class UsersComponent {
 
   public recordDoubleClick(args): void {
     sessionStorage.removeItem("UploadedFileInfo");//It may contain the info of old session value
+      this.spinner.show();
       this.showPopup = true;
       this.SelectedRowId = args.rowData['UserId'];
       this.TransactionId = this.SelectedRowId;
-
+      this.spinner.hide();
   }
 
   SelectedGridName: string;

@@ -16,6 +16,9 @@ import { flexworkflowmodel } from '../../../models/flex-workflows-model';
 import { SupportingDocumentService } from '../../../services/supporting-document.service';
 import { UserService } from '../../../services/user.service';
 import { isUndefined } from 'util';
+import { NgxSpinnerService } from "ngx-spinner";
+
+
 @Component({
   selector: 'app-flexworkflows',
   templateUrl: './flex-workflows.component.html',
@@ -101,11 +104,12 @@ export class FlexworkflowsComponent {
   }
 
   GetTagsByEntity() {
-   
+    this.spinner.show();
     this._UserService.GetEntityTags(this.LoggedInScopeEntityType, this.LoggedInScopeEntityId)
       .subscribe(
         data => {
           this.TagData = data;
+          this.spinner.hide();
         }
       );
   }
@@ -215,11 +219,14 @@ export class FlexworkflowsComponent {
    
   //getting all the workflows created by used and shoing data in grid
   public getWFdata() {
+    this.spinner.show();
     this._service.GetWorkFlowsByScopeEntity(this.LoggedInScopeEntityType, this.LoggedInScopeEntityId)
       .subscribe(
         data => {
           this.workflowdata = (data);
+          this.spinner.hide();
           //Load ChildUserGrid
+          //console.log(this.workflowdata);
           this.childGrid = {
             dataSource: this.workflowdata, 
             queryString: 'Id',
@@ -254,6 +261,7 @@ export class FlexworkflowsComponent {
 
   //method to save the workflow
   SaveWF() {
+    this.spinner.show();
     if (this.WFcreateForm.invalid) {
       return;
     }
@@ -280,6 +288,7 @@ export class FlexworkflowsComponent {
             setTimeout(() => { this.router.navigate([this.returnUrl, this.createdWFId, this.FlexTableIdtoDesign, this.WFLabeltoDesign]); }, 2000);
             this.showCreateWFPopup = false;
             this.getWFdata();
+            this.spinner.hide();
           }
           else {
             this.toasts[2].content = data;
@@ -459,7 +468,9 @@ export class FlexworkflowsComponent {
   //Delete WF confirmation box definition
   public confirmDlgButtons: ButtonPropsModel[] = [{ click: this.confirmDlgBtnNoClick.bind(this), buttonModel: { content: 'No' } }, { click: this.confirmDlgYesBtnClick.bind(this), buttonModel: { content: 'Yes', isPrimary: true } }];
 
-  constructor(private formBuilder: FormBuilder, private _service: FlexWorkflowsService,
+  constructor(
+    private spinner: NgxSpinnerService,
+    private formBuilder: FormBuilder, private _service: FlexWorkflowsService,
     private router: Router,
     private _WFDesignerService: WorkflowdesignerService,
     private _SupportingDocService: SupportingDocumentService,

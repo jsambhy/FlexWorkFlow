@@ -1,0 +1,119 @@
+<!--Toast-->
+<ejs-toast #toasttype id='toasttype' [position]="position" [showCloseButton]="true" class="toastTopPosition"></ejs-toast>
+
+<!--Confirmation Dialogue box-->
+<ejs-dialog #confirmDialog [buttons]='confirmDlgButtons'
+            showCloseIcon="true"
+            [visible]="hidden"
+            [content]='confirmcontent'
+            [header]="confirmHeader"
+            class="dialogueClass_35"
+            isModal="true">
+</ejs-dialog>
+
+<!--Reps Grid Definition-->
+<div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-text">Manage Representatives</h4>
+      <ejs-grid #Repsgrid id='Repsgrid'
+                [dataSource]='Repsdata'
+                [toolbar]='toolbar'
+                [allowSelection]='true'
+                allowSorting='true'
+                allowFiltering='true'
+                allowTextWrap="true"
+                (toolbarClick)='toolbarClick($event)'
+                [allowExcelExport]='true'
+                [allowPdfExport]='true'
+                allowResizing='true'
+                [gridLines]="lines"
+                [contextMenuItems]="contextMenuItems"
+                [filterSettings]='filterSettings'
+                rowHeight='38'
+                (recordDoubleClick)="recordDoubleClick($event)">
+        <e-columns>
+          <e-column field='Name' headerText='Name'></e-column>
+          <e-column field='Description' headerText='Description'></e-column>
+          <e-column field='CreatedBy' headerText='Created By'></e-column>
+          <e-column field='CreatedDateTime' headerText='Created On'></e-column>
+          <e-column field='UpdatedBy' headerText='Updated By'></e-column>
+          <e-column field='UpdatedDateTime' headerText='Updated On'></e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+  </div>
+</div>
+
+
+<!--Create/Edit Form-->
+<ejs-dialog showCloseIcon='true'
+            [header]="RepHeader"
+            class="dialogueClass_70"
+            isModal="true"
+            allowDragging='true'
+            [(visible)]="showCreateRepPopup"
+            enableResize="true" *ngIf="showCreateRepPopup">
+  <ng-template #content>
+    <form [formGroup]="RepcreateForm">
+      <div [ngClass]="{'e-success': f.Name.valid}">
+        <ejs-textbox placeholder="Name*" floatLabelType="Auto"
+                     title="Representative Name" required
+                     formControlName="Name"
+                     [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></ejs-textbox>
+      </div>
+      <div *ngIf="f.Name.touched && f.Name.errors" class="e-error">
+        <div *ngIf="f.Name.errors.required">Name is required</div>
+        <div *ngIf="f.Name.errors.maxlength">Name cannot be max than 255 characters</div>
+      </div>
+      <div>&nbsp;</div>
+      <div [ngClass]="{'e-success': f.Description.valid}">
+        <ejs-textbox placeholder="Description" floatLabelType="Auto"
+                     formControlName="Description"
+                     title="Representative Description"
+                     [ngClass]="{ 'is-invalid': submitted && f.Description.errors }"
+                     [multiline]='true'>
+        </ejs-textbox>
+      </div>
+      <div *ngIf="f.Description.touched && f.Description.errors" class="e-error">
+        <div *ngIf="f.Description.errors.maxlength">Description cannot be max than 4000 characters</div>
+      </div>
+    </form>
+    <div>&nbsp;</div>
+   
+    <p>Assign this Representative to Users</p>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="dual-list-wrapper">     
+        <div class="dual-list-groupa">
+          <ejs-listbox #UnselectedUserlistbox [dataSource]="UsersDataSrc" [fields]="Usersfields"
+                       [toolbarSettings]="Listtoolbar" scope="#SelectedUserlistbox" [allowDragAndDrop]="true"></ejs-listbox>
+        </div>
+        <div class="dual-list-groupb">
+          <ejs-listbox #SelectedUserlistbox id="SelectedUserlistbox" [fields]="Usersfields" [allowDragAndDrop]="true"
+                       [dataSource]='SelectedUsersDataSrc'></ejs-listbox>
+        </div>
+      </div>
+
+    </div>
+    <div>&nbsp;</div>
+    
+
+  </ng-template>
+  
+    <div>
+      <button *ngIf="ShowCreateBtn" ejs-button class="e-control e-btn e-primary" (click)="fnSave()">Save1</button>
+      <button *ngIf="ShowUpdateBtn" ejs-button class="e-control e-btn e-primary" (click)="fnUpdate()">Save</button>
+    </div>
+
+
+  
+ 
+</ejs-dialog>
+
+
+
+
+
+
+
+

@@ -6,6 +6,9 @@
     <div class="card-body">
       <h4 class="header-text">Manage Master Data</h4>
 
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" > Please wait... </p></ngx-spinner>
+
+
       <div>
         <br />
         <ejs-grid #MasterDataGrid [dataSource]='MasterDataForGrid' [toolbar]='toolbar' (toolbarClick)='toolbarClick($event)'

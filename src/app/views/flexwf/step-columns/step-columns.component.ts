@@ -4,7 +4,7 @@ import { FormControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 import {
   GridComponent, ToolbarService, EditService, PageService, ExcelExportService,
-  PdfExportService, FreezeService, ContextMenuItem, ContextMenuService, Column, SelectionSettingsModel, IEditCell, ToolbarItems, RowSelectEventArgs, RowDDService, FilterSettingsModel
+  PdfExportService, FreezeService, ContextMenuItem, ContextMenuService, Column, SelectionSettingsModel, ToolbarItems, RowDDService, FilterSettingsModel
 } from '@syncfusion/ej2-angular-grids';
 import { ClickEventArgs } from '@syncfusion/ej2-angular-navigations';
 import { GridLine } from '@syncfusion/ej2-angular-grids';
@@ -41,12 +41,10 @@ export class StepColumnsComponent {
   @ViewChild('labelTextBoxobj', { static: false }) public labelTextBoxobj: TextBoxComponent;
   @ViewChild('step', { static: false }) public step: DropDownListComponent;
   @ViewChild('StepSelectiondlg', { static: false }) public StepSelectiondlg: DialogComponent;
-  //@ViewChild('positionTextBoxobj', { static: false }) public positionTextBoxobj: TextBoxComponent;
   @ViewChild('stepcolumngrid', { static: false }) public stepcolumngrid: GridComponent;
   @ViewChild('stepselectiongrid', { static: false }) public stepselectiongrid: GridComponent;
   @ViewChild('entity', { static: true }) public entity: DropDownListComponent;
   @ViewChild('radiobuttonorder', { static: false }) public radiobuttonorder: RadioButtonComponent;
-  //@ViewChild('operatorobj', { static: false }) public operatorobj: DropDownListComponent;
   @ViewChild('toasttype', { static: false }) private toastObj: ToastComponent;
 
   //--------------------Initailizing required variables
@@ -88,10 +86,9 @@ export class StepColumnsComponent {
   public showClonebutton: boolean = false;
   public editSettings: Object;
   public fields: Object = { text: 'Label', value: 'Id' };
-/* public choosecolumnfields: Object = { text: 'FieldName', value: 'DataFieldId' };*/
   public choosecolumnfields: Object = { text: 'FieldName', value: 'FieldName' };
   stepcolumncreate: FormGroup = null;
-  public choosecolumnplaceholder: string = 'Choose Column*';//placeholder on choosecolumn
+  public choosecolumnplaceholder: string = 'Choose Column*';
   public columnnameofjoiningtable: string;
   public Flextablejoincolconfigid: number;
   public referenceid: number;
@@ -102,42 +99,55 @@ export class StepColumnsComponent {
   public descchecked: boolean = false;
   public confirmBoxFlag: string = "";
   public parentDataFieldId: number;
-  filterSettings: FilterSettingsModel;
-  public selectedBaseStepIdforClonning: number; public selectedBaseStepForClonning: number; public selectedTransactionIds: string = "";
-  public Step_count: number;  public DataField_count: number;  public LandingPage_count: number;  public Action_count: number; public Notification_count: number;
-  sourceId: number;
+  public filterSettings: FilterSettingsModel;
+  public selectedBaseStepIdforClonning: number;
+  public selectedBaseStepForClonning: number;
+  public selectedTransactionIds: string = "";
+  public Step_count: number;
+  public DataField_count: number;
+  public LandingPage_count: number;
+  public Action_count: number;
+  public Notification_count: number;
+  public sourceId: number;
+  @Output() PostStepColumnEvent = new EventEmitter();
+
   ngOnInit() {
+
     this.lines = 'Both';
+
     this.filterSettings = { type: 'CheckBox' }; // inorder to remove extra filtering from the grid we set it to this type.
+
     if (this.level == "workflowlevel") {
       this.managecolumnheader = "Manage landing page for Workflow '" + this.configuringWFLabel + "'";
-      this.createcolumnheader = "Add new column to the landing page"
-     
+      this.createcolumnheader = "Add new column to the landing page"     
       this.getColumnDetails(0, this.configuringWFId);
     }
+
     if (this.level == "steplevel") {
       this.managecolumnheader = "Manage landing page for Step '" + this.configuringstepname + "'";
       this.createcolumnheader = "Add New Column to the landing page for Step '" + this.configuringstepname + "'"
       this.getColumnDetails(this.configuringstepid, this.configuringWFId);      
     }
+
     this.toolbar = [{ text: 'Add', tooltipText: 'Add', prefixIcon: 'e-custom-icons e-action-Icon-add', id: 'Add' }, { text: 'Edit', tooltipText: 'Edit', prefixIcon: 'e-custom-icons e-action-Icon-editpencil', id: 'Edit' }, { text: 'Delete', tooltipText: 'Delete', prefixIcon: 'e-custom-icons e-action-Icon-delete3', id: 'Delete' }, 'ExcelExport', 'PdfExport', 'CsvExport', 'Search'];
+
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
+
     this.selectionOptions = { type: 'Multiple', enableSimpleMultiRowSelection: true }
-    this.editparams = { params: { popupHeight: '300px' } };
-    
+
+    this.editparams = { params: { popupHeight: '300px' } };    
 
     this._service.getAllSteps(this.configuringWFId, this.configuringWFLabel)
       .subscribe(
         data => {
           this.SourceStepColumns = (data);
         }
-      );
+     );
   }
+
   dialogClose() {
-    //window.location.reload();
     this.PostStepColumnEvent.emit();
-  }
-  @Output() PostStepColumnEvent = new EventEmitter();
+  }  
  
   ClonedialogClose() {
     this.ShowPopupSelectionstep = false;
@@ -190,6 +200,7 @@ export class StepColumnsComponent {
   public confirmDlgBtnNoClick = (): void => {
     this.confirmDialog.hide();
   }
+
   public confirmDlgBtnYesClick = (): void => {  
     if (this.confirmBoxFlag =="deletecolumn") {
       this._service.DeleteById(this.stepcolumndata).subscribe(
@@ -263,8 +274,13 @@ export class StepColumnsComponent {
     }
     
     this.confirmDialog.hide();
-  } 
-  public confirmDlgButtons: ButtonPropsModel[] = [{ click: this.confirmDlgBtnNoClick.bind(this), buttonModel: { content: 'No' } }, { click: this.confirmDlgBtnYesClick.bind(this), buttonModel: { content: 'Yes', isPrimary: true } }];
+  }
+
+  public confirmDlgButtons: ButtonPropsModel[] =
+  [
+    {click: this.confirmDlgBtnNoClick.bind(this),buttonModel: { content: 'No' }},
+    {click: this.confirmDlgBtnYesClick.bind(this),buttonModel: { content: 'Yes', isPrimary: true } }
+  ];
 
   //function called on the clonning of the column
   AddAllFields() {
@@ -292,7 +308,7 @@ export class StepColumnsComponent {
 
   //function called on the clonning of the action
   Clonethis() {
-    if (this.selectedBaseStepIdforClonning == undefined || this.selectedBaseStepIdforClonning == null) {
+    if (this.configuringstepid == undefined || this.configuringstepid == null) {
       this.toastObj.timeOut = 0;
       this.toasts[2].content = 'From Step can not be blank';
       this.toastObj.show(this.toasts[2]);

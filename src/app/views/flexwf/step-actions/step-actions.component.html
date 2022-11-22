@@ -145,16 +145,15 @@
         </e-column>
       </e-columns>
     </ejs-grid>
+    <div>&nbsp;</div>
+    Note: To make workflow-wide change to label/icon for any 'Action' <a (click)="fnOpenManageWFActionsPage()" class="btn-link">click here</a>
   </ng-template>
   <ng-template #footerTemplate>
-    Note: To make workflow-wide change to label/icon for any 'Action' <div class="btn btn-link"> <a (click)="fnOpenManageWFActionsPage()">click here</a></div>
+   <!--Note: To make workflow-wide change to label/icon for any 'Action' <a (click)="fnOpenManageWFActionsPage()">click here</a>-->
   </ng-template>
 </ejs-dialog>
 
-<!--Workflow Actions module-->
-<div *ngIf="showWFActions">
-  <app-workflow-actions [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId"></app-workflow-actions>
-</div>
+
 
 <!--Clonning Pop up -->
 <div *ngIf="Showclonepopup">
@@ -205,6 +204,16 @@
   </ejs-dialog>
 </div>
 
+<!--Workflow Actions module-->
+<div *ngIf="showWFActionsScreen">
+  <app-workflow-actions [configuringWFLabel]="configuringWFLabel"
+                        [configuringstepname]="configuringstepname"
+                        [configuringFlexTableId]="configuringFlexTableId"
+                        [configuringstepid]="configuringstepid"
+                        [configuringWFId]="configuringWFId">
+
+  </app-workflow-actions>
+</div>
 <!--Not needed for mow-->
 <!--<div *ngIf="participantMatrix">
   <app-step-participants [isRefresh]="isRefresh"></app-step-participants>

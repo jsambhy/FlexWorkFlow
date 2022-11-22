@@ -65,12 +65,12 @@ import { UserService } from './services/user.service';
 import { ReportPivotViewsService } from './services/reportpivotviews.service';
 import { SharedModule } from './views/SharedModule/shared.module';
 
-
-
-
+import { SpinnerComponent } from './views/flexwf/spinner/spinner.component';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 @NgModule({
   imports: [
+    NgxSpinnerModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
@@ -104,7 +104,8 @@ import { SharedModule } from './views/SharedModule/shared.module';
     RegisterComponent,
     SignUpComponent,
     FrontComponent,
-    ContactUsComponent
+    ContactUsComponent,
+    SpinnerComponent
   ],
   providers: [ThemeService, ReportService, ReportPivotViewsService, UserService,
     DirectAccessGuard,

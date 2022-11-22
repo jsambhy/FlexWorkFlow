@@ -22,8 +22,7 @@ import { Auth } from 'aws-amplify';
 import { Router } from '@angular/router';
 import { EntityConfigurationService } from '../../../services/entity.configuration.service';
 import { SendEmailModel } from '../../../models/SendEmailModel';
-
-
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-user-common-controls',
@@ -78,7 +77,6 @@ export class UsersCommonControlsComponent {
   DisableAttributetab: boolean = true;
   IsUserNameRequired: boolean;
   readonly AuthSource = environment.AuthSource;
-
 
   thumbnail: any;
   //s3Url: string = 'https://project-lite-staging-flex20200415095037299600000001.s3-eu-west-1.amazonaws.com/dev/users/images/namita.png';
@@ -136,7 +134,10 @@ export class UsersCommonControlsComponent {
 
 
 
-  constructor(private formBuilder: FormBuilder, private _service: UserService,
+  constructor(
+    private spinner: NgxSpinnerService,
+    private formBuilder: FormBuilder, 
+    private _service: UserService,
     private AccountService: AccountService,
     private sanitizer: DomSanitizer,
     private SupportDocService: SupportingDocumentService,
@@ -380,6 +381,7 @@ export class UsersCommonControlsComponent {
     }
     else
     {
+      this.spinner.show();
       //Add Supporting Document in Model
       var SupportingDocuments = JSON.parse(sessionStorage.getItem("supportingDocumentList"));
       sessionStorage.removeItem("supportingDocumentList");
@@ -452,12 +454,13 @@ export class UsersCommonControlsComponent {
           data => {
             ///////////////////////////////////////////////////
             console.log(data);
+
             this.EntityId = data;
             if (this.EntityId == 0) {
 
               this.toasts[0].content = "User with the same email already exists.";
               this.toastObj.show(this.toasts[0]);
-
+              this.spinner.hide();
             }
 
             else {
@@ -480,6 +483,8 @@ export class UsersCommonControlsComponent {
               //  }
               //  pwd = randomstring;
               //}
+
+              //console.log(this.AuthSource);
 
               //Create User in Cognito Directory
               if (this.AuthSource == 'Cognito') {
@@ -507,7 +512,6 @@ export class UsersCommonControlsComponent {
                     }
                   }
                 }
-
                 else if (this.UserModel.LoginEmail == null && PhoneNumber == null) {
                   user = {
                     username: this.UserModel.UserName,
@@ -529,7 +533,7 @@ export class UsersCommonControlsComponent {
 
                 }
 
-
+                console.log('IsClose=');
                 Auth.signUp(user)
                   .then(data => {
                     console.log(data);
@@ -537,6 +541,7 @@ export class UsersCommonControlsComponent {
 
                     //ConfirmSignUp call
                     this.AfterUserSave(IsClose);
+
                   })
                   .catch(err => {
                     //this.DeleteUser(data); commented by rs as it is calling just after save method and deleting all the assigned roles
@@ -559,10 +564,13 @@ export class UsersCommonControlsComponent {
                   );
 
               }
+
+              this.spinner.hide();
             }
           }
 
         );
+
 
       //  //Add data in database
       //  this._service.SaveUser(this.UserModel)
@@ -692,11 +700,14 @@ export class UsersCommonControlsComponent {
 
   AfterUserSave(IsClose) {
     this.toastObj.timeOut = 2000;
+    console.log(IsClose);
     if (IsClose) {
-      this.toasts[1].content = "User has been created successfully";
-      if (this.Source == undefined || this.Source == 'Users' || this.Source == '')//If user come here through User management screen, only then we will relaod the page
+      this.toasts[1].content = "User has been created successfully.";
+      if (this.Source == undefined || this.Source == 'Users' || this.Source == '')//If user come here through User management screen, only then we will reload the page
       {
-        setTimeout(() => { window.location.reload(); }, 2000);
+        //setTimeout(() => { window.location.reload(); }, 2000);
+        this.showPopup = false;
+        this.showUserPopup = false;
       }
       else {
         //This event will caught from where this component is called

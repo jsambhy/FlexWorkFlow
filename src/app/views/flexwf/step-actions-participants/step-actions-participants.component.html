@@ -12,80 +12,97 @@
       <div>&nbsp;</div>
       <form [formGroup]="AssignActionForm">
         <div [ngClass]="{'e-success': f1.stepdrpcontrol.valid}">
-          <ejs-dropdownlist *ngIf="showStepDropdown" [value]='Stepvalue' [dataSource]="steps" [fields]="fields" formControlName="stepdrpcontrol" title="Steps from the dropdown" [ngClass]="{ 'is-invalid': submitted && f1.stepdrpcontrol.errors }" (change)="stepchange($event)" placeholder='Choose step'></ejs-dropdownlist>
+          <ejs-dropdownlist *ngIf="showStepDropdown" [value]='Stepvalue' [dataSource]="steps" [fields]="fields"
+                            formControlName="stepdrpcontrol" title="Steps from the dropdown"
+                            [ngClass]="{ 'is-invalid': submitted && f1.stepdrpcontrol.errors }"
+                            (change)="stepchange($event)" placeholder='Choose step' floatLabelType="Always"></ejs-dropdownlist>
         </div>
         <div *ngIf="f1.stepdrpcontrol.touched && f1.stepdrpcontrol.errors" class="e-error">
           <div *ngIf="f1.stepdrpcontrol.errors.required">Step is required</div>
         </div>
 
+        <div *ngIf="showStepLabel">
+          <div>Step:&nbsp;'{{configuringstepname}}'</div>
+        </div>
+
+        <div>&nbsp;</div>
+
         <div [ngClass]="{'e-success': f1.ParticipantTypeValue.valid}">
-          <ejs-dropdownlist [dataSource]="participantTypesData" [fields]="participantTypeFields"
-                            formControlName="ParticipantTypeValue" title="Participant types" (change)="participantTypeChange($event)" placeholder='Choose participant types'></ejs-dropdownlist>
+          <ejs-dropdownlist [dataSource]="ddData" [fields]="participantTypeFields"
+                            formControlName="ParticipantTypeValue" title="Participant types"
+                            (change)="participantTypeChange($event)"
+                            floatLabelType="Always"
+                            placeholder='Choose participant types'></ejs-dropdownlist>
         </div>
         <div *ngIf="f1.ParticipantTypeValue.touched && f1.ParticipantTypeValue.errors" class="e-error">
           <div *ngIf="f1.ParticipantTypeValue.errors.required">Participant type is required</div>
         </div>
-
-        <div *ngIf="showPositionTypeDD">
-          <div [ngClass]="{'e-success': f1.PositionTypedrpcontrol.valid}">
-            <ejs-dropdownlist [value]='PTypevalue' [dataSource]="PTypeSource" [fields]="PTypefields"
-                              formControlName="PositionTypedrpcontrol" title=""
-                              [ngClass]="{ 'is-invalid': submitted && f1.PositionTypedrpcontrol.errors }"
-                              placeholder='Position Type' (change)="PositionTypeChange($event)"> </ejs-dropdownlist>
-          </div>
-        </div>
-
         <div *ngIf="showHierarchyTypeDropdown">
           <div [ngClass]="{'e-success': f1.HierarchyTypedrpcontrol.valid}">
             <ejs-dropdownlist [value]='HTypevalue' [dataSource]="HTypeSource" [fields]="HTypefields"
                               formControlName="HierarchyTypedrpcontrol" title=""
                               [ngClass]="{ 'is-invalid': submitted && f1.HierarchyTypedrpcontrol.errors }"
-                              placeholder='Hierarchy Type' (focusout)="onFocusOut()"> </ejs-dropdownlist>
+                              placeholder='Hierarchy Type' (change)="HTypeChange($event)" floatLabelType="Always"> </ejs-dropdownlist>
           </div>
           <div *ngIf="f1.HierarchyTypedrpcontrol.touched && f1.HierarchyTypedrpcontrol.errors" class="e-error">
             <div *ngIf="f1.HierarchyTypedrpcontrol.errors.required">Hierarchy type is required</div>
           </div>
-
-
+        </div>
+        <div *ngIf="showHierarchyCategorization">
           <div>&nbsp;</div>
           <div class="row">
             <div class="col-xs-7 col-sm-7 col-md-7 col-lg-3">Hierarchy Categorization</div>
             <div class="row col-xs-5 col-sm-5 col-md-5 col-lg-9">
               <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
-                <ejs-radiobutton #radiobutton label="Level" name="HierarchyTypeCategorization" value="Level" [(checked)]="LChecked" (change)="changeHandler()"></ejs-radiobutton>
+                <ejs-radiobutton label="Job Role" name="HierarchyTypeCategorization" value="Job Role" [(checked)]="JRChecked" (change)="changeHandler()"></ejs-radiobutton>
+
               </div>
               <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                <ejs-radiobutton label="Job Role" name="HierarchyTypeCategorization" value="Job Role" [(checked)]="JRChecked" (change)="changeHandler()"></ejs-radiobutton>
+                <ejs-radiobutton #radiobutton label="Level" name="HierarchyTypeCategorization" value="Level" [(checked)]="LChecked" (change)="changeHandler()"></ejs-radiobutton>
               </div>
             </div>
 
           </div>
           <div>&nbsp;</div>
-          <ejs-numerictextbox *ngIf="showLevelTxtbox" #LevelValueTextBoxobj id="LevelValueTextBoxobj" placeholder="Level Value" floatLabelType="Always"
-                              decimals="0" min='1' formControlName="LevelValue"></ejs-numerictextbox>
+          <div *ngIf="showLevelTxtbox" class="row">
+            <ejs-numerictextbox #LevelValueTextBoxobj
+                                id="LevelValueTextBoxobj"
+                                placeholder="Level Value"
+                                floatLabelType="Always"
+                                decimals="0"
+                                min='1'
+                                formControlName="LevelValue"></ejs-numerictextbox>
+            <button ejs-button class="e-control e-btn e-primary" (click)="fnshowMatrixdata()">Go</button>
+          </div>
+         
+
+
+
         </div>
 
-       
+        <div *ngIf="showmultiselect" style="margin-top:20px">
+          <div class="row col-lg-12">
 
-        <div>&nbsp;</div>
-        <div *ngIf="showmultiselect">
-          <div [ngClass]="{'e-success': f1.participantcontrol.valid}">
-            <ejs-multiselect [dataSource]="Participants" [fields]="participantsFields" floatLabelType='Always'
-                             placeholder='Participant(s)*'
-                             formControlName="participantcontrol" [value]="selectedValues">
-            </ejs-multiselect>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 
+              <div [ngClass]="{'e-success': f1.participantcontrol.valid}" class="control-styles">
+                <ejs-multiselect [dataSource]="Participants" [fields]="participantsFields" floatLabelType='Always'
+                                 placeholder='Participant(s)*'
+                                 formControlName="participantcontrol" [value]="selectedValues" (onchange)=onChange($event) [mode]='box'>
+                </ejs-multiselect>
+
+              </div>
+            </div>          
+            <button ejs-button class="e-control e-btn e-primary" (click)="fnshowMatrixdata()">Go</button>
           </div>
           <div *ngIf="f1.participantcontrol.touched && f1.participantcontrol.errors" class="e-error">
             <div *ngIf="f1.participantcontrol.errors.required">Participant is required</div>
           </div>
         </div>
-      </form>
-      <div *ngIf="showStepLabel">
-        <div>Step:&nbsp;'{{configuringstepname}}'</div>
-      </div>
-      <div>&nbsp;</div>
-
+          <div>&nbsp;</div>
+</form>
+     <div class="row"></div> <p>Already Assigned Participants<img src="./assets/flex-images/search.png" alt="ToolTip" title="show" (click)="fnShowAssignes()"/>	 </p>
+      
       <ejs-grid *ngIf="showgrid" (rowSelected)=rowSelected($event) #grid id='grid' [dataSource]='matrixData' gridLines='Both' [editSettings]="editSettings" [frozenColumns]='1' allowTextWrap="true" [height]="GridHeight">
         <e-columns>
           <e-column field="ActionName" headerText="Actions" [width]="ActionWidth">
@@ -99,15 +116,15 @@
             </ng-template>
           </e-column>
 
-          <e-column field='Tags' headerText='Notifications' [filter]='filterSettings' width='100'>
-            <ng-template #template let-data>
-              <div class="btn btn-link">
-                <a (click)="fnShowNotifications()">
-                  <img src="./assets/flex-images/outline_email_black_24dp.png" alt="ToolTip" title="to add notification click here" />
-                </a>
-              </div>
-            </ng-template>
-          </e-column>
+          <!--<e-column field='Tags' headerText='Notifications' [filter]='filterSettings' width='100'>
+        <ng-template #template let-data>
+          <div class="btn btn-link">
+            <a (click)="fnShowNotifications()">
+              <img src="./assets/flex-images/outline_email_black_24dp.png" alt="ToolTip" title="to add notification click here" />
+            </a>
+          </div>
+        </ng-template>
+      </e-column>-->
 
           <div *ngFor="let item of Columns">
             <e-column [field]="item.Label" [headerText]="item.Label" [width]="RoleWidth">
@@ -122,78 +139,87 @@
 
 
       <div *ngIf="dvLinksOnGrid">
-
-        <button ejs-button class="e-control e-btn e-primary" (click)="fnshowMatrixdata()">Show Result</button>
-        &nbsp;
-
         <button ejs-button class="e-control e-btn e-primary" (click)="fnSaveMappingdata()">Save</button>
-        &nbsp;
-        <!--<button ejs-button cssClass="e-primary" (click)="fnShowActions()">Manage Actions</button>-->
-        <button ejs-button class="e-control e-btn e-primary" (click)="OpenRolesScreen()">Manage Roles</button>
-        &nbsp;
-        <!--<button ejs-button cssClass="e-primary" (click)="fnShowActions()">Manage Actions</button>-->
         <button *ngIf="ShowActionVisibility" ejs-button class="e-control e-btn e-primary" (click)="ActionVisibilityScreen()">Manage Action Visibility</button>
       </div>
     </ng-template>
   </ejs-dialog>
 </div>
 
-<!--Action module selector called on the Actions link in matrix grid-->
-<div *ngIf="showmanageactions">
-  <app-step-actions [manageactiononParticipant]="manageactiononParticipant" [level]="level" [popupflag]="showmanageactions" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel" (PostStepActionEvent)="PostStepActionEvent();"></app-step-actions>
+<div *ngIf="AssignedPartpopup">
+  <ejs-dialog #assignedParticipantdlg showCloseIcon='true' class="dialogueClass_50" isModal="true"
+              allowDragging='true' [(visible)]="AssignedPartpopup" enableResize="true">
+    <ng-template #header>
+      Assigned Participant(s)
+    </ng-template>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="dual-list-wrapper">
+        <div class="dual-list-groupa">
+          
+          <ejs-listbox #participantslistbox [dataSource]="AssignedParticipantsDataSrc" [fields]="fields"
+                       [allowDragAndDrop]="true"></ejs-listbox>
+        </div>
+      </div>
+    </div>
+  </ejs-dialog>
 </div>
 
-<div *ngIf="showManageRoles">
-  <ejs-dialog showCloseIcon='true' header="Manage Roles" height="50%" class="dialogueClass_50" isModal="true" allowDragging='true' (beforeClose)="ManageRoledialogClose()" enableResize="true">
+  <!--Action module selector called on the Actions link in matrix grid-->
+  <div *ngIf="showmanageactions">
+    <app-step-actions [manageactiononParticipant]="manageactiononParticipant" [level]="level" [popupflag]="showmanageactions" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel" (PostStepActionEvent)="PostStepActionEvent();"></app-step-actions>
+  </div>
+
+  <div *ngIf="showManageRoles">
+    <ejs-dialog showCloseIcon='true' header="Manage Roles" height="50%" class="dialogueClass_50" isModal="true" allowDragging='true' (beforeClose)="ManageRoledialogClose()" enableResize="true">
+      <app-roles></app-roles>
+
+    </ejs-dialog>
+  </div>
+
+
+
+  <div *ngIf="showmanagenotifications">
+    <!--<ejs-dialog showCloseIcon='true' header="Manage Notifications" height="50%" class="dialogueClass_70" isModal="true" allowDragging='true' (beforeClose)="ManageRoledialogClose()">
+      <app-notifications [level]="level" [SelectedStepActionId]="SelectedStepActionId" [SelectedActionName]="SelectedActionName" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel" (PostNotificationEvent)="PostNotificationEvent();" [isDialog]="isDialog"></app-notifications>
+    </ejs-dialog>-->
+    <!--<app-flex-notifications [level]="level" [SelectedStepActionId]="SelectedStepActionId" [SelectedActionName]="SelectedActionName" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel" (PostNotificationEvent)="PostNotificationEvent();" ></app-flex-notifications>-->
+
+
+
+    <ejs-dialog class="dialogueClass_70" height="50%" showCloseIcon="true" isModal="true" allowDragging='true' [header]="NotificationsHeader" (beforeClose)="dialogClose()" enableResize="true">
+      <ng-template #content>
+        <p class="notes-flex">
+          System will send following emails when user presses this action. You can create email notifications and set multiple recipients for each email.
+        </p>
+        <div class="margin-top_10">
+          <app-notifications [level]="level" [SelectedStepActionId]="SelectedStepActionId" [SelectedActionName]="SelectedActionName" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel" (PostNotificationEvent)="PostNotificationEvent();" [isDialog]="isDialog"></app-notifications>
+        </div>
+      </ng-template>
+    </ejs-dialog>
+  </div>
+
+
+  <div *ngIf="showActionVisibilityScreen">
+    <ejs-dialog showCloseIcon='true' header="Manage Action Visibility" height="50%" class="dialogueClass_50" isModal="true" allowDragging='true' enableResize="true">
+      <div>
+        <ejs-dropdownlist [dataSource]="StepsActionsData" [fields]="fields" (change)="StepActionChange($event)" placeholder='Choose Action'></ejs-dropdownlist>
+      </div>
+
+      <div class="dual-list-wrapper">
+        <div class="dual-list-groupa">
+          <ejs-listbox #Selectlistbox1 [dataSource]="Participantdata" [fields]="Participantfields" height="200px"
+                       [toolbarSettings]="Listtoolbar" scope="#Selectlistbox2" [allowDragAndDrop]="true"></ejs-listbox>
+        </div>
+        <div class="dual-list-groupb">
+          <ejs-listbox #Selectlistbox2 id="Selectlistbox2" [fields]="chooseColumnfields" height="200px" [allowDragAndDrop]="true"
+                       [dataSource]='SelectList2DataSrc'></ejs-listbox>
+        </div>
+      </div>
+
+    </ejs-dialog>
+  </div>
+
+  <!--<ejs-dialog *ngIf="showManageRoles" showCloseIcon='true' header="Manage Roles" [target]='target' class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="showManageRoles" (beforeClose)="ManageRolesPopUpClose()">
     <app-roles></app-roles>
 
-  </ejs-dialog>
-</div>
-
-
-
-<div *ngIf="showmanagenotifications">
-  <!--<ejs-dialog showCloseIcon='true' header="Manage Notifications" height="50%" class="dialogueClass_70" isModal="true" allowDragging='true' (beforeClose)="ManageRoledialogClose()">
-    <app-notifications [level]="level" [SelectedStepActionId]="SelectedStepActionId" [SelectedActionName]="SelectedActionName" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel" (PostNotificationEvent)="PostNotificationEvent();" [isDialog]="isDialog"></app-notifications>
   </ejs-dialog>-->
-  <!--<app-flex-notifications [level]="level" [SelectedStepActionId]="SelectedStepActionId" [SelectedActionName]="SelectedActionName" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringFlexTableId]="configuringFlexTableId" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel" (PostNotificationEvent)="PostNotificationEvent();" ></app-flex-notifications>-->
-
-
-
-  <ejs-dialog class="dialogueClass_70" height="50%" showCloseIcon="true" isModal="true" allowDragging='true' [header]="NotificationsHeader" (beforeClose)="dialogClose()" enableResize="true">
-    <ng-template #content>
-      <p class="notes-flex">
-        System will send following emails when user presses this action. You can create email notifications and set multiple recipients for each email.
-      </p>
-      <div class="margin-top_10">
-        <app-notifications [level]="level" [SelectedStepActionId]="SelectedStepActionId" [SelectedActionName]="SelectedActionName" [configuringWFLabel]="configuringWFLabel" [configuringstepname]="configuringstepname" [configuringstepid]="configuringstepid" [configuringWFId]="configuringWFId" [selectedStepId]="selectedStepId" [selectedStepLabel]="selectedStepLabel" (PostNotificationEvent)="PostNotificationEvent();" [isDialog]="isDialog"></app-notifications>
-      </div>
-    </ng-template>
-  </ejs-dialog>
-</div>
-
-
-<div *ngIf="showActionVisibilityScreen">
-  <ejs-dialog showCloseIcon='true' header="Manage Action Visibility" height="50%" class="dialogueClass_50" isModal="true" allowDragging='true' enableResize="true">
-    <div>
-      <ejs-dropdownlist [dataSource]="StepsActionsData" [fields]="fields" (change)="StepActionChange($event)" placeholder='Choose Action'></ejs-dropdownlist>
-    </div>
-
-    <div class="dual-list-wrapper">
-      <div class="dual-list-groupa">
-        <ejs-listbox #Selectlistbox1 [dataSource]="Participantdata" [fields]="Participantfields" height="200px"
-                     [toolbarSettings]="Listtoolbar" scope="#Selectlistbox2" [allowDragAndDrop]="true"></ejs-listbox>
-      </div>
-      <div class="dual-list-groupb">
-        <ejs-listbox #Selectlistbox2 id="Selectlistbox2" [fields]="chooseColumnfields" height="200px" [allowDragAndDrop]="true"
-                     [dataSource]='SelectList2DataSrc'></ejs-listbox>
-      </div>
-    </div>
-
-  </ejs-dialog>
-</div>
-
-<!--<ejs-dialog *ngIf="showManageRoles" showCloseIcon='true' header="Manage Roles" [target]='target' class="dialogueClass_50" isModal="true" allowDragging='true' [(visible)]="showManageRoles" (beforeClose)="ManageRolesPopUpClose()">
-  <app-roles></app-roles>
-
-</ejs-dialog>-->
